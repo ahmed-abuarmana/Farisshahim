@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إضافة تكية جديدة - الفارس الشهم 3</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            direction: rtl;
+            background-color: #f8fafb;
+            color: #2c3e50;
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Header Section */
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            color: #3498db;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header p {
+            color: #7f8c8d;
+            font-size: 1rem;
+        }
+
+        /* Form Container */
+        .form-container {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(52, 152, 219, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .form-container h2 {
+            color: #3498db;
+            margin-bottom: 25px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #ecf0f1;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 0.95rem;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #bdc3c7;
+            border-radius: 8px;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            background-color: #f8fafb;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+            background-color: white;
+        }
+
+        .form-input:valid {
+            border-color: #27ae60;
+        }
+
+        /* Submit Button */
+        .submit-btn {
+            width: 100%;
+            padding: 14px 20px;
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(52, 152, 219, 0.3);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        /* Back Link */
+        .back-link {
+            display: inline-block;
+            padding: 12px 24px;
+            background: #95a5a6;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            margin-top: 20px;
+        }
+
+        .back-link:hover {
+            background: #7f8c8d;
+            transform: translateY(-2px);
+        }
+
+        /* Navigation */
+        .navigation {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        /* Loading State */
+        .submit-btn:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Validation Messages */
+        .validation-message {
+            color: #e74c3c;
+            font-size: 0.9rem;
+            margin-top: 5px;
+            display: none;
+        }
+
+        /* Success Animation */
+        @keyframes successPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .success-animation {
+            animation: successPulse 0.6s ease-in-out;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            .form-container {
+                padding: 20px;
+                margin: 10px;
+            }
+
+            .header h1 {
+                font-size: 1.7rem;
+            }
+
+            .form-input {
+                padding: 10px 14px;
+                font-size: 14px;
+            }
+
+            .submit-btn {
+                padding: 12px 18px;
+                font-size: 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 1.5rem;
+            }
+
+            .form-container {
+                padding: 15px;
+            }
+        }
+
+        /* Focus Ring for Accessibility */
+        .form-input:focus-visible {
+            outline: 2px solid #3498db;
+            outline-offset: 2px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Header Section -->
+        <div class="header">
+            <h1>إضافة تكية جديدة</h1>
+            <p>أضف تكية جديدة إلى نظام الفارس الشهم 3</p>
+        </div>
+
+        <!-- Form Container -->
+        <div class="form-container">
+            <h2>بيانات التكية</h2>
+            
+            <form method="POST" id="addTakiyaForm" action="{% url 'add_new_takiya' %}">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="name" class="form-label">اسم التكية *</label>
+                    <input 
+                        type="text" 
+                        id="name" 
+                        name="name" 
+                        class="form-input"
+                        required
+                        maxlength="100"
+                        placeholder="أدخل اسم التكية"
+                    >
+                    <div class="validation-message" id="name-error">يرجى إدخال اسم التكية</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="owner_name" class="form-label">اسم المالك *</label>
+                    <input 
+                        type="text" 
+                        id="owner_name" 
+                        name="owner_name" 
+                        class="form-input"
+                        required
+                        maxlength="100"
+                        placeholder="أدخل اسم المالك"
+                    >
+                    <div class="validation-message" id="owner-error">يرجى إدخال اسم المالك</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="address" class="form-label">العنوان *</label>
+                    <input 
+                        type="text" 
+                        id="address" 
+                        name="address" 
+                        class="form-input"
+                        required
+                        maxlength="200"
+                        placeholder="أدخل عنوان التكية"
+                    >
+                    <div class="validation-message" id="address-error">يرجى إدخال العنوان</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="mobile_number" class="form-label">رقم الهاتف *</label>
+                    <input 
+                        type="tel" 
+                        id="mobile_number" 
+                        name="mobile_number" 
+                        class="form-input"
+                        required
+                        pattern="[0-9+\-\s()]+"
+                        placeholder="أدخل رقم الهاتف"
+                    >
+                    <div class="validation-message" id="phone-error">يرجى إدخال رقم هاتف صحيح</div>
+                </div>
+
+                <button type="submit" class="submit-btn" id="submitBtn">
+                    💾 حفظ التكية
+                </button>
+            </form>
+        </div>
+
+        <!-- Navigation -->
+        <div class="navigation">
+            <a href="{% url 'takiyat_list' %}" class="back-link">← العودة إلى قائمة التكيات</a>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('addTakiyaForm');
+            const submitBtn = document.getElementById('submitBtn');
+            const inputs = form.querySelectorAll('.form-input[required]');
+
+            // Form validation
+            function validateField(input) {
+                const errorElement = document.getElementById(input.id + '-error');
+                const isValid = input.checkValidity();
+                
+                if (!isValid) {
+                    errorElement.style.display = 'block';
+                    input.style.borderColor = '#e74c3c';
+                } else {
+                    errorElement.style.display = 'none';
+                    input.style.borderColor = '#27ae60';
+                }
+                
+                return isValid;
+            }
+
+            // Real-time validation
+            inputs.forEach(input => {
+                input.addEventListener('blur', function() {
+                    validateField(this);
+                });
+
+                input.addEventListener('input', function() {
+                    if (this.value.length > 0) {
+                        validateField(this);
+                    }
+                });
+            });
+
+            // Form submission
+            form.addEventListener('submit', function(e) {
+                let isFormValid = true;
+                
+                inputs.forEach(input => {
+                    if (!validateField(input)) {
+                        isFormValid = false;
+                    }
+                });
+
+                if (!isFormValid) {
+                    e.preventDefault(); // امنع الإرسال فقط لو في أخطاء
+                    const firstInvalidField = form.querySelector('.form-input[style*="border-color: rgb(231, 76, 60)"]');
+                    if (firstInvalidField) {
+                        firstInvalidField.focus();
+                    }
+                } else {
+                    submitBtn.disabled = true;
+                    submitBtn.textContent = '🔄 جاري الحفظ...';
+                }
+            });
+
+            // Auto-focus first field
+            document.getElementById('name').focus();
+
+            // Phone number formatting
+            const phoneInput = document.getElementById('mobile_number');
+            phoneInput.addEventListener('input', function(e) {
+                // Remove non-numeric characters except +, -, spaces, and parentheses
+                let value = e.target.value.replace(/[^\d+\-\s()]/g, '');
+                e.target.value = value;
+            });
+        });
+    </script>
+</body>
+</html>

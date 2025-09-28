@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ makhbaz.name }} - الفارس الشهم 3</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            direction: rtl;
+            background-color: #f8fafb;
+            color: #2c3e50;
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Header Section */
+        .header {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: 0 6px 20px rgba(52, 152, 219, 0.2);
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header .subtitle {
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+
+        /* Navigation Buttons */
+        .nav-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .nav-btn {
+            padding: 10px 18px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            display: inline-block;
+        }
+
+        .nav-btn:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+        }
+
+        .nav-btn.danger {
+            background: #e74c3c;
+        }
+
+        .nav-btn.danger:hover {
+            background: #c0392b;
+        }
+
+        /* Cards */
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 20px rgba(52, 152, 219, 0.1);
+        }
+
+        .card h2 {
+            color: #3498db;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #ecf0f1;
+            font-weight: 600;
+        }
+
+        /* Info Grid */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .info-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .info-label {
+            font-weight: 600;
+            color: #7f8c8d;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+
+        .info-value {
+            padding: 12px 16px;
+            background: #f8fafb;
+            border-radius: 8px;
+            border-right: 4px solid #3498db;
+            color: #2c3e50;
+            font-weight: 500;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(135deg, #f8fafb, #ecf0f1);
+            border-radius: 10px;
+            border-top: 4px solid #3498db;
+            transition: transform 0.3s ease;
+        }
+
+        .stat-item:hover {
+            transform: translateY(-3px);
+        }
+
+        .stat-value {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #3498db;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            color: #7f8c8d;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        /* Table Styles */
+        .table-container {
+            overflow-x: auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(52, 152, 219, 0.1);
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 1000px;
+        }
+
+        .data-table th {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            padding: 15px 12px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .data-table td {
+            padding: 12px;
+            text-align: center;
+            border-bottom: 1px solid #ecf0f1;
+            color: #2c3e50;
+        }
+
+        .data-table tbody tr:nth-child(even) {
+            background-color: #f8fafb;
+        }
+
+        .data-table tbody tr:hover {
+            background-color: #e8f4f8;
+            transition: background-color 0.2s ease;
+        }
+
+        /* Add New Row */
+        .add-row {
+            background: #e8f4f8 !important;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .add-row:hover {
+            background: #dbeafe !important;
+        }
+
+        .add-row td {
+            color: #3498db !important;
+            font-weight: 600;
+            padding: 15px !important;
+        }
+
+        /* Form Input Styles */
+        .form-input {
+            width: 90%;
+            padding: 8px;
+            border: 2px solid #bdc3c7;
+            border-radius: 6px;
+            outline: none;
+            transition: border-color 0.3s ease;
+            font-size: 14px;
+        }
+
+        .form-input:focus {
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+
+        /* Action Buttons */
+        .action-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            margin: 10px 5px;
+        }
+
+        .action-btn.save {
+            background: #27ae60;
+            color: white;
+        }
+
+        .action-btn.save:hover {
+            background: #229954;
+            transform: translateY(-2px);
+        }
+
+        .action-btn.cancel {
+            background: #95a5a6;
+            color: white;
+        }
+
+        .action-btn.cancel:hover {
+            background: #7f8c8d;
+        }
+
+        /* Back Link */
+        .back-link {
+            display: inline-block;
+            padding: 12px 24px;
+            background: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            margin-top: 20px;
+        }
+
+        .back-link:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        /* No Data State */
+        .no-data {
+            text-align: center;
+            padding: 40px;
+            color: #7f8c8d;
+            font-style: italic;
+            background: #f8fafb;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            .header h1 {
+                font-size: 1.8rem;
+            }
+
+            .nav-buttons {
+                gap: 8px;
+            }
+
+            .nav-btn {
+                padding: 8px 14px;
+                font-size: 13px;
+            }
+
+            .info-grid,
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .data-table {
+                font-size: 0.85rem;
+            }
+
+            .data-table th,
+            .data-table td {
+                padding: 8px 6px;
+            }
+
+            .stat-value {
+                font-size: 1.2rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .nav-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .nav-btn {
+                width: 100%;
+                max-width: 280px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Header Section -->
+        <div class="header">
+            <h1>{{ makhbaz.name }}</h1>
+            <div class="subtitle">تفاصيل المخبز - عملية الفارس الشهم 3</div>
+        </div>
+
+        <!-- Navigation Buttons -->
+        <div class="nav-buttons">
+            <a href="{% url 'makhabez_list' %}" class="nav-btn">قائمة المخابز</a>
+            <a href="#" class="nav-btn">تعديل البيانات</a>
+            <a href="{% url 'index' %}" class="nav-btn">الصفحة الرئيسية</a>
+            
+            <!-- Delete Button -->
+            <form action="{% url 'delete_makhbaz' makhbaz.id %}" method="POST" style="display:inline;" onsubmit="return confirm('هل أنت متأكد أنك تريد حذف هذا المخبز؟ ⚠️ سيتم حذف جميع التسليمات المرتبطة به.')">
+                {% csrf_token %}
+                <button type="submit" class="nav-btn danger">🗑️ حذف المخبز</button>
+            </form>
+        </div>
+
+        <!-- Basic Information Card -->
+        <div class="card">
+            <h2>المعلومات الأساسية</h2>
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-label">اسم المالك</span>
+                    <div class="info-value">{{ makhbaz.owner_name }}</div>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">رقم الهاتف</span>
+                    <div class="info-value">{{ makhbaz.mobile_number }}</div>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">العنوان</span>
+                    <div class="info-value">{{ makhbaz.address }}</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Statistics Card -->
+        <div class="card">
+            <h2>إحصائيات التسليم</h2>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-value">{{ total_deliveries }}</div>
+                    <div class="stat-label">إجمالي التسليمات</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">{{ total_flour }} كغم</div>
+                    <div class="stat-label">إجمالي الطحين</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">{{ total_rice }} كغم</div>
+                    <div class="stat-label">إجمالي الأرز</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">{{ total_salt }} كغم</div>
+                    <div class="stat-label">إجمالي الملح</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">
+                        {% if latest_taslim %}
+                            {{ latest_taslim.taslima_date }}
+                        {% else %}
+                            -
+                        {% endif %}
+                    </div>
+                    <div class="stat-label">آخر تاريخ تسليم</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Deliveries Table -->
+        <div class="card">
+            <h2>جميع التسليمات</h2>
+            <div class="table-container">
+                <table class="data-table" id="delivery-table">
+                    <thead>
+                        <tr>
+                            <th>تاريخ التسليم</th>
+                            <th>الطحين (كغم)</th>
+                            <th>الملح (كغم)</th>
+                            <th>الخميرة (كغم)</th>
+                            <th>الزيت (لتر)</th>
+                            <th>الحطب (كغم)</th>
+                            <th>الأرز (كغم)</th>
+                            <th>الفاصولياء (كغم)</th>
+                            <th>العدس الأحمر (كغم)</th>
+                            <th>العدس الأسود (كغم)</th>
+                            <th>المعكرونة (كغم)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="delivery-body">
+                        {% for taslim in all_tasleemat %}
+                        <tr>
+                            <td>{{ taslim.taslima_date }}</td>
+                            <td>{{ taslim.flour|default:"-" }}</td>
+                            <td>{{ taslim.salt|default:"-" }}</td>
+                            <td>{{ taslim.yeast|default:"-" }}</td>
+                            <td>{{ taslim.oil|default:"-" }}</td>
+                            <td>{{ taslim.wood|default:"-" }}</td>
+                            <td>{{ taslim.rice|default:"-" }}</td>
+                            <td>{{ taslim.beans|default:"-" }}</td>
+                            <td>{{ taslim.lentils_red|default:"-" }}</td>
+                            <td>{{ taslim.lentils_black|default:"-" }}</td>
+                            <td>{{ taslim.pasta|default:"-" }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                    <tfoot>
+                        <tr class="add-row" id="add-row" onclick="showNewRow()">
+                            <td colspan="11">
+                                ➕ إضافة تسليم جديد
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+
+        <!-- Back Link -->
+        <div style="text-align: center;">
+            <a href="{% url 'makhabez_list' %}" class="back-link">← رجوع إلى قائمة المخابز</a>
+        </div>
+    </div>
+
+    <script>
+        function showNewRow() {
+            // Check if input row already exists
+            if (document.getElementById('new-delivery-row')) return;
+
+            const tbody = document.getElementById('delivery-body');
+            const newRow = document.createElement('tr');
+            newRow.id = 'new-delivery-row';
+
+            const fields = [
+                'taslima_date', 'flour', 'salt', 'yeast', 'oil',
+                'wood', 'rice', 'beans', 'lentils_red', 'lentils_black', 'pasta'
+            ];
+
+            // Create input cells
+            fields.forEach((field, index) => {
+                const td = document.createElement('td');
+                const input = document.createElement('input');
+                input.type = (field === 'taslima_date') ? 'date' : 'number';
+                input.name = field;
+                input.className = 'form-input';
+                if (field !== 'taslima_date') {
+                    input.min = 0;
+                    input.step = '0.1';
+                }
+                td.appendChild(input);
+                newRow.appendChild(td);
+            });
+
+            tbody.appendChild(newRow);
+
+            // Add action buttons
+            const buttonContainer = document.createElement('div');
+            buttonContainer.style.textAlign = 'center';
+            buttonContainer.style.marginTop = '15px';
+
+            const saveBtn = document.createElement('button');
+            saveBtn.textContent = '💾 حفظ التسليم';
+            saveBtn.className = 'action-btn save';
+            saveBtn.onclick = saveNewDelivery;
+
+            const cancelBtn = document.createElement('button');
+            cancelBtn.textContent = '✖️ إلغاء';
+            cancelBtn.className = 'action-btn cancel';
+            cancelBtn.onclick = cancelNewDelivery;
+
+            buttonContainer.appendChild(saveBtn);
+            buttonContainer.appendChild(cancelBtn);
+            
+            buttonContainer.id = 'action-buttons';
+            document.querySelector('.table-container').appendChild(buttonContainer);
+
+            // Hide the add row
+            document.getElementById('add-row').style.display = 'none';
+        }
+
+        function saveNewDelivery() {
+            const row = document.getElementById('new-delivery-row');
+            const inputs = row.querySelectorAll('input');
+            const data = {};
+
+            inputs.forEach(input => {
+                data[input.name] = input.value || null;
+            });
+
+            // Validate date field
+            if (!data.taslima_date) {
+                alert('يرجى إدخال تاريخ التسليم');
+                return;
+            }
+
+            fetch("{% url 'add_tasleema_for_makhbaz' makhbaz.id %}", {
+                method: "POST",
+                headers: {
+                    "X-CSRFToken": "{{ csrf_token }}",
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.success) {
+                    location.reload(); // Reload page to show new delivery
+                } else {
+                    alert("حدث خطأ أثناء الحفظ: " + (result.error || 'خطأ غير معروف'));
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                alert("تعذر الاتصال بالخادم");
+            });
+        }
+
+        function cancelNewDelivery() {
+            const row = document.getElementById('new-delivery-row');
+            const buttons = document.getElementById('action-buttons');
+            
+            if (row) row.remove();
+            if (buttons) buttons.remove();
+            
+            // Show the add row again
+            document.getElementById('add-row').style.display = '';
+        }
+    </script>
+</body>
+</html>

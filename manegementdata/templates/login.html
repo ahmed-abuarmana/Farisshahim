@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تسجيل الدخول - الفارس الشهم 3</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            direction: rtl;
+            background: linear-gradient(135deg, #f8fafb 0%, #e8f4f8 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .login-container {
+            background: white;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(52, 152, 219, 0.15);
+            width: 100%;
+            max-width: 400px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(135deg, #3498db, #2980b9);
+        }
+
+        /* Header Section */
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #3498db;
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+
+        .header p {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+        }
+
+        .logo {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+            font-weight: bold;
+        }
+
+        /* Error Messages */
+        .error-message {
+            background-color: #fee;
+            border: 2px solid #e74c3c;
+            color: #c0392b;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: 500;
+            animation: shake 0.5s ease-in-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 0.9rem;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #e1e8ed;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background-color: #f8fafb;
+            text-align: right;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+            background-color: white;
+        }
+
+        .form-input::placeholder {
+            color: #95a5a6;
+            text-align: right;
+        }
+
+        /* Icons for inputs */
+        .input-with-icon {
+            position: relative;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #7f8c8d;
+            font-size: 18px;
+            pointer-events: none;
+        }
+
+        .form-input.with-icon {
+            padding-left: 50px;
+        }
+
+        /* Submit Button */
+        .submit-btn {
+            width: 100%;
+            padding: 16px 20px;
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(52, 152, 219, 0.3);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .submit-btn:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Loading Animation */
+        .loading-spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #ffffff;
+            border-top: 2px solid transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #ecf0f1;
+        }
+
+        .footer p {
+            color: #7f8c8d;
+            font-size: 0.85rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 480px) {
+            .login-container {
+                padding: 30px 20px;
+                margin: 10px;
+            }
+
+            .header h1 {
+                font-size: 1.5rem;
+            }
+
+            .form-input {
+                padding: 12px 14px;
+                font-size: 15px;
+            }
+
+            .submit-btn {
+                padding: 14px 18px;
+                font-size: 15px;
+            }
+        }
+
+        /* Focus Ring for Accessibility */
+        .form-input:focus-visible {
+            outline: 2px solid #3498db;
+            outline-offset: 2px;
+        }
+
+        .submit-btn:focus-visible {
+            outline: 2px solid #2980b9;
+            outline-offset: 2px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="login-container">
+        <!-- Logo and Header -->
+        <div class="header">
+            <div class="logo">🛡️</div>
+            <h1>تسجيل الدخول</h1>
+            <p>الفارس الشهم 3 - نظام إدارة المخابز والتكيات</p>
+        </div>
+
+        <!-- Login Form -->
+        <form method="post" id="loginForm">
+            {% csrf_token %}
+
+            <!-- Error Messages -->
+            {% if error %}
+            <div class="error-message">
+                {{ error }}
+            </div>
+            {% endif %}
+
+            <!-- Username Field -->
+            <div class="form-group">
+                <label for="username" class="form-label">اسم المستخدم</label>
+                <div class="input-with-icon">
+                    <input 
+                        type="text" 
+                        id="username" 
+                        name="username" 
+                        class="form-input with-icon"
+                        placeholder="أدخل اسم المستخدم"
+                        required
+                        autocomplete="username"
+                    >
+                    <span class="input-icon">👤</span>
+                </div>
+            </div>
+
+            <!-- Password Field -->
+            <div class="form-group">
+                <label for="password" class="form-label">كلمة المرور</label>
+                <div class="input-with-icon">
+                    <input 
+                        type="password" 
+                        id="password" 
+                        name="password" 
+                        class="form-input with-icon"
+                        placeholder="أدخل كلمة المرور"
+                        required
+                        autocomplete="current-password"
+                    >
+                    <span class="input-icon">🔒</span>
+                </div>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" class="submit-btn" id="submitBtn">
+                <span class="loading-spinner" id="loadingSpinner"></span>
+                <span id="btnText">تسجيل الدخول</span>
+            </button>
+        </form>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p>الهلال الأحمر الإماراتي - عملية الفارس الشهم 3</p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('loginForm');
+            const submitBtn = document.getElementById('submitBtn');
+            const loadingSpinner = document.getElementById('loadingSpinner');
+            const btnText = document.getElementById('btnText');
+            const usernameInput = document.getElementById('username');
+            const passwordInput = document.getElementById('password');
+
+            // Form submission with loading state
+            form.addEventListener('submit', function(e) {
+                // Show loading state
+                submitBtn.disabled = true;
+                loadingSpinner.style.display = 'inline-block';
+                btnText.textContent = 'جاري تسجيل الدخول...';
+
+                // If there are validation errors, prevent loading state
+                if (!form.checkValidity()) {
+                    e.preventDefault();
+                    resetSubmitButton();
+                    return;
+                }
+            });
+
+            function resetSubmitButton() {
+                submitBtn.disabled = false;
+                loadingSpinner.style.display = 'none';
+                btnText.textContent = 'تسجيل الدخول';
+            }
+
+            // Auto-focus username field
+            usernameInput.focus();
+
+            // Enter key navigation
+            usernameInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    passwordInput.focus();
+                }
+            });
+
+            // Clear error message when user starts typing
+            const errorMessage = document.querySelector('.error-message');
+            if (errorMessage) {
+                [usernameInput, passwordInput].forEach(input => {
+                    input.addEventListener('input', function() {
+                        errorMessage.style.opacity = '0.5';
+                    });
+                });
+            }
+
+            // Validate form before submission
+            function validateForm() {
+                let isValid = true;
+
+                // Check username
+                if (usernameInput.value.trim() === '') {
+                    usernameInput.style.borderColor = '#e74c3c';
+                    isValid = false;
+                } else {
+                    usernameInput.style.borderColor = '#e1e8ed';
+                }
+
+                // Check password
+                if (passwordInput.value === '') {
+                    passwordInput.style.borderColor = '#e74c3c';
+                    isValid = false;
+                } else {
+                    passwordInput.style.borderColor = '#e1e8ed';
+                }
+
+                return isValid;
+            }
+
+            // Real-time validation
+            [usernameInput, passwordInput].forEach(input => {
+                input.addEventListener('blur', validateForm);
+                input.addEventListener('input', function() {
+                    if (this.value.length > 0) {
+                        this.style.borderColor = '#27ae60';
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

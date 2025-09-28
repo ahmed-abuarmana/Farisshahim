@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الفارس الشهم 3</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            direction: rtl;
+            background-color: #f8fafb;
+            color: #2c3e50;
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Header Section */
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            color: #2980b9;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        /* Navigation Buttons */
+        .nav-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .nav-btn {
+            padding: 10px 18px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+
+        .nav-btn:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+        }
+
+        /* Search Box */
+        .search-container {
+            max-width: 400px;
+            margin: 0 auto 30px;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 12px 16px;
+            font-size: 16px;
+            border: 2px solid #bdc3c7;
+            border-radius: 8px;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        .search-box:focus {
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+
+        /* Divider */
+        .divider {
+            height: 2px;
+            background: linear-gradient(to right, transparent, #3498db, transparent);
+            margin: 30px 0;
+        }
+
+        /* Table Section */
+        .table-section {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(52, 152, 219, 0.1);
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .data-table th {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            padding: 16px;
+            font-weight: 600;
+            text-align: center;
+            font-size: 15px;
+        }
+
+        .data-table td {
+            padding: 14px 16px;
+            border-bottom: 1px solid #ecf0f1;
+            text-align: center;
+        }
+
+        .data-table tbody tr:nth-child(even) {
+            background-color: #f8fafb;
+        }
+
+        .data-table tbody tr:hover {
+            background-color: #e8f4f8;
+            transition: background-color 0.2s ease;
+        }
+
+        .data-table a {
+            color: #3498db;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .data-table a:hover {
+            color: #2980b9;
+            text-decoration: underline;
+        }
+
+        /* Empty State */
+        .empty-state {
+            padding: 40px;
+            text-align: center;
+            color: #7f8c8d;
+            font-style: italic;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            .header h1 {
+                font-size: 1.5rem;
+            }
+
+            .nav-buttons {
+                gap: 8px;
+            }
+
+            .nav-btn {
+                padding: 8px 14px;
+                font-size: 13px;
+            }
+
+            .data-table {
+                font-size: 14px;
+            }
+
+            .data-table th,
+            .data-table td {
+                padding: 10px 8px;
+            }
+
+            .search-box {
+                font-size: 14px;
+                padding: 10px 14px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .nav-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .nav-btn {
+                width: 200px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Header Section -->
+        <div class="header">
+            <h1>إدارة بيانات أصحاب المخابز والتكيات الخيرية</h1>
+            <p style="color: #7f8c8d; margin-top: -10px;">التابعة للهلال الأحمر الإماراتي - "عملية الفارس الشهم 3"</p>
+        </div>
+
+        <!-- Navigation Buttons -->
+        <div class="nav-buttons">
+            <a href="{% url 'takiyat_list' %}" class="nav-btn">التكيات</a>
+            <a href="{% url 'makhabez_list' %}" class="nav-btn">المخابز</a>
+            <a href="{% url 'add_new_makhbaz' %}" class="nav-btn">إضافة مخبز جديد</a>
+            <a href="{% url 'add_new_takiya' %}" class="nav-btn">إضافة تكية جديدة</a>
+            <a href="{% url 'logout' %}" class="nav-btn">تسجيل الخروج </a>
+        </div>
+
+        <!-- Search Box -->
+        <div class="search-container">
+            <input 
+                type="text" 
+                id="searchBox" 
+                class="search-box"
+                placeholder="ابحث باسم المخبز أو التكية..." 
+                onkeyup="filterTable()"
+            >
+        </div>
+        <!-- Divider -->
+        <div class="divider"></div>
+
+        <!-- Data Table -->
+        <div class="table-section">
+            <table class="data-table" id="dataTable">
+                <thead>
+                    <tr>
+                        <th>اسم المخبز/التكية</th>
+                        <th>رقم الهاتف</th>
+                        <th>العنوان</th>
+                        <th>اسم المالك</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for makhbez in makhabiz %}
+                    <tr>
+                        <td><a href="{% url 'makhabez_detail' makhbez.id %}">{{ makhbez.name }}</a></td>
+                        <td>{{ makhbez.mobile_number }}</td>
+                        <td>{{ makhbez.address }}</td>
+                        <td>{{ makhbez.owner_name }}</td>
+                    </tr>
+                    {% endfor %}
+
+                    {% for takiya in takiyat %}
+                    <tr>
+                        <td><a href="{% url 'takiya_detail' takiya.id %}">{{ takiya.name }}</a></td>
+                        <td>{{ takiya.mobile_number }}</td>
+                        <td>{{ takiya.address }}</td>
+                        <td>{{ takiya.owner_name }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            
+            <!-- Show empty state if no data -->
+            {% if not makhabiz and not takiyat %}
+            <div class="empty-state">
+                لا توجد بيانات متاحة حالياً
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        function filterTable() {
+            const searchInput = document.getElementById("searchBox");
+            const filter = searchInput.value.toLowerCase().trim();
+            const table = document.getElementById("dataTable");
+            const rows = table.getElementsByTagName("tr");
+
+            // Start from index 1 to skip the header row
+            for (let i = 1; i < rows.length; i++) {
+                const nameCell = rows[i].getElementsByTagName("td")[0];
+                
+                if (nameCell) {
+                    const cellText = nameCell.textContent || nameCell.innerText;
+                    const shouldShow = cellText.toLowerCase().includes(filter);
+                    rows[i].style.display = shouldShow ? "" : "none";
+                }
+            }
+        }
+
+        // Add keyboard support for better accessibility
+        document.getElementById("searchBox").addEventListener("keydown", function(event) {
+            if (event.key === "Escape") {
+                this.value = "";
+                filterTable();
+                this.blur();
+            }
+        });
+    </script>
+</body>
+</html>
