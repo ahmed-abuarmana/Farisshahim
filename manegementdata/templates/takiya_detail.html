@@ -1,576 +1,1258 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{{ takiya.name }} - الفارس الشهم 3</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+      /* Reset */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      /* Body & Background */
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        direction: rtl;
+        background: linear-gradient(135deg, #f8fafb 0%, #e8f4f8 100%);
+        color: #2c3e50;
+        min-height: 100vh;
+        padding: 20px;
+        position: relative;
+        overflow-x: hidden;
+      }
+      /* Subtle animated radial pattern background */
+      body::before {
+        content: "";
+        position: fixed;
+        top: -50px;
+        left: -50px;
+        width: 200px;
+        height: 200px;
+        background: radial-gradient(
+          circle,
+          rgba(41, 128, 185, 0.03) 1px,
+          transparent 1px
+        );
+        background-size: 50px 50px;
+        z-index: 0;
+        pointer-events: none;
+        animation: backgroundMove 20s linear infinite;
+      }
+      @keyframes backgroundMove {
+        0% {
+          transform: translate(0, 0);
         }
+        100% {
+          transform: translate(50px, 50px);
+        }
+      }
 
+      /* Container */
+      .container {
+        max-width: 1400px;
+        margin: 0 auto;
+        position: relative;
+        z-index: 1;
+      }
+
+      /* Header */
+      .header {
+        background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+        color: white;
+        padding: 40px 35px;
+        border-radius: 16px;
+        margin-bottom: 35px;
+        box-shadow: 0 8px 24px rgba(52, 152, 219, 0.25);
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+        animation: fadeInDown 0.8s ease-out;
+      }
+      .header::before {
+        content: "";
+        position: absolute;
+        top: -50px;
+        right: -50px;
+        width: 200px;
+        height: 200px;
+        background: radial-gradient(
+          circle,
+          rgba(255, 255, 255, 0.1) 1px,
+          transparent 1px
+        );
+        background-size: 30px 30px;
+        animation: headerBgMove 15s linear infinite;
+        z-index: 0;
+      }
+      @keyframes headerBgMove {
+        0% {
+          transform: translate(0, 0);
+        }
+        100% {
+          transform: translate(30px, 30px);
+        }
+      }
+      @keyframes fadeInDown {
+        0% {
+          opacity: 0;
+          transform: translateY(-30px);
+        }
+        100% {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .header h1 {
+        font-size: 2.4rem;
+        margin-bottom: 12px;
+        font-weight: 700;
+        position: relative;
+        z-index: 1;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+      .header .subtitle {
+        opacity: 0.95;
+        font-size: 1.2rem;
+        position: relative;
+        z-index: 1;
+      }
+
+      /* Navigation Buttons */
+      .nav-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        margin-bottom: 35px;
+        flex-wrap: wrap;
+        animation: fadeInUp 0.8s ease-out 0.2s both;
+      }
+      @keyframes fadeInUp {
+        0% {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        100% {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .nav-btn {
+        padding: 12px 24px;
+        background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 500;
+        text-decoration: none;
+        font-size: 15px;
+        box-shadow: 0 4px 12px rgba(52, 152, 219, 0.25);
+        position: relative;
+        overflow: hidden;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.3s ease;
+      }
+      .nav-btn::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.2),
+          transparent
+        );
+        transition: left 0.5s ease;
+        z-index: 1;
+      }
+      .nav-btn:hover::before {
+        left: 100%;
+      }
+      .nav-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(52, 152, 219, 0.35);
+      }
+      .nav-btn.danger {
+        background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+        box-shadow: 0 4px 12px rgba(231, 76, 60, 0.25);
+      }
+      .nav-btn.danger:hover {
+        box-shadow: 0 6px 20px rgba(231, 76, 60, 0.35);
+      }
+      .nav-btn.danger::before {
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.15),
+          transparent
+        );
+      }
+      /* زر التعديل الأساسي يبقى باللون الأزرق */
+      .nav-btn.edit-btn-takiya {
+        background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+      }
+
+
+      /* Card style */
+      .card {
+        background: white;
+        border-radius: 16px;
+        padding: 30px;
+        margin-bottom: 35px;
+        box-shadow: 0 6px 24px rgba(52, 152, 219, 0.12);
+        animation: fadeInUp 0.8s ease-out both;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+      }
+      .card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 28px rgba(52, 152, 219, 0.15);
+      }
+      .card h2 {
+        color: #2980b9;
+        margin-bottom: 25px;
+        padding-bottom: 12px;
+        border-bottom: 3px solid #3498db;
+        font-weight: 600;
+        font-size: 1.6rem;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      /* Info Grid */
+      .info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 20px;
+      }
+      .info-item {
+        display: flex;
+        flex-direction: column;
+        animation: fadeIn 0.6s ease-out both;
+      }
+      .info-item:nth-child(1) {
+        animation-delay: 0.1s;
+      }
+      .info-item:nth-child(2) {
+        animation-delay: 0.15s;
+      }
+      .info-item:nth-child(3) {
+        animation-delay: 0.2s;
+      }
+      .info-item:nth-child(4) {
+        animation-delay: 0.25s;
+      }
+      .info-label {
+        font-weight: 600;
+        color: #7f8c8d;
+        margin-bottom: 10px;
+        font-size: 0.95rem;
+      }
+      .info-value {
+        padding: 14px 18px;
+        background: linear-gradient(135deg, #f8fafb 0%, #ecf0f1 100%);
+        border-radius: 10px;
+        border-right: 4px solid #3498db;
+        color: #2c3e50;
+        font-weight: 500;
+        min-height: 50px;
+        display: flex;
+        align-items: center;
+        transition: all 0.3s ease;
+      }
+      /* نمط وضع التعديل - يستخدم اللون الأزرق الأساسي كدليل */
+      .info-value.editable {
+        border-right-color: #2980b9; 
+        background: #fff; 
+        box-shadow: 0 0 0 1px #2980b920; 
+      }
+      .info-value:hover {
+        background: linear-gradient(135deg, #ecf0f1 0%, #e0e6e8 100%);
+        transform: translateX(-3px);
+      }
+      .info-value.editable:hover {
+        background: #fff;
+        transform: none; 
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      /* Stats Grid */
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+      }
+      .stat-item {
+        text-align: center;
+        padding: 25px 20px;
+        background: linear-gradient(135deg, #f8fafb 0%, #ecf0f1 100%);
+        border-radius: 12px;
+        border-top: 4px solid #3498db;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        animation: scaleIn 0.6s ease-out both;
+        cursor: default;
+      }
+      /* نمط وضع التعديل - يستخدم اللون الأزرق الأساسي كدليل */
+      .stat-item.editable {
+        border-top-color: #2980b9; 
+        background: #fff; 
+        box-shadow: 0 0 0 1px #2980b920; 
+      }
+      .stat-item:nth-child(1) {
+        animation-delay: 0.1s;
+      }
+      .stat-item:nth-child(2) {
+        animation-delay: 0.15s;
+      }
+      .stat-item:nth-child(3) {
+        animation-delay: 0.2s;
+      }
+      .stat-item:nth-child(4) {
+        animation-delay: 0.25s;
+      }
+      .stat-item:nth-child(5) {
+        animation-delay: 0.3s;
+      }
+      .stat-item:nth-child(6) {
+        animation-delay: 0.35s;
+      }
+      .stat-item:nth-child(7) {
+        animation-delay: 0.4s;
+      }
+      .stat-item:nth-child(8) {
+        animation-delay: 0.45s;
+      }
+      .stat-item:hover {
+        transform: translateY(-5px) scale(1.02);
+        box-shadow: 0 8px 20px rgba(52, 152, 219, 0.15);
+      }
+      .stat-item.editable:hover {
+        transform: none;
+        box-shadow: none;
+      }
+      .stat-value {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: #3498db;
+        margin-bottom: 10px;
+      }
+      .stat-item.editable .stat-value {
+        color: #2980b9; 
+      }
+      .stat-label {
+        color: #7f8c8d;
+        font-weight: 500;
+        font-size: 0.95rem;
+      }
+      @keyframes scaleIn {
+        from {
+          opacity: 0;
+          transform: scale(0.9);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+
+      /* Table Container */
+      .table-container {
+        overflow-x: auto;
+        background: white;
+        border-radius: 14px;
+        box-shadow: 0 4px 16px rgba(52, 152, 219, 0.1);
+      }
+
+      /* Data Table */
+      .data-table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 1000px;
+      }
+      .data-table th {
+        background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+        color: white;
+        padding: 18px 14px;
+        text-align: center;
+        font-weight: 600;
+        font-size: 0.95rem;
+        white-space: nowrap;
+        position: relative;
+      }
+      .data-table th::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 2px;
+        background: rgba(255, 255, 255, 0.3);
+      }
+      .data-table td {
+        padding: 14px 12px;
+        text-align: center;
+        border-bottom: 1px solid #ecf0f1;
+        color: #2c3e50;
+        transition: background-color 0.2s ease;
+      }
+      .data-table tbody tr:nth-child(even) {
+        background-color: #f8fafb;
+      }
+      .data-table tbody tr:hover {
+        background-color: #e8f4f8;
+        transform: scale(1.005);
+      }
+
+      /* Add New Row */
+      .add-row {
+        background: linear-gradient(
+          135deg,
+          #e8f4f8 0%,
+          #d1ecf1 100%
+        ) !important;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+      .add-row:hover {
+        background: linear-gradient(
+          135deg,
+          #d1ecf1 0%,
+          #bee5eb 100%
+        ) !important;
+      }
+      .add-row td {
+        color: #3498db !important;
+        font-weight: 600;
+        padding: 18px !important;
+        font-size: 1.05rem;
+      }
+
+      /* Form Input Styles */
+      .form-input {
+        width: 90%;
+        padding: 10px 12px;
+        border: 2px solid #bdc3c7;
+        border-radius: 8px;
+        outline: none;
+        transition: all 0.3s ease;
+        font-size: 14px;
+        background: white;
+      }
+      .form-input:focus {
+        border-color: #3498db;
+        box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.15);
+        transform: scale(1.02);
+      }
+      /* Input style in info-value/stat-item */
+      .info-value .form-input, .stat-item .form-input {
+        width: 100%;
+        margin: -5px 0; 
+        border: none;
+        box-shadow: none;
+        text-align: inherit;
+        font-weight: 500;
+      }
+      .info-value .form-input:focus, .stat-item .form-input:focus {
+        border: none;
+        box-shadow: none;
+        transform: none;
+      }
+
+      /* Action Buttons */
+      .action-btn {
+        padding: 12px 24px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        margin: 12px 6px;
+        font-size: 15px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        position: relative;
+        overflow: hidden;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .action-btn::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.2),
+          transparent
+        );
+        transition: left 0.5s ease;
+        z-index: 1;
+      }
+      .action-btn:hover::before {
+        left: 100%;
+      }
+      /* زر الحفظ والتعديل يستخدم الألوان الأساسية */
+      .action-btn.save, .action-btn.update-takiya-save {
+        background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+        color: white;
+      }
+      .action-btn.save:hover, .action-btn.update-takiya-save:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(52, 152, 219, 0.3);
+      }
+      .action-btn.cancel {
+        background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%);
+        color: white;
+      }
+      .action-btn.cancel:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(149, 165, 166, 0.3);
+      }
+
+      /* Back Link */
+      .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 14px 28px;
+        background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+        color: white;
+        text-decoration: none;
+        border-radius: 10px;
+        transition: all 0.3s ease;
+        font-weight: 500;
+        box-shadow: 0 4px 12px rgba(52, 152, 219, 0.25);
+        margin-top: 25px;
+      }
+      .back-link:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(52, 152, 219, 0.35);
+      }
+
+      /* No Data State */
+      .no-data {
+        text-align: center;
+        padding: 50px 20px;
+        color: #7f8c8d;
+        font-style: italic;
+        background: #f8fafb;
+        border-radius: 8px;
+        font-size: 1.1rem;
+      }
+      
+      /* New Container for Edit/Save buttons */
+      .edit-actions-container {
+          text-align: center;
+          margin-bottom: 35px;
+          animation: fadeInUp 0.8s ease-out 0.2s both;
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            direction: rtl;
-            background-color: #f8fafb;
-            color: #2c3e50;
-            line-height: 1.6;
-            padding: 20px;
+          padding: 15px;
         }
-
         .container {
-            max-width: 1200px;
-            margin: 0 auto;
+          padding: 0;
         }
-
-        /* Header Section */
-        .header {
-            background: linear-gradient(135deg, #3498db, #2980b9);
-            color: white;
-            padding: 30px;
-            border-radius: 12px;
-            margin-bottom: 30px;
-            box-shadow: 0 6px 20px rgba(52, 152, 219, 0.2);
-            text-align: center;
-        }
-
         .header h1 {
-            font-size: 2.2rem;
-            margin-bottom: 10px;
-            font-weight: 700;
+          font-size: 1.8rem;
         }
-
         .header .subtitle {
-            opacity: 0.9;
-            font-size: 1.1rem;
+          font-size: 1rem;
         }
-
-        /* Navigation Buttons */
         .nav-buttons {
-            display: flex;
-            justify-content: center;
-            gap: 12px;
-            margin-bottom: 30px;
-            flex-wrap: wrap;
+          gap: 10px;
         }
-
         .nav-btn {
-            padding: 10px 18px;
-            background: #3498db;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 500;
-            text-decoration: none;
-            transition: all 0.3s ease;
-            font-size: 14px;
-            display: inline-block;
+          padding: 10px 18px;
+          font-size: 14px;
         }
-
-        .nav-btn:hover {
-            background: #2980b9;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
-        }
-
-        .nav-btn.danger {
-            background: #e74c3c;
-        }
-
-        .nav-btn.danger:hover {
-            background: #c0392b;
-        }
-
-        /* Cards */
-        .card {
-            background: white;
-            border-radius: 12px;
-            padding: 25px;
-            margin-bottom: 30px;
-            box-shadow: 0 4px 20px rgba(52, 152, 219, 0.1);
-        }
-
-        .card h2 {
-            color: #3498db;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #ecf0f1;
-            font-weight: 600;
-        }
-
-        /* Info Grid */
-        .info-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-        }
-
-        .info-item {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .info-label {
-            font-weight: 600;
-            color: #7f8c8d;
-            margin-bottom: 8px;
-            font-size: 0.9rem;
-        }
-
-        .info-value {
-            padding: 12px 16px;
-            background: #f8fafb;
-            border-radius: 8px;
-            border-right: 4px solid #3498db;
-            color: #2c3e50;
-            font-weight: 500;
-        }
-
-        /* Stats Grid */
+        .info-grid,
         .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
+          grid-template-columns: 1fr;
         }
-
-        .stat-item {
-            text-align: center;
-            padding: 20px;
-            background: linear-gradient(135deg, #f8fafb, #ecf0f1);
-            border-radius: 10px;
-            border-top: 4px solid #3498db;
-            transition: transform 0.3s ease;
-        }
-
-        .stat-item:hover {
-            transform: translateY(-3px);
-        }
-
-        .stat-value {
-            font-size: 1.4rem;
-            font-weight: 700;
-            color: #3498db;
-            margin-bottom: 8px;
-        }
-
-        .stat-label {
-            color: #7f8c8d;
-            font-weight: 500;
-            font-size: 0.9rem;
-        }
-
-        /* Table Styles */
-        .table-container {
-            overflow-x: auto;
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(52, 152, 219, 0.1);
-        }
-
         .data-table {
-            width: 100%;
-            border-collapse: collapse;
-            min-width: 1000px;
+          font-size: 0.85rem;
         }
-
-        .data-table th {
-            background: linear-gradient(135deg, #3498db, #2980b9);
-            color: white;
-            padding: 15px 12px;
-            text-align: center;
-            font-weight: 600;
-            font-size: 0.9rem;
-        }
-
+        .data-table th,
         .data-table td {
-            padding: 12px;
-            text-align: center;
-            border-bottom: 1px solid #ecf0f1;
-            color: #2c3e50;
+          padding: 10px 8px;
         }
-
-        .data-table tbody tr:nth-child(even) {
-            background-color: #f8fafb;
+        .stat-value {
+          font-size: 1.4rem;
         }
-
-        .data-table tbody tr:hover {
-            background-color: #e8f4f8;
-            transition: background-color 0.2s ease;
+        .card {
+          padding: 20px;
         }
-
-        /* Add New Row */
-        .add-row {
-            background: #e8f4f8 !important;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
+        .card h2 {
+          font-size: 1.4rem;
         }
-
-        .add-row:hover {
-            background: #dbeafe !important;
+      }
+      @media (max-width: 480px) {
+        .nav-buttons {
+          flex-direction: column;
+          align-items: center;
         }
-
-        .add-row td {
-            color: #3498db !important;
-            font-weight: 600;
-            padding: 15px !important;
+        .nav-btn {
+          width: 100%;
+          max-width: 300px;
         }
-
-        /* Form Input Styles */
-        .form-input {
-            width: 90%;
-            padding: 8px;
-            border: 2px solid #bdc3c7;
-            border-radius: 6px;
-            outline: none;
-            transition: border-color 0.3s ease;
-            font-size: 14px;
-        }
-
-        .form-input:focus {
-            border-color: #3498db;
-            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
-        }
-
-        /* Action Buttons */
-        .action-btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            margin: 10px 5px;
-        }
-
-        .action-btn.save {
-            background: #27ae60;
-            color: white;
-        }
-
-        .action-btn.save:hover {
-            background: #229954;
-            transform: translateY(-2px);
-        }
-
-        .action-btn.cancel {
-            background: #95a5a6;
-            color: white;
-        }
-
-        .action-btn.cancel:hover {
-            background: #7f8c8d;
-        }
-
-        /* Back Link */
         .back-link {
-            display: inline-block;
-            padding: 12px 24px;
-            background: #3498db;
-            color: white;
-            text-decoration: none;
-            border-radius: 8px;
-            transition: all 0.3s ease;
-            font-weight: 500;
-            margin-top: 20px;
+          width: max-content;
+          padding: 12px 24px;
         }
-
-        .back-link:hover {
-            background: #2980b9;
-            transform: translateY(-2px);
-        }
-
-        /* No Data State */
-        .no-data {
-            text-align: center;
-            padding: 40px;
-            color: #7f8c8d;
-            font-style: italic;
-            background: #f8fafb;
-            border-radius: 8px;
-            margin: 20px 0;
-        }
-
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .container {
-                padding: 10px;
-            }
-
-            .header h1 {
-                font-size: 1.8rem;
-            }
-
-            .nav-buttons {
-                gap: 8px;
-            }
-
-            .nav-btn {
-                padding: 8px 14px;
-                font-size: 13px;
-            }
-
-            .info-grid,
-            .stats-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .data-table {
-                font-size: 0.85rem;
-            }
-
-            .data-table th,
-            .data-table td {
-                padding: 8px 6px;
-            }
-
-            .stat-value {
-                font-size: 1.2rem;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .nav-buttons {
-                flex-direction: column;
-                align-items: center;
-            }
-
-            .nav-btn {
-                width: 100%;
-                max-width: 280px;
-            }
-        }
+      }
     </style>
-</head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  </head>
 
-<body>
+  <body>
     <div class="container">
-        <!-- Header Section -->
-        <div class="header">
-            <h1>{{ takiya.name }}</h1>
-            <div class="subtitle">تفاصيل التكية - عملية الفارس الشهم 3</div>
-        </div>
+      <div class="header">
+        <h1 id="takiya-name-display">{{ takiya.name }}</h1>
+        <div class="subtitle">تفاصيل التكية - عملية الفارس الشهم 3</div>
+      </div>
+      <div class="nav-buttons">
+        <a href="{% url 'takiyat_list' %}" class="nav-btn">
+            <i class="fas fa-list"></i>
+            قائمة التكيات
+        </a>
+        <button class="nav-btn edit-btn-takiya" id="edit-toggle-btn" style="background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);">
+            <i class="fas fa-edit"></i>
+            تعديل البيانات
+        </button>
+        <a href="{% url 'index' %}" class="nav-btn">
+            <i class="fas fa-home"></i>
+            الصفحة الرئيسية
+        </a>
+        <form
+          action="{% url 'delete_takiya' takiya.id %}"
+          method="POST"
+          style="display: inline"
+          onsubmit="return confirm('هل أنت متأكد أنك تريد حذف هذه التكية؟ ⚠️ سيتم حذف جميع التسليمات المرتبطة بها.')"
+        >
+          {% csrf_token %}
+            <button type="submit" class="nav-btn danger">
+                <i class="fas fa-trash-alt" style="margin-left: 5px;"></i> حذف التكية
+            </button>
 
-        <!-- Navigation Buttons -->
-        <div class="nav-buttons">
-            <a href="{% url 'takiyat_list' %}" class="nav-btn">قائمة التكيات</a>
-            <a href="#" class="nav-btn">تعديل البيانات</a>
-            <a href="{% url 'index' %}" class="nav-btn">الصفحة الرئيسية</a>
-            
-            <!-- Delete Button -->
-            <form action="{% url 'delete_takiya' takiya.id %}" method="POST" style="display:inline;" onsubmit="return confirm('هل أنت متأكد أنك تريد حذف هذه التكية؟ ⚠️ سيتم حذف جميع التسليمات المرتبطة بها.')">
-                {% csrf_token %}
-                <button type="submit" class="nav-btn danger">🗑️ حذف التكية</button>
-            </form>
-        </div>
+        </form>
+      </div>
 
-        <!-- Basic Information Card -->
-        <div class="card">
-            <h2>المعلومات الأساسية</h2>
-            <div class="info-grid">
-                <div class="info-item">
-                    <span class="info-label">اسم المالك</span>
-                    <div class="info-value">{{ takiya.owner_name }}</div>
-                </div>
-                <div class="info-item">
-                    <span class="info-label">رقم الهاتف</span>
-                    <div class="info-value">{{ takiya.mobile_number }}</div>
-                </div>
-                <div class="info-item">
-                    <span class="info-label">العنوان</span>
-                    <div class="info-value">{{ takiya.address }}</div>
-                </div>
+      <div class="card" id="basic-info-card">
+        <h2>المعلومات الأساسية</h2>
+        <div class="info-grid">
+            <div class="info-item">
+                <span class="info-label">اسم التكية</span>
+                <div class="info-value" data-field="name" data-type="text">{{ takiya.name|default:"-" }}</div>
             </div>
-        </div>
-
-        <!-- Statistics Card -->
-        <div class="card">
-            <h2>إحصائيات التسليم</h2>
-            <div class="stats-grid">
-                <div class="stat-item">
-                    <div class="stat-value">{{ total_deliveries }}</div>
-                    <div class="stat-label">إجمالي التسليمات</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-value">{{ total_flour }} كغم</div>
-                    <div class="stat-label">إجمالي الطحين</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-value">{{ total_rice }} كغم</div>
-                    <div class="stat-label">إجمالي الأرز</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-value">
-                        {% if latest_taslim %}
-                            {{ latest_taslim.taslima_date }}
-                        {% else %}
-                            -
-                        {% endif %}
-                    </div>
-                    <div class="stat-label">آخر تاريخ تسليم</div>
-                </div>
+            <div class="info-item">
+                <span class="info-label">اسم المالك</span>
+                <div class="info-value" data-field="owner_name" data-type="text">{{ takiya.owner_name|default:"-" }}</div>
             </div>
-        </div>
-
-        <!-- Deliveries Table -->
-        <div class="card">
-            <h2>جميع التسليمات</h2>
-            <div class="table-container">
-                <table class="data-table" id="delivery-table">
-                    <thead>
-                        <tr>
-                            <th>تاريخ التسليم</th>
-                            <th>الطحين (كغم)</th>
-                            <th>الملح (كغم)</th>
-                            <th>الخميرة (كغم)</th>
-                            <th>الزيت (لتر)</th>
-                            <th>الحطب (كغم)</th>
-                            <th>الأرز (كغم)</th>
-                            <th>الفاصولياء (كغم)</th>
-                            <th>العدس الأحمر (كغم)</th>
-                            <th>العدس الأسود (كغم)</th>
-                            <th>المعكرونة (كغم)</th>
-                        </tr>
-                    </thead>
-                    <tbody id="delivery-body">
-                        {% for taslim in all_tasleemat %}
-                        <tr>
-                            <td>{{ taslim.taslima_date }}</td>
-                            <td>{{ taslim.flour|default:"-" }}</td>
-                            <td>{{ taslim.salt|default:"-" }}</td>
-                            <td>{{ taslim.yeast|default:"-" }}</td>
-                            <td>{{ taslim.oil|default:"-" }}</td>
-                            <td>{{ taslim.wood|default:"-" }}</td>
-                            <td>{{ taslim.rice|default:"-" }}</td>
-                            <td>{{ taslim.beans|default:"-" }}</td>
-                            <td>{{ taslim.lentils_red|default:"-" }}</td>
-                            <td>{{ taslim.lentils_black|default:"-" }}</td>
-                            <td>{{ taslim.pasta|default:"-" }}</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                    <tfoot>
-                        <tr class="add-row" id="add-row" onclick="showNewRow()">
-                            <td colspan="11">
-                                ➕ إضافة تسليم جديد
-                            </td>
-                        </tr>
-                    </tfoot>
-                </table>
+          <div class="info-item">
+            <span class="info-label">رقم الهاتف</span>
+            <div class="info-value" data-field="mobile_number" data-type="tel">{{ takiya.mobile_number|default:"-" }}</div>
+          </div>
+          <div class="info-item">
+            <span class="info-label">المحافظة</span>
+            <div class="info-value" data-field="governorate" data-type="select" data-choices='{
+                "رفح": "رفح", 
+                "خان يونس": "خان يونس", 
+                "الوسطى": "المحافظة الوسطى"
+            }' data-current="{{ takiya.governorate|default:'' }}">
+              {{ takiya.get_governorate_display|default:"-" }}
             </div>
+          </div>
+          <div class="info-item">
+            <span class="info-label">العنوان</span>
+            <div class="info-value" data-field="address" data-type="text">{{ takiya.address|default:"-" }}</div>
+          </div>
+          <div class="info-item">
+            <span class="info-label">رقم الهوية</span>
+            <div class="info-value" data-field="owner_id" data-type="text">{{ takiya.owner_id|default:"-" }}</div>
+          </div>
+          <div class="info-item">
+            <span class="info-label">الإحداثيات</span>
+            <div class="info-value" data-field="coordinates" data-type="text">{{ takiya.coordinates|default:"-" }}</div>
+          </div>
+          <div class="info-item">
+            <span class="info-label">الحالة</span>
+            <div class="info-value" data-field="status" data-type="select" data-choices='{
+                "فعال": "فعال", 
+                "متوقف": "متوقف"
+            }' data-current="{{ takiya.status|default:'' }}">
+              {{ takiya.get_status_display|default:"-" }}
+            </div>
+          </div>
         </div>
+      </div>
 
-        <!-- Back Link -->
-        <div style="text-align: center;">
-            <a href="{% url 'takiyat_list' %}" class="back-link">← رجوع إلى قائمة التكيات</a>
+      <div class="card" id="equipment-card">
+        <h2>معدات المطبخ</h2>
+        <div class="stats-grid">
+          <div class="stat-item" data-field="total_pots" data-type="number" data-suffix="">
+            <div class="stat-value">{{ takiya.total_pots|default:"0" }}</div>
+            <div class="stat-label">إجمالي القدور</div>
+          </div>
+          <div class="stat-item" data-field="pots_80" data-type="number" data-suffix="">
+            <div class="stat-value">{{ takiya.pots_80|default:"0" }}</div>
+            <div class="stat-label">قدور 80 لتر</div>
+          </div>
+          <div class="stat-item" data-field="pots_100" data-type="number" data-suffix="">
+            <div class="stat-value">{{ takiya.pots_100|default:"0" }}</div>
+            <div class="stat-label">قدور 100 لتر</div>
+          </div>
+          <div class="stat-item" data-field="pots_120" data-type="number" data-suffix="">
+            <div class="stat-value">{{ takiya.pots_120|default:"0" }}</div>
+            <div class="stat-label">قدور 120 لتر</div>
+          </div>
+          <div class="stat-item" data-field="pots_150" data-type="number" data-suffix="">
+            <div class="stat-value">{{ takiya.pots_150|default:"0" }}</div>
+            <div class="stat-label">قدور 150 لتر</div>
+          </div>
+          <div class="stat-item" data-field="pots_200" data-type="number" data-suffix="">
+            <div class="stat-value">{{ takiya.pots_200|default:"0" }}</div>
+            <div class="stat-label">قدور 200 لتر</div>
+          </div>
+          <div class="stat-item" data-field="daily_capacity" data-type="number" data-suffix=" (قدر)">
+            <div class="stat-value">
+              {{ takiya.daily_capacity|default:"0" }}
+            </div>
+            <div class="stat-label">القدرة اليومية (قدر)</div>
+          </div>
+          {% comment %} <div class="stat-item">
+            <div class="stat-value">{{ total_pots_all }}</div>
+            <div class="stat-label">المجموع الفعلي للقدور</div>
+          </div> {% endcomment %}
         </div>
+      </div>
+
+      <div class="edit-actions-container" id="edit-actions-container" style="display: none;">
+          <button class="action-btn update-takiya-save" onclick="saveTakiyaData()">
+              <i class="fas fa-save"></i>
+              حفظ التعديلات
+          </button>
+          <button class="action-btn cancel" onclick="toggleEditMode()">
+              <i class="fas fa-times"></i>
+              إلغاء التعديل
+          </button>
+      </div>
+
+      <div class="card">
+        <h2>إحصائيات التسليم</h2>
+        <div class="stats-grid">
+          <div class="stat-item">
+            <div class="stat-value">{{ total_deliveries }}</div>
+            <div class="stat-label">إجمالي التسليمات</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value">{{ total_salt }} كغم</div>
+            <div class="stat-label">إجمالي الملح</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value">{{ total_rice }} كغم</div>
+            <div class="stat-label">إجمالي الأرز</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value">{{ total_oil }} لتر</div>
+            <div class="stat-label">إجمالي الزيت</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value">{{ total_macaroni }} كغم</div>
+            <div class="stat-label">إجمالي المعكرونة</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value">{{ total_lentils }} كغم</div>
+            <div class="stat-label">إجمالي العدس</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value">
+              {% if latest_taslim %} {{ latest_taslim.taslima_date }} {% else %}
+              - {% endif %}
+            </div>
+            <div class="stat-label">آخر تاريخ تسليم</div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <h2>جميع التسليمات</h2>
+        <div class="table-container">
+          <table class="data-table" id="delivery-table">
+            <thead>
+              <tr>
+                <th>تاريخ التسليم</th>
+                <th>الملح (كغم)</th>
+                <th>المعكرونة (كغم)</th>
+                <th>الأرز (كغم)</th>
+                <th>الزيت (لتر)</th>
+                <th>البازيلا (علب)</th>
+                <th>العدس المجروش (كغم)</th>
+                <th>لوبيا حب (كغم)</th>
+                <th>الصلصة (علبة)</th>
+                <th>لانشون (علبة)</th>
+                <th>بهار ماجي (كغم)</th>
+                <th>شوربة خضار (كغم)</th>
+                <th>الـ7 بهارات (كغم)</th>
+                <th>السمنة (علبة)</th>
+                <th>البرغل (كغم)</th>
+                <th>الإضافات</th>
+              </tr>
+            </thead>
+            <tbody id="delivery-body">
+              {% for taslim in all_tasleemat %}
+              <tr>
+                <td>{{ taslim.taslima_date }}</td>
+                <td>{{ taslim.salt|default:"-" }}</td>
+                <td>{{ taslim.macaroni|default:"-" }}</td>
+                <td>{{ taslim.rice|default:"-" }}</td>
+                <td>{{ taslim.oil|default:"-" }}</td>
+                <td>{{ taslim.peas|default:"-" }}</td>
+                <td>{{ taslim.lentils|default:"-" }}</td>
+                <td>{{ taslim.beans|default:"-" }}</td>
+                <td>{{ taslim.sauce|default:"-" }}</td>
+                <td>{{ taslim.luncheon|default:"-" }}</td>
+                <td>{{ taslim.maggi_spice|default:"-" }}</td>
+                <td>{{ taslim.vegetable_soup|default:"-" }}</td>
+                <td>{{ taslim.seven_spices|default:"-" }}</td>
+                <td>{{ taslim.ghee|default:"-" }}</td>
+                <td>{{ taslim.bulgur|default:"-" }}</td>
+                <td>{{ taslim.additions|default:"-" }}</td>
+              </tr>
+              {% empty %}
+              <tr>
+                <td colspan="16" class="no-data">لا توجد تسليمات مسجلة بعد</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+            <tfoot>
+              <tr class="add-row" id="add-row" onclick="showNewRow()">
+                <td colspan="16">➕ إضافة تسليم جديد</td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+
+      <div style="text-align: center">
+        <a href="{% url 'takiyat_list' %}" class="back-link"
+          >← رجوع إلى قائمة التكيات</a
+        >
+      </div>
     </div>
 
     <script>
-        function showNewRow() {
-            // Check if input row already exists
-            if (document.getElementById('new-delivery-row')) return;
+        // متغير عالمي لتتبع وضع التعديل
+        let isEditing = false;
+        const takiyaId = {{ takiya.id }};
+        const updateUrl = "{% url 'update_takiya' pk=takiya.id %}";
+        const csrfToken = "{{ csrf_token }}";
 
-            const tbody = document.getElementById('delivery-body');
-            const newRow = document.createElement('tr');
-            newRow.id = 'new-delivery-row';
+        const basicInfoItems = document.querySelectorAll('#basic-info-card .info-value');
+        const equipmentItems = document.querySelectorAll('#equipment-card .stat-item');
+        const editToggleBtn = document.getElementById('edit-toggle-btn');
+        const editActionsContainer = document.getElementById('edit-actions-container'); // الحاوية الجديدة للأزرار
 
-            const fields = [
-                'taslima_date', 'flour', 'salt', 'yeast', 'oil',
-                'wood', 'rice', 'beans', 'lentils_red', 'lentils_black', 'pasta'
-            ];
 
-            // Create input cells
-            fields.forEach((field, index) => {
-                const td = document.createElement('td');
-                const input = document.createElement('input');
-                input.type = (field === 'taslima_date') ? 'date' : 'number';
-                input.name = field;
-                input.className = 'form-input';
-                if (field !== 'taslima_date') {
-                    input.min = 0;
-                    input.step = '0.1';
+        // قائمة حقول المعلومات الأساسية لإعادة التعيين
+        const initialBasicInfoData = {};
+        basicInfoItems.forEach(item => {
+            const field = item.dataset.field;
+            initialBasicInfoData[field] = item.textContent.trim();
+        });
+
+        // قائمة حقول المعدات لإعادة التعيين
+        const initialEquipmentData = {};
+        equipmentItems.forEach(item => {
+            const field = item.dataset.field;
+            // يتم تخزين القيمة الحالية كنص
+            const valueElement = item.querySelector('.stat-value');
+            if(valueElement) {
+                initialEquipmentData[field] = valueElement.textContent.trim().replace(item.dataset.suffix, '').trim();
+            }
+        });
+
+
+        /**
+         * التبديل بين وضع العرض ووضع التعديل لبيانات التكية.
+         */
+        function toggleEditMode() {
+            isEditing = !isEditing;
+
+            // 1. تحديث زر التعديل العلوي
+            editToggleBtn.innerHTML = isEditing ? '<i class="fas fa-times"></i> إلغاء التعديل' : '<i class="fas fa-edit"></i> تعديل البيانات';
+            // في وضع التعديل، نجعل زر التعديل/الإلغاء رماديًا.
+            editToggleBtn.style.background = isEditing ? 'linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%)' : 'linear-gradient(135deg, #3498db 0%, #2980b9 100%)';
+
+            // 2. إظهار/إخفاء أزرار الحفظ والإلغاء السفلية
+            editActionsContainer.style.display = isEditing ? 'block' : 'none';
+
+            // 3. تفعيل/إلغاء وضع التعديل للحقول
+            basicInfoItems.forEach(item => {
+                if (isEditing) {
+                    convertToInput(item);
+                    item.classList.add('editable');
+                } else {
+                    convertToDisplay(item);
+                    item.classList.remove('editable');
                 }
-                td.appendChild(input);
-                newRow.appendChild(td);
             });
 
-            tbody.appendChild(newRow);
-
-            // Add action buttons
-            const buttonContainer = document.createElement('div');
-            buttonContainer.style.textAlign = 'center';
-            buttonContainer.style.marginTop = '15px';
-
-            const saveBtn = document.createElement('button');
-            saveBtn.textContent = '💾 حفظ التسليم';
-            saveBtn.className = 'action-btn save';
-            saveBtn.onclick = saveNewDelivery;
-
-            const cancelBtn = document.createElement('button');
-            cancelBtn.textContent = '✖️ إلغاء';
-            cancelBtn.className = 'action-btn cancel';
-            cancelBtn.onclick = cancelNewDelivery;
-
-            buttonContainer.appendChild(saveBtn);
-            buttonContainer.appendChild(cancelBtn);
-            
-            buttonContainer.id = 'action-buttons';
-            document.querySelector('.table-container').appendChild(buttonContainer);
-
-            // Hide the add row
-            document.getElementById('add-row').style.display = 'none';
+            equipmentItems.forEach(item => {
+                if (item.dataset.field) {
+                    const valueElement = item.querySelector('.stat-value');
+                    if (isEditing) {
+                        convertToInputStat(valueElement, item);
+                        item.classList.add('editable');
+                    } else {
+                        convertToDisplayStat(valueElement, item);
+                        item.classList.remove('editable');
+                    }
+                }
+            });
         }
 
-        function saveNewDelivery() {
-            const row = document.getElementById('new-delivery-row');
-            const inputs = row.querySelectorAll('input');
-            const data = {};
+        /**
+         * تحويل عنصر info-value إلى حقل إدخال/اختيار.
+         * @param {HTMLElement} item - عنصر info-value
+         */
+        function convertToInput(item) {
+            const field = item.dataset.field;
+            const type = item.dataset.type;
+            const currentValue = item.textContent.trim();
+            let inputElement;
 
-            inputs.forEach(input => {
-                data[input.name] = input.value || null;
+            // حفظ القيمة الحالية في حالة الإلغاء
+            item.dataset.initialValue = currentValue;
+
+            if (type === 'select') {
+                inputElement = document.createElement('select');
+                const choices = JSON.parse(item.dataset.choices);
+                
+                // إضافة خيار فارغ
+                let currentModelValue = item.dataset.current;
+                
+                // تعبئة خيارات القائمة المنسدلة
+                for (const modelValue in choices) {
+                    const option = document.createElement('option');
+                    option.value = modelValue;
+                    option.textContent = choices[modelValue];
+                    if (modelValue === currentModelValue) {
+                         option.selected = true;
+                    }
+                    inputElement.appendChild(option);
+                }
+
+            } else { // type === 'text' أو 'tel'
+                inputElement = document.createElement('input');
+                inputElement.type = type === 'tel' ? 'text' : type;
+                inputElement.value = currentValue === '-' ? '' : currentValue;
+            }
+            
+            inputElement.name = field;
+            inputElement.className = "form-input";
+            inputElement.style.width = "100%"; 
+
+            item.innerHTML = '';
+            item.appendChild(inputElement);
+        }
+
+        /**
+         * إعادة عنصر info-value إلى وضع العرض.
+         * @param {HTMLElement} item - عنصر info-value
+         */
+        function convertToDisplay(item) {
+            const inputElement = item.querySelector('.form-input');
+            const type = item.dataset.type;
+            const initialValue = item.dataset.initialValue;
+
+            if (!inputElement) return;
+
+            if (type === 'select') {
+                const selectedText = inputElement.options[inputElement.selectedIndex].text;
+                const selectedValue = inputElement.value;
+                item.textContent = selectedText || initialValue;
+                item.dataset.current = selectedValue;
+
+            } else {
+                item.textContent = inputElement.value || initialValue;
+            }
+            
+            // تحديث اسم التكية في الهيدر إذا تم تغييرها
+            if (item.dataset.field === 'name') {
+                 document.getElementById('takiya-name-display').textContent = item.textContent;
+            }
+        }
+
+        /**
+         * تحويل قيمة stat-value إلى حقل إدخال رقمي.
+         * @param {HTMLElement} valueElement - عنصر stat-value
+         * @param {HTMLElement} parentItem - عنصر stat-item
+         */
+        function convertToInputStat(valueElement, parentItem) {
+            const field = parentItem.dataset.field;
+            const suffix = parentItem.dataset.suffix || '';
+            const currentValue = valueElement.textContent.trim().replace(suffix, '').trim();
+
+            parentItem.dataset.initialValue = currentValue;
+
+            const inputElement = document.createElement('input');
+            inputElement.type = 'number';
+            inputElement.min = 0;
+            inputElement.step = 1;
+            inputElement.name = field;
+            inputElement.className = "form-input";
+            inputElement.value = currentValue === '0' || currentValue === '-' ? '' : currentValue;
+            inputElement.placeholder = '0';
+            inputElement.style.textAlign = 'center';
+
+            valueElement.innerHTML = '';
+            valueElement.appendChild(inputElement);
+        }
+
+        /**
+         * إعادة قيمة stat-value إلى وضع العرض.
+         * @param {HTMLElement} valueElement - عنصر stat-value
+         * @param {HTMLElement} parentItem - عنصر stat-item
+         */
+        function convertToDisplayStat(valueElement, parentItem) {
+            const inputElement = valueElement.querySelector('.form-input');
+            const suffix = parentItem.dataset.suffix || '';
+            const initialValue = parentItem.dataset.initialValue;
+            
+            if (!inputElement) return;
+
+            const newValue = inputElement.value || initialValue || '0';
+            valueElement.textContent = newValue + suffix;
+        }
+
+        /**
+         * جمع وحفظ بيانات التكية المعدلة.
+         */
+        function saveTakiyaData() {
+            const data = {};
+            let hasChanges = false;
+            
+            // 1. جمع البيانات من حقول المعلومات الأساسية
+            basicInfoItems.forEach(item => {
+                const inputElement = item.querySelector('.form-input');
+                const field = item.dataset.field;
+                if (inputElement) {
+                    let value;
+                    if (inputElement.tagName === 'SELECT') {
+                        value = inputElement.value;
+                    } else {
+                        value = inputElement.value.trim();
+                    }
+                    data[field] = value;
+                    // تحقق من وجود تغيير (مقارنة القيمة الجديدة بالقيمة الأولية)
+                    const initialValue = item.dataset.initialValue === '-' ? '' : item.dataset.initialValue;
+                    if (value !== (initialValue || '')) {
+                        hasChanges = true;
+                    }
+                }
             });
 
-            // Validate date field
-            if (!data.taslima_date) {
-                alert('يرجى إدخال تاريخ التسليم');
-                return;
+            // 2. جمع البيانات من حقول معدات المطبخ
+            equipmentItems.forEach(item => {
+                const valueElement = item.querySelector('.stat-value');
+                const inputElement = valueElement ? valueElement.querySelector('.form-input') : null;
+                const field = item.dataset.field;
+                if (inputElement) {
+                    const value = inputElement.value.trim();
+                    data[field] = value ? parseInt(value) : null; 
+                    // تحقق من وجود تغيير (مقارنة القيمة الجديدة بالقيمة الأولية)
+                    const initialValue = item.dataset.initialValue === '0' || item.dataset.initialValue === '-' ? '' : item.dataset.initialValue;
+                    if (value !== (initialValue || '')) {
+                        hasChanges = true;
+                    }
+                }
+            });
+
+            if (!hasChanges) {
+                 alert("لم يتم إجراء أي تعديلات للحفظ.");
+                 toggleEditMode(); // الرجوع إلى وضع العرض
+                 return;
             }
 
-            fetch("{% url 'add_tasleema_for_takiya' takiya.id %}", {
-                method: "POST",
+            // إرسال البيانات إلى الخادم
+            fetch(updateUrl, {
+                method: 'POST',
                 headers: {
-                    "X-CSRFToken": "{{ csrf_token }}",
-                    "Content-Type": "application/json"
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken
                 },
                 body: JSON.stringify(data)
             })
             .then(response => response.json())
             .then(result => {
                 if (result.success) {
-                    location.reload(); // Reload page to show new delivery
+                    alert("تم حفظ التعديلات بنجاح! ✅");
+                    location.reload(); // إعادة تحميل الصفحة لرؤية البيانات المحدثة
                 } else {
-                    alert("حدث خطأ أثناء الحفظ: " + (result.error || 'خطأ غير معروف'));
+                    alert("فشل الحفظ: " + (result.error || "خطأ غير معروف"));
+                    console.error("Save error:", result.error);
                 }
             })
-            .catch(err => {
-                console.error(err);
-                alert("تعذر الاتصال بالخادم");
+            .catch(error => {
+                alert("حدث خطأ في الاتصال بالخادم. ❌");
+                console.error('Fetch error:', error);
             });
         }
 
-        function cancelNewDelivery() {
-            const row = document.getElementById('new-delivery-row');
-            const buttons = document.getElementById('action-buttons');
-            
-            if (row) row.remove();
-            if (buttons) buttons.remove();
-            
-            // Show the add row again
-            document.getElementById('add-row').style.display = '';
+        // ربط زر التبديل بالدالة
+        editToggleBtn.addEventListener('click', toggleEditMode);
+
+
+      // دوال التسليمات (ابقاؤها كما هي)
+
+      const fields = [
+        "taslima_date",
+        "salt",
+        "macaroni",
+        "rice",
+        "oil",
+        "peas",
+        "lentils",
+        "beans",
+        "sauce",
+        "luncheon",
+        "maggi_spice",
+        "vegetable_soup",
+        "seven_spices",
+        "ghee",
+        "bulgur",
+        "additions",
+      ];
+
+      function showNewRow() {
+        // التأكد من أن التعديل على بيانات التكية غير مفعل
+        if (isEditing) {
+            alert("يرجى إنهاء وضع تعديل بيانات التكية قبل إضافة تسليم.");
+            return;
         }
+
+        if (document.getElementById("new-delivery-row")) return;
+        const tbody = document.getElementById("delivery-body");
+        const newRow = document.createElement("tr");
+        newRow.id = "new-delivery-row";
+        newRow.style.animation = "fadeIn 0.5s ease-out";
+
+        fields.forEach((field) => {
+          const td = document.createElement("td");
+          const input = document.createElement("input");
+
+          if (field === "taslima_date") {
+            input.type = "date";
+          } else if (field === "additions") {
+            input.type = "text";
+            input.placeholder = "أي إضافات أخرى...";
+          } else {
+            input.type = "number";
+            input.min = 0;
+            input.step = 1;
+            input.placeholder = "0";
+          }
+          input.name = field;
+          input.className = "form-input";
+          td.appendChild(input);
+          newRow.appendChild(td);
+        });
+
+        tbody.appendChild(newRow);
+
+        const buttonContainer = document.createElement("div");
+        buttonContainer.style.textAlign = "center";
+        buttonContainer.style.marginTop = "20px";
+
+        const saveBtn = document.createElement("button");
+        saveBtn.innerHTML = "💾 حفظ التسليم";
+        saveBtn.className = "action-btn save";
+        saveBtn.onclick = saveNewDelivery;
+
+        const cancelBtn = document.createElement("button");
+        cancelBtn.innerHTML = "✖️ إلغاء";
+        cancelBtn.className = "action-btn cancel";
+        cancelBtn.onclick = cancelNewDelivery;
+
+        buttonContainer.appendChild(saveBtn);
+        buttonContainer.appendChild(cancelBtn);
+        buttonContainer.id = "action-buttons";
+        document.querySelector(".table-container").appendChild(buttonContainer);
+
+        document.getElementById("add-row").style.display = "none";
+      }
+
+ function saveNewDelivery() {
+    const row = document.getElementById("new-delivery-row");
+    const inputs = row.querySelectorAll("input");
+    const data = {};
+
+    inputs.forEach((input) => {
+        if (input.name === 'additions') {
+            data[input.name] = input.value || null;
+        } else if (input.name === 'taslima_date') {
+            data[input.name] = input.value || null;
+        } else {
+            data[input.name] = input.value ? parseInt(input.value) : null;
+        }
+    }); 
+
+    if (!data.taslima_date) {
+        alert("يرجى إدخال تاريخ التسليم");
+        return;
+    }
+
+    fetch("{% url 'add_tasleema_for_takiya' takiya.id %}", {
+        method: "POST",
+        headers: {
+            "X-CSRFToken": "{{ csrf_token }}",
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+    })
+    .then((response) => response.json())
+    .then((result) => {
+        if (result.success) {
+            location.reload();
+        } else {
+            alert("حدث خطأ أثناء الحفظ: " + (result.error || "خطأ غير معروف"));
+        }
+    })
+    .catch((err) => {
+        console.error(err);
+        alert("تعذر الاتصال بالخادم");
+    });
+} 
+
+      function cancelNewDelivery() {
+        const row = document.getElementById("new-delivery-row");
+        const buttons = document.getElementById("action-buttons");
+        if (row) row.remove();
+        if (buttons) buttons.remove();
+        document.getElementById("add-row").style.display = "";
+      }
     </script>
-</body>
+  </body>
 </html>

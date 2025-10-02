@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -13,120 +14,273 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            direction: rtl;
-            background-color: #f8fafb;
+            background: linear-gradient(135deg, #f8fafb 0%, #e8f4f8 100%);
             color: #2c3e50;
-            line-height: 1.6;
+            min-height: 100vh;
             padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* خلفية متحركة خفيفة */
+        body::before {
+            content: '';
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(41, 128, 185, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: backgroundMove 20s linear infinite;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        @keyframes backgroundMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Success Message */
+        .success-message {
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+            color: #155724;
+            padding: 16px 24px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            border: 2px solid #28a745;
+            display: none;
+            animation: slideInDown 0.5s ease-out;
+            text-align: center;
+            font-weight: 500;
+            box-shadow: 0 4px 12px rgba(40, 167, 69, 0.2);
+        }
+
+        .success-message.show {
+            display: block;
         }
 
         /* Header Section */
         .header {
             background: linear-gradient(135deg, #3498db, #2980b9);
             color: white;
-            padding: 30px;
-            border-radius: 12px;
-            margin-bottom: 30px;
-            box-shadow: 0 6px 20px rgba(52, 152, 219, 0.2);
+            padding: 40px 35px;
+            border-radius: 16px;
+            margin-bottom: 35px;
+            box-shadow: 0 8px 24px rgba(52, 152, 219, 0.25);
             text-align: center;
+            animation: fadeInDown 0.8s ease-out;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+            background-size: 30px 30px;
+            animation: headerBgMove 15s linear infinite;
+        }
+
+        @keyframes headerBgMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(30px, 30px); }
         }
 
         .header h1 {
-            font-size: 2.2rem;
-            margin-bottom: 10px;
+            font-size: 2.4rem;
+            margin-bottom: 12px;
             font-weight: 700;
+            position: relative;
+            z-index: 1;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         .header .subtitle {
-            opacity: 0.9;
-            font-size: 1.1rem;
+            opacity: 0.95;
+            font-size: 1.2rem;
+            position: relative;
+            z-index: 1;
         }
 
         /* Navigation Buttons */
         .nav-buttons {
             display: flex;
             justify-content: center;
-            gap: 12px;
-            margin-bottom: 30px;
+            gap: 15px;
+            margin-bottom: 35px;
             flex-wrap: wrap;
+            animation: fadeInUp 0.8s ease-out 0.2s both;
         }
 
         .nav-btn {
-            padding: 10px 18px;
-            background: #3498db;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
             color: white;
             border: none;
-            border-radius: 6px;
+            border-radius: 8px;
             cursor: pointer;
             font-weight: 500;
             text-decoration: none;
             transition: all 0.3s ease;
-            font-size: 14px;
-            display: inline-block;
+            font-size: 15px;
+            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.25);
+            position: relative;
+            overflow: hidden;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .nav-btn:hover::before {
+            left: 100%;
         }
 
         .nav-btn:hover {
-            background: #2980b9;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(52, 152, 219, 0.35);
         }
 
         .nav-btn.danger {
-            background: #e74c3c;
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            box-shadow: 0 4px 12px rgba(231, 76, 60, 0.25);
         }
 
         .nav-btn.danger:hover {
-            background: #c0392b;
+            box-shadow: 0 6px 20px rgba(231, 76, 60, 0.35);
+        }
+
+        .nav-btn.edit {
+            background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+            box-shadow: 0 4px 12px rgba(243, 156, 18, 0.25);
+        }
+
+        .nav-btn.edit:hover {
+            box-shadow: 0 6px 20px rgba(243, 156, 18, 0.35);
+        }
+
+        .nav-btn.edit.editing {
+            background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%);
         }
 
         /* Cards */
         .card {
             background: white;
-            border-radius: 12px;
-            padding: 25px;
-            margin-bottom: 30px;
-            box-shadow: 0 4px 20px rgba(52, 152, 219, 0.1);
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 35px;
+            box-shadow: 0 6px 24px rgba(52, 152, 219, 0.12);
+            animation: fadeInUp 0.8s ease-out both;
+            transition: transform 0.3s ease;
         }
 
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 28px rgba(52, 152, 219, 0.15);
+        }
+
+        .card:nth-child(2) { animation-delay: 0.1s; }
+        .card:nth-child(3) { animation-delay: 0.2s; }
+        .card:nth-child(4) { animation-delay: 0.3s; }
+
         .card h2 {
-            color: #3498db;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #ecf0f1;
+            color: #2980b9;
+            margin-bottom: 25px;
+            padding-bottom: 12px;
+            border-bottom: 3px solid #3498db;
             font-weight: 600;
+            font-size: 1.6rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
         /* Info Grid */
         .info-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 20px;
         }
 
         .info-item {
             display: flex;
             flex-direction: column;
+            animation: fadeIn 0.6s ease-out both;
         }
+
+        .info-item:nth-child(1) { animation-delay: 0.1s; }
+        .info-item:nth-child(2) { animation-delay: 0.15s; }
+        .info-item:nth-child(3) { animation-delay: 0.2s; }
+        .info-item:nth-child(4) { animation-delay: 0.25s; }
 
         .info-label {
             font-weight: 600;
             color: #7f8c8d;
-            margin-bottom: 8px;
-            font-size: 0.9rem;
+            margin-bottom: 10px;
+            font-size: 0.95rem;
         }
 
         .info-value {
-            padding: 12px 16px;
-            background: #f8fafb;
-            border-radius: 8px;
+            padding: 14px 18px;
+            background: linear-gradient(135deg, #f8fafb 0%, #ecf0f1 100%);
+            border-radius: 10px;
             border-right: 4px solid #3498db;
             color: #2c3e50;
             font-weight: 500;
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .info-value:hover {
+            background: linear-gradient(135deg, #ecf0f1 0%, #e0e6e8 100%);
+            transform: translateX(-3px);
+        }
+
+        /* Editable Inputs */
+        .editable-input, .editable-select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #3498db;
+            border-radius: 10px;
+            background-color: white;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(52, 152, 219, 0.1);
+        }
+
+        .editable-input:focus, .editable-select:focus {
+            outline: none;
+            box-shadow: 0 0 0 4px rgba(52, 152, 219, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .editable-select {
+            cursor: pointer;
         }
 
         /* Stats Grid */
@@ -138,36 +292,48 @@
 
         .stat-item {
             text-align: center;
-            padding: 20px;
-            background: linear-gradient(135deg, #f8fafb, #ecf0f1);
-            border-radius: 10px;
+            padding: 25px 20px;
+            background: linear-gradient(135deg, #f8fafb 0%, #ecf0f1 100%);
+            border-radius: 12px;
             border-top: 4px solid #3498db;
-            transition: transform 0.3s ease;
+            transition: all 0.3s ease;
+            animation: scaleIn 0.6s ease-out both;
+            cursor: default;
         }
 
+        .stat-item:nth-child(1) { animation-delay: 0.1s; }
+        .stat-item:nth-child(2) { animation-delay: 0.15s; }
+        .stat-item:nth-child(3) { animation-delay: 0.2s; }
+        .stat-item:nth-child(4) { animation-delay: 0.25s; }
+        .stat-item:nth-child(5) { animation-delay: 0.3s; }
+        .stat-item:nth-child(6) { animation-delay: 0.35s; }
+        .stat-item:nth-child(7) { animation-delay: 0.4s; }
+        .stat-item:nth-child(8) { animation-delay: 0.45s; }
+
         .stat-item:hover {
-            transform: translateY(-3px);
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 8px 20px rgba(52, 152, 219, 0.15);
         }
 
         .stat-value {
-            font-size: 1.4rem;
+            font-size: 1.8rem;
             font-weight: 700;
             color: #3498db;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
         }
 
         .stat-label {
             color: #7f8c8d;
             font-weight: 500;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
         }
 
         /* Table Styles */
         .table-container {
             overflow-x: auto;
             background: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(52, 152, 219, 0.1);
+            border-radius: 14px;
+            box-shadow: 0 4px 16px rgba(52, 152, 219, 0.1);
         }
 
         .data-table {
@@ -179,17 +345,30 @@
         .data-table th {
             background: linear-gradient(135deg, #3498db, #2980b9);
             color: white;
-            padding: 15px 12px;
+            padding: 18px 14px;
             text-align: center;
             font-weight: 600;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
+            white-space: nowrap;
+            position: relative;
+        }
+
+        .data-table th::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.3);
         }
 
         .data-table td {
-            padding: 12px;
+            padding: 14px 12px;
             text-align: center;
             border-bottom: 1px solid #ecf0f1;
             color: #2c3e50;
+            transition: background-color 0.2s ease;
         }
 
         .data-table tbody tr:nth-child(even) {
@@ -198,118 +377,216 @@
 
         .data-table tbody tr:hover {
             background-color: #e8f4f8;
-            transition: background-color 0.2s ease;
+            transform: scale(1.005);
         }
 
-        /* Add New Row */
+        /* Add Row */
         .add-row {
-            background: #e8f4f8 !important;
+            background: linear-gradient(135deg, #e8f4f8 0%, #d1ecf1 100%) !important;
             cursor: pointer;
-            transition: background-color 0.3s ease;
+            transition: all 0.3s ease;
         }
 
         .add-row:hover {
-            background: #dbeafe !important;
+            background: linear-gradient(135deg, #d1ecf1 0%, #bee5eb 100%) !important;
         }
 
         .add-row td {
             color: #3498db !important;
             font-weight: 600;
-            padding: 15px !important;
+            padding: 18px !important;
+            font-size: 1.05rem;
         }
 
-        /* Form Input Styles */
+        /* Form Inputs */
         .form-input {
             width: 90%;
-            padding: 8px;
+            padding: 10px 12px;
             border: 2px solid #bdc3c7;
-            border-radius: 6px;
+            border-radius: 8px;
             outline: none;
-            transition: border-color 0.3s ease;
+            transition: all 0.3s ease;
             font-size: 14px;
+            background: white;
         }
 
         .form-input:focus {
             border-color: #3498db;
-            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.15);
+            transform: scale(1.02);
         }
 
         /* Action Buttons */
         .action-btn {
-            padding: 10px 20px;
+            padding: 12px 24px;
             border: none;
-            border-radius: 6px;
+            border-radius: 8px;
             cursor: pointer;
             font-weight: 500;
             transition: all 0.3s ease;
-            margin: 10px 5px;
+            margin: 12px 6px;
+            font-size: 15px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .action-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .action-btn:hover::before {
+            left: 100%;
         }
 
         .action-btn.save {
-            background: #27ae60;
+            background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
             color: white;
         }
 
         .action-btn.save:hover {
-            background: #229954;
-            transform: translateY(-2px);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(39, 174, 96, 0.3);
         }
 
         .action-btn.cancel {
-            background: #95a5a6;
+            background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%);
             color: white;
         }
 
         .action-btn.cancel:hover {
-            background: #7f8c8d;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(149, 165, 166, 0.3);
+        }
+
+        /* Edit Controls */
+        .edit-controls {
+            display: none;
+            text-align: center;
+            margin-top: 25px;
+            padding-top: 25px;
+            border-top: 2px solid #ecf0f1;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .edit-controls.show {
+            display: block;
         }
 
         /* Back Link */
         .back-link {
-            display: inline-block;
-            padding: 12px 24px;
-            background: #3498db;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 28px;
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
             color: white;
             text-decoration: none;
-            border-radius: 8px;
+            border-radius: 10px;
             transition: all 0.3s ease;
             font-weight: 500;
-            margin-top: 20px;
+            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.25);
+            margin-top: 25px;
         }
 
         .back-link:hover {
-            background: #2980b9;
-            transform: translateY(-2px);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(52, 152, 219, 0.35);
         }
 
         /* No Data State */
         .no-data {
             text-align: center;
-            padding: 40px;
+            padding: 50px 20px;
             color: #7f8c8d;
             font-style: italic;
             background: #f8fafb;
             border-radius: 8px;
-            margin: 20px 0;
+            font-size: 1.1rem;
+        }
+
+        /* Animations */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
         }
 
         /* Responsive Design */
         @media (max-width: 768px) {
-            .container {
-                padding: 10px;
+            body {
+                padding: 15px;
             }
 
             .header h1 {
                 font-size: 1.8rem;
             }
 
+            .header .subtitle {
+                font-size: 1rem;
+            }
+
             .nav-buttons {
-                gap: 8px;
+                gap: 10px;
             }
 
             .nav-btn {
-                padding: 8px 14px;
-                font-size: 13px;
+                padding: 10px 18px;
+                font-size: 14px;
             }
 
             .info-grid,
@@ -323,11 +600,19 @@
 
             .data-table th,
             .data-table td {
-                padding: 8px 6px;
+                padding: 10px 8px;
             }
 
             .stat-value {
-                font-size: 1.2rem;
+                font-size: 1.4rem;
+            }
+
+            .card {
+                padding: 20px;
+            }
+
+            .card h2 {
+                font-size: 1.4rem;
             }
         }
 
@@ -339,55 +624,126 @@
 
             .nav-btn {
                 width: 100%;
-                max-width: 280px;
+                max-width: 300px;
+            }
+
+            .header h1 {
+                font-size: 1.5rem;
             }
         }
     </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 
 <body>
     <div class="container">
+        <!-- Success Message -->
+        <div class="success-message" id="success-message">
+            <i class="fas fa-check-circle" style="margin-left: 8px;"></i>
+            تم تحديث بيانات المخبز بنجاح!
+        </div>
+
         <!-- Header Section -->
         <div class="header">
-            <h1>{{ makhbaz.name }}</h1>
+            <h1 id="makhbaz-name"><i class="fas fa-bread-slice" style="margin-left: 12px;"></i>{{ makhbaz.name }}</h1>
             <div class="subtitle">تفاصيل المخبز - عملية الفارس الشهم 3</div>
         </div>
 
         <!-- Navigation Buttons -->
-        <div class="nav-buttons">
-            <a href="{% url 'makhabez_list' %}" class="nav-btn">قائمة المخابز</a>
-            <a href="#" class="nav-btn">تعديل البيانات</a>
-            <a href="{% url 'index' %}" class="nav-btn">الصفحة الرئيسية</a>
+        <nav class="nav-buttons">
+            <a href="{% url 'makhabez_list' %}" class="nav-btn">
+                <i class="fas fa-list"></i>
+                قائمة المخابز
+            </a>
+            <button class="nav-btn edit" id="edit-toggle-btn">
+                <i class="fas fa-edit"></i>
+                تعديل البيانات
+            </button>
+            <a href="{% url 'index' %}" class="nav-btn">
+                <i class="fas fa-home"></i>
+                الصفحة الرئيسية
+            </a>
             
             <!-- Delete Button -->
-            <form action="{% url 'delete_makhbaz' makhbaz.id %}" method="POST" style="display:inline;" onsubmit="return confirm('هل أنت متأكد أنك تريد حذف هذا المخبز؟ ⚠️ سيتم حذف جميع التسليمات المرتبطة به.')">
+            <form action="{% url 'delete_makhbaz' makhbaz.id %}" method="POST" style="display:inline;" onsubmit="return confirm('هل أنت متأكد أنك تريد حذف هذا المخبز؟ سيتم حذف جميع التسليمات المرتبطة به.')">
                 {% csrf_token %}
-                <button type="submit" class="nav-btn danger">🗑️ حذف المخبز</button>
+                <button type="submit" class="nav-btn danger">
+                    <i class="fas fa-trash-alt"></i>
+                    حذف المخبز
+                </button>
             </form>
-        </div>
+        </nav>
 
         <!-- Basic Information Card -->
         <div class="card">
-            <h2>المعلومات الأساسية</h2>
-            <div class="info-grid">
+            <h2><i class="fas fa-info-circle"></i> المعلومات الأساسية</h2>
+            <div class="info-grid" id="info-grid">
                 <div class="info-item">
-                    <span class="info-label">اسم المالك</span>
-                    <div class="info-value">{{ makhbaz.owner_name }}</div>
+                    <span class="info-label">اسم المخبز</span>
+                    <div class="info-value" id="field-name">{{ makhbaz.name|default:"-" }}</div>
                 </div>
                 <div class="info-item">
-                    <span class="info-label">رقم الهاتف</span>
-                    <div class="info-value">{{ makhbaz.mobile_number }}</div>
+                    <span class="info-label">اسم صاحب المخبز</span>
+                    <div class="info-value" id="field-owner_name">{{ makhbaz.owner_name|default:"-" }}</div>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">رقم هوية صاحب المخبز</span>
+                    <div class="info-value" id="field-owner_id">{{ makhbaz.owner_id|default:"-" }}</div>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">رقم الجوال</span>
+                    <div class="info-value" id="field-mobile_number">{{ makhbaz.mobile_number|default:"-" }}</div>
                 </div>
                 <div class="info-item">
                     <span class="info-label">العنوان</span>
-                    <div class="info-value">{{ makhbaz.address }}</div>
+                    <div class="info-value" id="field-address">{{ makhbaz.address|default:"-" }}</div>
                 </div>
+                <div class="info-item">
+                    <span class="info-label">المحافظة</span>
+                    <div class="info-value" id="field-governorate">{{ makhbaz.governorate|default:"-" }}</div>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">إحداثيات الموقع</span>
+                    <div class="info-value" id="field-coordinates">{{ makhbaz.coordinates|default:"-" }}</div>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">نوع الفرن / المخبز</span>
+                    <div class="info-value" id="field-oven_type">{{ makhbaz.oven_type|default:"-" }}</div>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">القدرة الإنتاجية اليومية (كيلو)</span>
+                    <div class="info-value" id="field-production_capacity">{{ makhbaz.production_capacity|default:"-" }}</div>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">طبيعة التعاقد</span>
+                    <div class="info-value" id="field-contract_type">{{ makhbaz.contract_type|default:"-" }}</div>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">حالة المخبز</span>
+                    <div class="info-value" id="field-status">{{ makhbaz.status|default:"-" }}</div>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">تاريخ الإضافة</span>
+                    <div class="info-value">{{ makhbaz.created_at|date:"Y-m-d" }}</div>
+                </div>
+            </div>
+
+            <!-- Edit Controls -->
+            <div class="edit-controls" id="edit-controls">
+                <button class="action-btn save" id="save-changes-btn">
+                    <i class="fas fa-save" style="margin-left: 6px;"></i>
+                    حفظ التغييرات
+                </button>
+                <button class="action-btn cancel" id="cancel-edit-btn">
+                    <i class="fas fa-times" style="margin-left: 6px;"></i>
+                    إلغاء التعديل
+                </button>
             </div>
         </div>
 
         <!-- Statistics Card -->
         <div class="card">
-            <h2>إحصائيات التسليم</h2>
+            <h2><i class="fas fa-chart-bar"></i> إحصائيات التسليم</h2>
             <div class="stats-grid">
                 <div class="stat-item">
                     <div class="stat-value">{{ total_deliveries }}</div>
@@ -398,12 +754,24 @@
                     <div class="stat-label">إجمالي الطحين</div>
                 </div>
                 <div class="stat-item">
-                    <div class="stat-value">{{ total_rice }} كغم</div>
-                    <div class="stat-label">إجمالي الأرز</div>
+                    <div class="stat-value">{{ total_yeast }} علبة</div>
+                    <div class="stat-label">إجمالي الخميرة</div>
                 </div>
                 <div class="stat-item">
                     <div class="stat-value">{{ total_salt }} كغم</div>
                     <div class="stat-label">إجمالي الملح</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">{{ total_cooking_oil }} لتر</div>
+                    <div class="stat-label">إجمالي الزيت</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">{{ total_wood }} كغم</div>
+                    <div class="stat-label">إجمالي حطب</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">{{ total_gas }} كغم</div>
+                    <div class="stat-label">إجمالي غاز</div>
                 </div>
                 <div class="stat-item">
                     <div class="stat-value">
@@ -420,22 +788,20 @@
 
         <!-- Deliveries Table -->
         <div class="card">
-            <h2>جميع التسليمات</h2>
+            <h2><i class="fas fa-truck"></i> جميع التسليمات</h2>
             <div class="table-container">
                 <table class="data-table" id="delivery-table">
                     <thead>
                         <tr>
                             <th>تاريخ التسليم</th>
-                            <th>الطحين (كغم)</th>
-                            <th>الملح (كغم)</th>
-                            <th>الخميرة (كغم)</th>
-                            <th>الزيت (لتر)</th>
-                            <th>الحطب (كغم)</th>
-                            <th>الأرز (كغم)</th>
-                            <th>الفاصولياء (كغم)</th>
-                            <th>العدس الأحمر (كغم)</th>
-                            <th>العدس الأسود (كغم)</th>
-                            <th>المعكرونة (كغم)</th>
+                            <th>طحين (كغم)</th>
+                            <th>خميرة (علبة)</th>
+                            <th>ملح (كغم)</th>
+                            <th>سكر (كغم)</th>
+                            <th>زيت قلي (لتر)</th>
+                            <th>حطب (كغم)</th>
+                            <th>غاز (كغم)</th>
+                            <th>إضافات</th>
                         </tr>
                     </thead>
                     <tbody id="delivery-body">
@@ -443,22 +809,28 @@
                         <tr>
                             <td>{{ taslim.taslima_date }}</td>
                             <td>{{ taslim.flour|default:"-" }}</td>
-                            <td>{{ taslim.salt|default:"-" }}</td>
                             <td>{{ taslim.yeast|default:"-" }}</td>
-                            <td>{{ taslim.oil|default:"-" }}</td>
+                            <td>{{ taslim.salt|default:"-" }}</td>
+                            <td>{{ taslim.sugar|default:"-" }}</td>
+                            <td>{{ taslim.cooking_oil|default:"-" }}</td>
                             <td>{{ taslim.wood|default:"-" }}</td>
-                            <td>{{ taslim.rice|default:"-" }}</td>
-                            <td>{{ taslim.beans|default:"-" }}</td>
-                            <td>{{ taslim.lentils_red|default:"-" }}</td>
-                            <td>{{ taslim.lentils_black|default:"-" }}</td>
-                            <td>{{ taslim.pasta|default:"-" }}</td>
+                            <td>{{ taslim.gas|default:"-" }}</td>
+                            <td>{{ taslim.additions|default:"-" }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="9" class="no-data">
+                                <i class="fas fa-inbox" style="font-size: 2.5rem; color: #bdc3c7; margin-bottom: 10px; display: block;"></i>
+                                لا توجد تسليمات مسجلة لهذا المخبز
+                            </td>
                         </tr>
                         {% endfor %}
                     </tbody>
                     <tfoot>
                         <tr class="add-row" id="add-row" onclick="showNewRow()">
-                            <td colspan="11">
-                                ➕ إضافة تسليم جديد
+                            <td colspan="9">
+                                <i class="fas fa-plus-circle" style="margin-left: 8px;"></i>
+                                إضافة تسليم جديد
                             </td>
                         </tr>
                     </tfoot>
@@ -468,11 +840,224 @@
 
         <!-- Back Link -->
         <div style="text-align: center;">
-            <a href="{% url 'makhabez_list' %}" class="back-link">← رجوع إلى قائمة المخابز</a>
+            <a href="{% url 'makhabez_list' %}" class="back-link">
+                <i class="fas fa-arrow-right"></i>
+                رجوع إلى قائمة المخابز
+            </a>
         </div>
     </div>
 
     <script>
+        // متغيرات لتتبع حالة التعديل
+        let isEditing = false;
+        let originalData = {};
+
+        // عناصر DOM
+        const editToggleBtn = document.getElementById('edit-toggle-btn');
+        const editControls = document.getElementById('edit-controls');
+        const saveChangesBtn = document.getElementById('save-changes-btn');
+        const cancelEditBtn = document.getElementById('cancel-edit-btn');
+        const successMessage = document.getElementById('success-message');
+        const makhbazNameHeader = document.getElementById('makhbaz-name');
+
+        // بيانات القوائم المنسدلة
+        const governorateChoices = [
+            ["الوسطى", "الوسطى"],
+            ["خان يونس", "خان يونس"],
+            ["رفح", "رفح"],
+        ];
+
+        const ovenTypeChoices = [
+            ["فرن طينة", "مخبز بدائي (فرن طينة)"],
+            ["يدوي دوار", "يدوي دوار"],
+            ["نص آلي", "نص آلي"],
+            ["آلي", "آلي"]
+        ];
+
+        const contractTypeChoices = [
+            ["مجاني", "مخبز مجاني"],
+            ["مدعم", "مخبز مدعوم"]
+        ];
+
+        const statusChoices = [
+            ["فعال", "فعال"],
+            ["متوقف", "متوقف"]
+        ];
+
+        // وظيفة لتحويل الحقول إلى نمط قابل للتعديل
+        function enableEditing() {
+            if (isEditing) return;
+            
+            isEditing = true;
+            editToggleBtn.innerHTML = '<i class="fas fa-ban"></i> إيقاف التعديل';
+            editToggleBtn.classList.add('editing');
+            editControls.classList.add('show');
+            
+            // حفظ البيانات الأصلية
+            originalData = {};
+            
+            // تحويل كل حقل إلى نمط قابل للتعديل
+            const fields = [
+                'name', 'owner_name', 'owner_id', 'mobile_number', 
+                'address', 'governorate', 'coordinates', 'oven_type',
+                'production_capacity', 'contract_type', 'status'
+            ];
+            
+            fields.forEach(field => {
+                const fieldElement = document.getElementById(`field-${field}`);
+                originalData[field] = fieldElement.textContent.trim();
+                
+                // إنشاء عنصر الإدخال المناسب
+                let inputElement;
+                
+                if (field === 'governorate') {
+                    inputElement = createSelectElement(governorateChoices, originalData[field]);
+                } else if (field === 'oven_type') {
+                    inputElement = createSelectElement(ovenTypeChoices, originalData[field]);
+                } else if (field === 'contract_type') {
+                    inputElement = createSelectElement(contractTypeChoices, originalData[field]);
+                } else if (field === 'status') {
+                    inputElement = createSelectElement(statusChoices, originalData[field]);
+                } else if (field === 'production_capacity') {
+                    inputElement = document.createElement('input');
+                    inputElement.type = 'number';
+                    inputElement.min = 0;
+                    inputElement.className = 'editable-input';
+                    inputElement.value = originalData[field] === '-' ? '' : originalData[field];
+                } else {
+                    inputElement = document.createElement('input');
+                    inputElement.type = 'text';
+                    inputElement.className = 'editable-input';
+                    inputElement.value = originalData[field] === '-' ? '' : originalData[field];
+                }
+                
+                inputElement.id = `input-${field}`;
+                fieldElement.innerHTML = '';
+                fieldElement.appendChild(inputElement);
+            });
+        }
+
+        // وظيفة لإنشاء عنصر قائمة منسدلة
+        function createSelectElement(choices, currentValue) {
+            const select = document.createElement('select');
+            select.className = 'editable-select';
+            
+            // إضافة خيار افتراضي
+            const defaultOption = document.createElement('option');
+            defaultOption.value = '';
+            defaultOption.textContent = '-- اختر --';
+            select.appendChild(defaultOption);
+            
+            // إضافة الخيارات
+            choices.forEach(choice => {
+                const option = document.createElement('option');
+                option.value = choice[0];
+                option.textContent = choice[1];
+                if (currentValue === choice[0] || currentValue === choice[1]) {
+                    option.selected = true;
+                }
+                select.appendChild(option);
+            });
+            
+            return select;
+        }
+
+        // وظيفة لإعادة الحقول إلى حالتها الأصلية
+        function disableEditing() {
+            if (!isEditing) return;
+            
+            isEditing = false;
+            editToggleBtn.innerHTML = '<i class="fas fa-edit"></i> تعديل البيانات';
+            editToggleBtn.classList.remove('editing');
+            editControls.classList.remove('show');
+            
+            // استعادة البيانات الأصلية
+            const fields = [
+                'name', 'owner_name', 'owner_id', 'mobile_number', 
+                'address', 'governorate', 'coordinates', 'oven_type',
+                'production_capacity', 'contract_type', 'status'
+            ];
+            
+            fields.forEach(field => {
+                const fieldElement = document.getElementById(`field-${field}`);
+                fieldElement.textContent = originalData[field] || '-';
+            });
+        }
+
+        // وظيفة لحفظ التعديلات
+        function saveChanges() {
+            if (!isEditing) return;
+            
+            const updatedData = {};
+            const fields = [
+                'name', 'owner_name', 'owner_id', 'mobile_number', 
+                'address', 'governorate', 'coordinates', 'oven_type',
+                'production_capacity', 'contract_type', 'status'
+            ];
+            
+            // جمع البيانات المحدثة
+            fields.forEach(field => {
+                const inputElement = document.getElementById(`input-${field}`);
+                if (inputElement) {
+                    updatedData[field] = inputElement.value || null;
+                }
+            });
+            
+            // إرسال البيانات إلى الخادم
+            fetch("{% url 'update_makhbaz' makhbaz.id %}", {
+                method: "POST",
+                headers: {
+                    "X-CSRFToken": "{{ csrf_token }}",
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(updatedData)
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.success) {
+                    // إظهار رسالة النجاح
+                    successMessage.classList.add('show');
+                    setTimeout(() => {
+                        successMessage.classList.remove('show');
+                    }, 3000);
+                    
+                    // تحديث البيانات المعروضة
+                    fields.forEach(field => {
+                        const fieldElement = document.getElementById(`field-${field}`);
+                        const value = updatedData[field] || '-';
+                        fieldElement.textContent = value;
+                        
+                        // تحديث عنوان الصفحة إذا كان اسم المخبز
+                        if (field === 'name' && value !== '-') {
+                            makhbazNameHeader.innerHTML = '<i class="fas fa-bread-slice" style="margin-left: 12px;"></i>' + value;
+                        }
+                    });
+                    
+                    // إيقاف وضع التعديل
+                    disableEditing();
+                } else {
+                    alert("حدث خطأ أثناء حفظ التغييرات: " + (result.error || 'خطأ غير معروف'));
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                alert("تعذر الاتصال بالخادم");
+            });
+        }
+
+        // إضافة مستمعي الأحداث
+        editToggleBtn.addEventListener('click', function() {
+            if (isEditing) {
+                disableEditing();
+            } else {
+                enableEditing();
+            }
+        });
+
+        saveChangesBtn.addEventListener('click', saveChanges);
+        cancelEditBtn.addEventListener('click', disableEditing);
+
+        // وظائف إدارة التسليمات
         function showNewRow() {
             // Check if input row already exists
             if (document.getElementById('new-delivery-row')) return;
@@ -480,23 +1065,33 @@
             const tbody = document.getElementById('delivery-body');
             const newRow = document.createElement('tr');
             newRow.id = 'new-delivery-row';
+            newRow.style.animation = 'fadeIn 0.5s ease-out';
 
             const fields = [
-                'taslima_date', 'flour', 'salt', 'yeast', 'oil',
-                'wood', 'rice', 'beans', 'lentils_red', 'lentils_black', 'pasta'
+                'taslima_date', 'flour', 'yeast', 'salt', 'sugar', 
+                'cooking_oil', 'wood', 'gas', 'additions'
             ];
 
             // Create input cells
-            fields.forEach((field, index) => {
+            fields.forEach(field => {
                 const td = document.createElement('td');
-                const input = document.createElement('input');
-                input.type = (field === 'taslima_date') ? 'date' : 'number';
+                let input;
+                
+                if (field === 'taslima_date') {
+                    input = document.createElement('input');
+                    input.type = 'date';
+                } else if (field === 'additions') {
+                    input = document.createElement('input');
+                    input.type = 'text';
+                } else {
+                    input = document.createElement('input');
+                    input.type = 'number';
+                    input.min = 0;
+                    input.step = 1;
+                }
+
                 input.name = field;
                 input.className = 'form-input';
-                if (field !== 'taslima_date') {
-                    input.min = 0;
-                    input.step = '0.1';
-                }
                 td.appendChild(input);
                 newRow.appendChild(td);
             });
@@ -506,15 +1101,15 @@
             // Add action buttons
             const buttonContainer = document.createElement('div');
             buttonContainer.style.textAlign = 'center';
-            buttonContainer.style.marginTop = '15px';
+            buttonContainer.style.marginTop = '20px';
 
             const saveBtn = document.createElement('button');
-            saveBtn.textContent = '💾 حفظ التسليم';
+            saveBtn.innerHTML = '<i class="fas fa-save" style="margin-left: 6px;"></i> حفظ التسليم';
             saveBtn.className = 'action-btn save';
             saveBtn.onclick = saveNewDelivery;
 
             const cancelBtn = document.createElement('button');
-            cancelBtn.textContent = '✖️ إلغاء';
+            cancelBtn.innerHTML = '<i class="fas fa-times" style="margin-left: 6px;"></i> إلغاء';
             cancelBtn.className = 'action-btn cancel';
             cancelBtn.onclick = cancelNewDelivery;
 
@@ -554,7 +1149,7 @@
             .then(response => response.json())
             .then(result => {
                 if (result.success) {
-                    location.reload(); // Reload page to show new delivery
+                    location.reload();
                 } else {
                     alert("حدث خطأ أثناء الحفظ: " + (result.error || 'خطأ غير معروف'));
                 }
@@ -572,7 +1167,6 @@
             if (row) row.remove();
             if (buttons) buttons.remove();
             
-            // Show the add row again
             document.getElementById('add-row').style.display = '';
         }
     </script>

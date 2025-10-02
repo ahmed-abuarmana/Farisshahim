@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -13,304 +14,557 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            direction: rtl;
-            background-color: #f8fafb;
+            background: linear-gradient(135deg, #f8fafb 0%, #e8f4f8 100%);
             color: #2c3e50;
-            line-height: 1.6;
+            min-height: 100vh;
             padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* خلفية متحركة خفيفة */
+        body::before {
+            content: '';
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(41, 128, 185, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: backgroundMove 20s linear infinite;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        @keyframes backgroundMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
         }
 
         .container {
-            max-width: 600px;
+            max-width: 700px;
             margin: 0 auto;
+            position: relative;
+            z-index: 1;
         }
 
         /* Header Section */
         .header {
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 35px;
+            animation: fadeInDown 0.8s ease-out;
         }
 
         .header h1 {
-            font-size: 2rem;
-            color: #3498db;
-            margin-bottom: 10px;
+            font-size: 2.2rem;
+            color: #2980b9;
+            margin-bottom: 12px;
             font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            animation: fadeIn 0.8s ease-out 0.2s both;
         }
 
         .header p {
             color: #7f8c8d;
-            font-size: 1rem;
+            font-size: 1.1rem;
+            animation: fadeIn 0.8s ease-out 0.3s both;
+        }
+
+        /* Messages */
+        .messages {
+            margin-bottom: 30px;
+            animation: slideInDown 0.5s ease-out;
+        }
+
+        .message {
+            padding: 16px 24px;
+            margin-bottom: 15px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 500;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            animation: messageSlide 0.5s ease-out;
+        }
+
+        @keyframes messageSlide {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message.success {
+            background: linear-gradient(135deg, #d1ecf1 0%, #bee5eb 100%);
+            color: #0c5460;
+            border: 2px solid #3498db;
+        }
+
+        .message.error {
+            background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+            color: #721c24;
+            border: 2px solid #e74c3c;
         }
 
         /* Form Container */
         .form-container {
             background: white;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(52, 152, 219, 0.1);
-            margin-bottom: 30px;
+            padding: 35px;
+            border-radius: 16px;
+            box-shadow: 0 6px 24px rgba(52, 152, 219, 0.12);
+            margin-bottom: 35px;
+            animation: fadeInUp 0.8s ease-out 0.4s both;
+            transition: transform 0.3s ease;
+        }
+
+        .form-container:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 28px rgba(52, 152, 219, 0.15);
         }
 
         .form-container h2 {
-            color: #3498db;
-            margin-bottom: 25px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #ecf0f1;
+            color: #2980b9;
+            margin-bottom: 30px;
+            padding-bottom: 12px;
+            border-bottom: 3px solid #3498db;
             font-weight: 600;
             text-align: center;
+            font-size: 1.6rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
         }
 
         /* Form Elements */
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 24px;
+            animation: fadeIn 0.6s ease-out both;
         }
+
+        .form-group:nth-child(1) { animation-delay: 0.1s; }
+        .form-group:nth-child(2) { animation-delay: 0.15s; }
+        .form-group:nth-child(3) { animation-delay: 0.2s; }
+        .form-group:nth-child(4) { animation-delay: 0.25s; }
+        .form-group:nth-child(5) { animation-delay: 0.3s; }
+        .form-group:nth-child(6) { animation-delay: 0.35s; }
+        .form-group:nth-child(7) { animation-delay: 0.4s; }
+        .form-group:nth-child(8) { animation-delay: 0.45s; }
+        .form-group:nth-child(9) { animation-delay: 0.5s; }
+        .form-group:nth-child(10) { animation-delay: 0.55s; }
+        .form-group:nth-child(11) { animation-delay: 0.6s; }
+        .form-group:nth-child(12) { animation-delay: 0.65s; }
+        .form-group:nth-child(13) { animation-delay: 0.7s; }
+        .form-group:nth-child(14) { animation-delay: 0.75s; }
 
         .form-label {
             display: block;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
             font-weight: 600;
             color: #2c3e50;
             font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .form-label::before {
+            content: '•';
+            color: #3498db;
+            font-size: 1.2rem;
         }
 
         .form-input {
             width: 100%;
-            padding: 12px 16px;
+            padding: 14px 18px;
             border: 2px solid #bdc3c7;
-            border-radius: 8px;
+            border-radius: 10px;
             font-size: 15px;
             transition: all 0.3s ease;
-            background-color: #f8fafb;
+            background: linear-gradient(135deg, #f8fafb 0%, #ffffff 100%);
         }
 
         .form-input:focus {
             outline: none;
             border-color: #3498db;
-            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
-            background-color: white;
+            box-shadow: 0 0 0 4px rgba(52, 152, 219, 0.15);
+            background: white;
+            transform: translateY(-2px);
         }
 
-        .form-input:valid {
+        .form-input:valid:not(:placeholder-shown) {
             border-color: #27ae60;
+        }
+
+        .form-input::placeholder {
+            color: #95a5a6;
         }
 
         /* Submit Button */
         .submit-btn {
             width: 100%;
-            padding: 14px 20px;
-            background: linear-gradient(135deg, #3498db, #2980b9);
+            padding: 16px 24px;
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
             color: white;
             border: none;
-            border-radius: 8px;
-            font-size: 16px;
+            border-radius: 10px;
+            font-size: 17px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
-            margin-top: 10px;
+            margin-top: 15px;
+            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.25);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .submit-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .submit-btn:hover::before {
+            left: 100%;
         }
 
         .submit-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(52, 152, 219, 0.3);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(52, 152, 219, 0.35);
         }
 
         .submit-btn:active {
-            transform: translateY(0);
+            transform: translateY(-1px);
         }
 
         /* Back Link */
         .back-link {
-            display: inline-block;
-            padding: 12px 24px;
-            background: #95a5a6;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 28px;
+            background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%);
             color: white;
             text-decoration: none;
-            border-radius: 8px;
+            border-radius: 10px;
             transition: all 0.3s ease;
             font-weight: 500;
-            margin-top: 20px;
+            box-shadow: 0 4px 12px rgba(149, 165, 166, 0.25);
         }
 
         .back-link:hover {
-            background: #7f8c8d;
-            transform: translateY(-2px);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(149, 165, 166, 0.35);
         }
 
         /* Navigation */
         .navigation {
             text-align: center;
             margin-top: 30px;
+            animation: fadeIn 1s ease-out 0.6s both;
         }
 
         /* Loading State */
         .submit-btn:disabled {
-            background: #bdc3c7;
+            background: linear-gradient(135deg, #bdc3c7 0%, #95a5a6 100%);
             cursor: not-allowed;
             transform: none;
+            box-shadow: none;
         }
 
-        /* Validation Messages */
-        .validation-message {
-            color: #e74c3c;
-            font-size: 0.9rem;
-            margin-top: 5px;
+        .submit-btn:disabled::before {
             display: none;
         }
 
         /* Success Animation */
         @keyframes successPulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
         }
 
         .success-animation {
             animation: successPulse 0.6s ease-in-out;
         }
 
+        /* Animations */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Loading Spinner */
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top: 2px solid white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-left: 8px;
+        }
+
         /* Responsive Design */
         @media (max-width: 768px) {
+            body {
+                padding: 15px;
+            }
+
             .container {
-                padding: 10px;
+                padding: 0;
             }
 
             .form-container {
-                padding: 20px;
-                margin: 10px;
+                padding: 25px 20px;
             }
 
             .header h1 {
-                font-size: 1.7rem;
+                font-size: 1.8rem;
+            }
+
+            .header p {
+                font-size: 1rem;
             }
 
             .form-input {
-                padding: 10px 14px;
+                padding: 12px 16px;
                 font-size: 14px;
             }
 
             .submit-btn {
-                padding: 12px 18px;
-                font-size: 15px;
+                padding: 14px 20px;
+                font-size: 16px;
+            }
+
+            .form-container h2 {
+                font-size: 1.4rem;
             }
         }
 
         @media (max-width: 480px) {
             .header h1 {
                 font-size: 1.5rem;
+                flex-direction: column;
+                gap: 8px;
             }
 
             .form-container {
-                padding: 15px;
+                padding: 20px 15px;
+            }
+
+            .form-label {
+                font-size: 0.9rem;
             }
         }
-
-        /* Focus Ring for Accessibility */
-        .form-input:focus-visible {
-            outline: 2px solid #3498db;
-            outline-offset: 2px;
-        }
     </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 
 <body>
     <div class="container">
         <!-- Header Section -->
-        <div class="header">
-            <h1>إضافة تكية جديدة</h1>
+        <header class="header">
+            <h1>
+                <i class="fas fa-plus-circle"></i>
+                إضافة تكية جديدة
+            </h1>
             <p>أضف تكية جديدة إلى نظام الفارس الشهم 3</p>
+        </header>
+
+        <!-- Messages -->
+        {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+            <div class="message {{ message.tags }}">
+                {% if message.tags == 'success' %}
+                    <i class="fas fa-check-circle"></i>
+                {% else %}
+                    <i class="fas fa-exclamation-circle"></i>
+                {% endif %}
+                {{ message }}
+            </div>
+            {% endfor %}
         </div>
+        {% endif %}
 
         <!-- Form Container -->
         <div class="form-container">
-            <h2>بيانات التكية</h2>
+            <h2>
+                <i class="fas fa-utensils"></i>
+                بيانات التكية
+            </h2>
             
-            <form method="POST" id="addTakiyaForm" action="{% url 'add_new_takiya' %}">
+            <form method="POST" id="addTakiyaForm">
                 {% csrf_token %}
+
                 <div class="form-group">
-                    <label for="name" class="form-label">اسم التكية *</label>
-                    <input 
-                        type="text" 
-                        id="name" 
-                        name="name" 
-                        class="form-input"
-                        required
-                        maxlength="100"
-                        placeholder="أدخل اسم التكية"
-                    >
-                    <div class="validation-message" id="name-error">يرجى إدخال اسم التكية</div>
+                    <label for="name" class="form-label">اسم التكية</label>
+                    <input type="text" id="name" name="name" class="form-input" maxlength="200" placeholder="أدخل اسم التكية" required>
                 </div>
 
                 <div class="form-group">
-                    <label for="owner_name" class="form-label">اسم المالك *</label>
-                    <input 
-                        type="text" 
-                        id="owner_name" 
-                        name="owner_name" 
-                        class="form-input"
-                        required
-                        maxlength="100"
-                        placeholder="أدخل اسم المالك"
-                    >
-                    <div class="validation-message" id="owner-error">يرجى إدخال اسم المالك</div>
+                    <label for="governorate" class="form-label">المحافظة</label>
+                    <select id="governorate" name="governorate" class="form-input" required>
+                        <option value="">اختر المحافظة</option>
+                        <option value="الوسطى">الوسطى</option>
+                        <option value="رفح">رفح</option>
+                        <option value="خان يونس">خان يونس</option>
+                    </select>
                 </div>
 
                 <div class="form-group">
-                    <label for="address" class="form-label">العنوان *</label>
-                    <input 
-                        type="text" 
-                        id="address" 
-                        name="address" 
-                        class="form-input"
-                        required
-                        maxlength="200"
-                        placeholder="أدخل عنوان التكية"
-                    >
-                    <div class="validation-message" id="address-error">يرجى إدخال العنوان</div>
+                    <label for="address" class="form-label">العنوان بالتفصيل</label>
+                    <input type="text" id="address" name="address" class="form-input" maxlength="300" placeholder="أدخل العنوان">
                 </div>
 
                 <div class="form-group">
-                    <label for="mobile_number" class="form-label">رقم الهاتف *</label>
-                    <input 
-                        type="tel" 
-                        id="mobile_number" 
-                        name="mobile_number" 
-                        class="form-input"
-                        required
-                        pattern="[0-9+\-\s()]+"
-                        placeholder="أدخل رقم الهاتف"
-                    >
-                    <div class="validation-message" id="phone-error">يرجى إدخال رقم هاتف صحيح</div>
+                    <label for="owner_name" class="form-label">اسم صاحب التكية</label>
+                    <input type="text" id="owner_name" name="owner_name" class="form-input" maxlength="200" placeholder="أدخل اسم المالك">
+                </div>
+
+                <div class="form-group">
+                    <label for="owner_id" class="form-label">رقم هوية صاحب التكية</label>
+                    <input type="text" id="owner_id" name="owner_id" class="form-input" maxlength="9" placeholder="9 أرقام فقط">
+                </div>
+
+                <div class="form-group">
+                    <label for="mobile_number" class="form-label">رقم الجوال</label>
+                    <input type="text" id="mobile_number" name="mobile_number" class="form-input" maxlength="10" placeholder="10 أرقام فقط">
+                </div>
+
+                <div class="form-group">
+                    <label for="coordinates" class="form-label">إحداثيات الموقع</label>
+                    <input type="text" id="coordinates" name="coordinates" class="form-input" maxlength="50" placeholder="خط طول/خط عرض">
+                </div>
+
+                <div class="form-group">
+                    <label for="total_pots" class="form-label">إجمالي عدد القدور</label>
+                    <input type="number" id="total_pots" name="total_pots" class="form-input" min="0" placeholder="أدخل الرقم">
+                </div>
+
+                <div class="form-group">
+                    <label for="pots_80" class="form-label">عدد القدور سعة 80 لتر</label>
+                    <input type="number" id="pots_80" name="pots_80" class="form-input" min="0" placeholder="أدخل الرقم">
+                </div>
+
+                <div class="form-group">
+                    <label for="pots_100" class="form-label">عدد القدور سعة 100 لتر</label>
+                    <input type="number" id="pots_100" name="pots_100" class="form-input" min="0" placeholder="أدخل الرقم">
+                </div>
+
+                <div class="form-group">
+                    <label for="pots_120" class="form-label">عدد القدور سعة 120 لتر</label>
+                    <input type="number" id="pots_120" name="pots_120" class="form-input" min="0" placeholder="أدخل الرقم">
+                </div>
+
+                <div class="form-group">
+                    <label for="pots_150" class="form-label">عدد القدور سعة 150 لتر</label>
+                    <input type="number" id="pots_150" name="pots_150" class="form-input" min="0" placeholder="أدخل الرقم">
+                </div>
+
+                <div class="form-group">
+                    <label for="pots_200" class="form-label">عدد القدور سعة 200 لتر</label>
+                    <input type="number" id="pots_200" name="pots_200" class="form-input" min="0" placeholder="أدخل الرقم">
+                </div>
+
+                <div class="form-group">
+                    <label for="daily_capacity" class="form-label">القدرة الإنتاجية اليومية (بالقدر)</label>
+                    <input type="number" id="daily_capacity" name="daily_capacity" class="form-input" min="0" placeholder="أدخل الرقم">
+                </div>
+
+                <div class="form-group">
+                    <label for="status" class="form-label">حالة التكية</label>
+                    <select id="status" name="status" class="form-input">
+                        <option value="">اختر الحالة</option>
+                        <option value="فعال">فعال</option>
+                        <option value="متوقف">متوقف</option>
+                    </select>
                 </div>
 
                 <button type="submit" class="submit-btn" id="submitBtn">
-                    💾 حفظ التكية
+                    <i class="fas fa-save"></i>
+                    حفظ التكية
                 </button>
             </form>
         </div>
 
         <!-- Navigation -->
-        <div class="navigation">
-            <a href="{% url 'takiyat_list' %}" class="back-link">← العودة إلى قائمة التكيات</a>
-        </div>
+        <nav class="navigation">
+            <a href="{% url 'takiyat_list' %}" class="back-link">
+                <i class="fas fa-arrow-right"></i>
+                العودة إلى قائمة التكيات
+            </a>
+        </nav>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const form = document.getElementById('addTakiyaForm');
             const submitBtn = document.getElementById('submitBtn');
-            const inputs = form.querySelectorAll('.form-input[required]');
+            const inputs = form.querySelectorAll('.form-input');
 
             // Form validation
             function validateField(input) {
-                const errorElement = document.getElementById(input.id + '-error');
-                const isValid = input.checkValidity();
+                const isValid = input.value.trim() !== '' || !input.hasAttribute('required');
                 
                 if (!isValid) {
-                    errorElement.style.display = 'block';
                     input.style.borderColor = '#e74c3c';
-                } else {
-                    errorElement.style.display = 'none';
+                } else if (input.value.trim() !== '') {
                     input.style.borderColor = '#27ae60';
                 }
                 
@@ -326,42 +580,60 @@
                 input.addEventListener('input', function() {
                     if (this.value.length > 0) {
                         validateField(this);
+                    } else {
+                        this.style.borderColor = '#bdc3c7';
                     }
                 });
             });
 
             // Form submission
             form.addEventListener('submit', function(e) {
-                let isFormValid = true;
-                
-                inputs.forEach(input => {
-                    if (!validateField(input)) {
-                        isFormValid = false;
-                    }
-                });
-
-                if (!isFormValid) {
-                    e.preventDefault(); // امنع الإرسال فقط لو في أخطاء
-                    const firstInvalidField = form.querySelector('.form-input[style*="border-color: rgb(231, 76, 60)"]');
-                    if (firstInvalidField) {
-                        firstInvalidField.focus();
-                    }
-                } else {
-                    submitBtn.disabled = true;
-                    submitBtn.textContent = '🔄 جاري الحفظ...';
-                }
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<span class="spinner"></span> جاري الحفظ...';
             });
 
             // Auto-focus first field
-            document.getElementById('name').focus();
+            const firstInput = document.getElementById('name');
+            if (firstInput) {
+                firstInput.focus();
+            }
 
             // Phone number formatting
             const phoneInput = document.getElementById('mobile_number');
-            phoneInput.addEventListener('input', function(e) {
-                // Remove non-numeric characters except +, -, spaces, and parentheses
-                let value = e.target.value.replace(/[^\d+\-\s()]/g, '');
-                e.target.value = value;
+            if (phoneInput) {
+                phoneInput.addEventListener('input', function(e) {
+                    let value = e.target.value.replace(/[^\d]/g, '');
+                    e.target.value = value;
+                });
+            }
+
+            // ID number formatting
+            const idInput = document.getElementById('owner_id');
+            if (idInput) {
+                idInput.addEventListener('input', function(e) {
+                    let value = e.target.value.replace(/[^\d]/g, '');
+                    e.target.value = value;
+                });
+            }
+
+            // Number validation for all number inputs
+            const numberInputs = ['total_pots', 'pots_80', 'pots_100', 'pots_120', 'pots_150', 'pots_200', 'daily_capacity'];
+            numberInputs.forEach(inputId => {
+                const input = document.getElementById(inputId);
+                if (input) {
+                    input.addEventListener('input', function(e) {
+                        if (e.target.value < 0) {
+                            e.target.value = 0;
+                        }
+                    });
+                }
             });
+
+            // Success message animation
+            const successMessage = document.querySelector('.message.success');
+            if (successMessage) {
+                successMessage.classList.add('success-animation');
+            }
         });
     </script>
 </body>

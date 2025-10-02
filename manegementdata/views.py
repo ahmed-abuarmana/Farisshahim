@@ -1,10 +1,11 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Makhbaz, Takiya, Taslima
+from .models import Makhbaz, Takiya, Taslima_makhbaz, Taslima_takiya
 from django.http import JsonResponse
 import json
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_http_methods
 
 
 def login_view(request):
@@ -61,13 +62,10 @@ def makhabez_detail(request, pk):
     total_flour = sum(t.flour or 0 for t in all_tasleemat)
     total_salt = sum(t.salt or 0 for t in all_tasleemat)
     total_yeast = sum(t.yeast or 0 for t in all_tasleemat)
-    total_oil = sum(t.oil or 0 for t in all_tasleemat)
+    total_sugar = sum(t.sugar or 0 for t in all_tasleemat)
+    total_cooking_oil = sum(t.cooking_oil or 0 for t in all_tasleemat)
     total_wood = sum(t.wood or 0 for t in all_tasleemat)
-    total_rice = sum(t.rice or 0 for t in all_tasleemat)
-    total_beans = sum(t.beans or 0 for t in all_tasleemat)
-    total_lentils_red = sum(t.lentils_red or 0 for t in all_tasleemat)
-    total_lentils_black = sum(t.lentils_black or 0 for t in all_tasleemat)
-    total_pasta = sum(t.pasta or 0 for t in all_tasleemat)
+    total_gas = sum(t.gas or 0 for t in all_tasleemat)
 
     context = {
         "makhbaz": makhbaz,
@@ -77,17 +75,82 @@ def makhabez_detail(request, pk):
         "total_flour": total_flour,
         "total_salt": total_salt,
         "total_yeast": total_yeast,
-        "total_oil": total_oil,
+        "total_sugar": total_sugar,
+        "total_cooking_oil": total_cooking_oil,
         "total_wood": total_wood,
-        "total_rice": total_rice,
-        "total_beans": total_beans,
-        "total_lentils_red": total_lentils_red,
-        "total_lentils_black": total_lentils_black,
-        "total_pasta": total_pasta,
+        "total_gas": total_gas,
     }
 
     return render(request, "makhabez_detail.html", context)
 
+
+
+@login_required(login_url='login')
+# @require_http_methods(["POST"])
+def update_makhbaz(request, pk):
+    if request.method == "POST":
+        try:
+            makhbaz = get_object_or_404(Makhbaz, pk=pk)
+            data = json.loads(request.body)
+            
+            # تحديث الحقول
+            fields = [
+                'name', 'owner_name', 'owner_id', 'mobile_number', 
+                'address', 'governorate', 'coordinates', 'oven_type',
+                'production_capacity', 'contract_type', 'status'
+            ]
+            
+            for field in fields:
+                if field in data:
+                    setattr(makhbaz, field, data[field])
+            
+            makhbaz.save()
+            
+            return JsonResponse({"success": True})
+            
+        except Exception as e:
+            return JsonResponse({"success": False, "error": str(e)})
+
+
+
+@login_required(login_url='login')
+@require_http_methods(["POST"])
+def update_takiya(request, pk):
+    """
+    تحديث بيانات التكية المحددة بواسطة مفتاحها الأساسي (pk).
+    تستقبل البيانات المعدلة كـ JSON في جسم الطلب.
+    """
+    try:
+        takiya = get_object_or_404(Takiya, pk=pk)
+        data = json.loads(request.body)
+        
+        # قائمة بالحقول القابلة للتعديل
+        fields = [
+            'name', 'owner_name', 'owner_id', 'mobile_number', 
+            'address', 'governorate', 'coordinates', 'status',
+            'total_pots', 'pots_80', 'pots_100', 'pots_120', 
+            'pots_150', 'pots_200', 'daily_capacity'
+        ]
+        
+        for field in fields:
+            # التحقق مما إذا كان الحقل موجودًا في بيانات JSON
+            # واستخدام قيمة None إذا كان الحقل فارغًا أو غير موجود لتجنب أخطاء التحويل
+            if field in data:
+                value = data[field] if data[field] != "" else None
+                setattr(takiya, field, value)
+        
+        # ملاحظة: حقول الاختيار (choices) مثل 'governorate' و 'status' يجب أن تكون 
+        # قيمتها في JSON هي القيمة المخزنة (مثل "رفح" أو "فعال").
+
+        takiya.save()
+        
+        return JsonResponse({"success": True})
+            
+    except Takiya.DoesNotExist:
+        return JsonResponse({"success": False, "error": "التكية غير موجودة"}, status=404)
+    except Exception as e:
+        # يمكن تسجيل الخطأ التفصيلي في السجل (logging)
+        return JsonResponse({"success": False, "error": str(e)}, status=400)
 
 
 @login_required(login_url='login')
@@ -103,95 +166,60 @@ def takiyat_list(request):
 def takiya_detail(request, pk):
     takiya = get_object_or_404(Takiya, pk=pk)
 
-    # جلب التسليمات المرتبطة بهذه التكية
+    # جلب التسليمات المرتبطة بهذه التكية (من Taslima_takiya)
     all_tasleemat = takiya.taslimat.all().order_by('-taslima_date')
 
     latest_taslim = all_tasleemat.first() if all_tasleemat.exists() else None
 
-    # حساب الإجماليات
-    total_flour = sum(t.flour or 0 for t in all_tasleemat)
+    # حساب الإجماليات لجميع الحقول
     total_salt = sum(t.salt or 0 for t in all_tasleemat)
-    total_yeast = sum(t.yeast or 0 for t in all_tasleemat)
-    total_oil = sum(t.oil or 0 for t in all_tasleemat)
-    total_wood = sum(t.wood or 0 for t in all_tasleemat)
+    total_macaroni = sum(t.macaroni or 0 for t in all_tasleemat)
     total_rice = sum(t.rice or 0 for t in all_tasleemat)
+    total_oil = sum(t.oil or 0 for t in all_tasleemat)
+    total_peas = sum(t.peas or 0 for t in all_tasleemat)
+    total_lentils = sum(t.lentils or 0 for t in all_tasleemat)
     total_beans = sum(t.beans or 0 for t in all_tasleemat)
-    total_lentils_red = sum(t.lentils_red or 0 for t in all_tasleemat)
-    total_lentils_black = sum(t.lentils_black or 0 for t in all_tasleemat)
-    total_pasta = sum(t.pasta or 0 for t in all_tasleemat)
+    total_sauce = sum(t.sauce or 0 for t in all_tasleemat)
+    total_luncheon = sum(t.luncheon or 0 for t in all_tasleemat)
+    total_maggi_spice = sum(t.maggi_spice or 0 for t in all_tasleemat)
+    total_vegetable_soup = sum(t.vegetable_soup or 0 for t in all_tasleemat)
+    total_seven_spices = sum(t.seven_spices or 0 for t in all_tasleemat)
+    total_ghee = sum(t.ghee or 0 for t in all_tasleemat)
+    total_bulgur = sum(t.bulgur or 0 for t in all_tasleemat)
 
     context = {
         "takiya": takiya,
         "all_tasleemat": all_tasleemat,
         "latest_taslim": latest_taslim,
         "total_deliveries": all_tasleemat.count(),
-        "total_flour": total_flour,
+        
+        # إجماليات التسليمات
         "total_salt": total_salt,
-        "total_yeast": total_yeast,
-        "total_oil": total_oil,
-        "total_wood": total_wood,
+        "total_macaroni": total_macaroni,
         "total_rice": total_rice,
+        "total_oil": total_oil,
+        "total_peas": total_peas,
+        "total_lentils": total_lentils,
         "total_beans": total_beans,
-        "total_lentils_red": total_lentils_red,
-        "total_lentils_black": total_lentils_black,
-        "total_pasta": total_pasta,
+        "total_sauce": total_sauce,
+        "total_luncheon": total_luncheon,
+        "total_maggi_spice": total_maggi_spice,
+        "total_vegetable_soup": total_vegetable_soup,
+        "total_seven_spices": total_seven_spices,
+        "total_ghee": total_ghee,
+        "total_bulgur": total_bulgur,
+        
+        # بيانات التكية الأساسية
+        "governorate_choices": Takiya.GOVERNORATE_CHOICES,
+        "status_choices": Takiya.STATUS_CHOICES,
+        
+        # إجماليات القدور
+        "total_pots_all": (takiya.pots_80 or 0) + (takiya.pots_100 or 0) + 
+                         (takiya.pots_120 or 0) + (takiya.pots_150 or 0) + 
+                         (takiya.pots_200 or 0),
     }
 
     return render(request, "takiya_detail.html", context)
-
-
-
-@login_required(login_url='login')
-def add_taslima(request):
-    if request.method == 'POST':
-        taslima_date = request.POST.get('taslima_date')
-        flour = request.POST.get('flour') or None
-        salt = request.POST.get('salt') or None
-        yeast = request.POST.get('yeast') or None
-        oil = request.POST.get('oil') or None
-        wood = request.POST.get('wood') or None
-        rice = request.POST.get('rice') or None
-        beans = request.POST.get('beans') or None
-        lentils_red = request.POST.get('lentils_red') or None
-        lentils_black = request.POST.get('lentils_black') or None
-        pasta = request.POST.get('pasta') or None
-
-        makhbaz_id = request.POST.get('makhbaz')
-        takiya_id = request.POST.get('takiya')
-
-        # تأكد أنه تم اختيار إما مخبز أو تكية فقط
-        if makhbaz_id and takiya_id:
-            return render(request, 'add_taslima.html', {
-                'makhabiz': Makhbaz.objects.all(),
-                'takiyat': Takiya.objects.all(),
-                'error': 'لا يمكن اختيار مخبز وتكية في نفس الوقت!'
-            })
-
-        taslima = Taslima.objects.create(
-            taslima_date=taslima_date,
-            flour=flour,
-            salt=salt,
-            yeast=yeast,
-            oil=oil,
-            wood=wood,
-            rice=rice,
-            beans=beans,
-            lentils_red=lentils_red,
-            lentils_black=lentils_black,
-            pasta=pasta,
-            makhbaz_id=makhbaz_id if makhbaz_id else None,
-            takiya_id=takiya_id if takiya_id else None
-        )
-
-        return redirect('index')
-
-    makhabiz = Makhbaz.objects.all()
-    takiyat = Takiya.objects.all()
-    return render(request, 'add_taslima.html', {
-        'makhabiz': makhabiz,
-        'takiyat': takiyat
-    })
-
 
 
 @login_required(login_url='login')
@@ -200,26 +228,26 @@ def add_tasleema_for_makhbaz(request, makhbaz_id):
         try:
             data = json.loads(request.body)
             makhbaz = Makhbaz.objects.get(id=makhbaz_id)
-            taslima = Taslima.objects.create(
+            
+            # إنشاء التسليمة
+            taslima = Taslima_makhbaz.objects.create(
                 taslima_date = data.get('taslima_date'),
                 flour = data.get('flour') or None,
-                salt = data.get('salt') or None,
                 yeast = data.get('yeast') or None,
-                oil = data.get('oil') or None,
+                salt = data.get('salt') or None,
+                sugar = data.get('sugar') or None,
+                cooking_oil = data.get('cooking_oil') or None,
                 wood = data.get('wood') or None,
-                rice = data.get('rice') or None,
-                beans = data.get('beans') or None,
-                lentils_red = data.get('lentils_red') or None,
-                lentils_black = data.get('lentils_black') or None,
-                pasta = data.get('pasta') or None,
+                gas = data.get('gas') or None,
+                additions = data.get('additions') or None,
+                makhbaz = makhbaz
             )
-            makhbaz.taslimat.add(taslima)
+            
             return JsonResponse({"success": True})
         except Exception as e:
             return JsonResponse({"success": False, "error": str(e)})
 
     return JsonResponse({"success": False, "error": "Invalid request method"})
-
 
 
 @login_required(login_url='login')
@@ -228,74 +256,111 @@ def add_tasleema_for_takiya(request, takiya_id):
         try:
             data = json.loads(request.body)
             takiya = Takiya.objects.get(id=takiya_id)
-            taslima = Taslima.objects.create(
-                taslima_date = data.get('taslima_date'),
-                flour = data.get('flour') or None,
-                salt = data.get('salt') or None,
-                yeast = data.get('yeast') or None,
-                oil = data.get('oil') or None,
-                wood = data.get('wood') or None,
-                rice = data.get('rice') or None,
-                beans = data.get('beans') or None,
-                lentils_red = data.get('lentils_red') or None,
-                lentils_black = data.get('lentils_black') or None,
-                pasta = data.get('pasta') or None,
+            
+            taslima = Taslima_takiya.objects.create(
+                taslima_date=data.get('taslima_date'),
+                salt=data.get('salt') or None,
+                macaroni=data.get('macaroni') or None,
+                rice=data.get('rice') or None,
+                oil=data.get('oil') or None,
+                peas=data.get('peas') or None,
+                lentils=data.get('lentils') or None,
+                beans=data.get('beans') or None,
+                sauce=data.get('sauce') or None,
+                luncheon=data.get('luncheon') or None,
+                maggi_spice=data.get('maggi_spice') or None,
+                vegetable_soup=data.get('vegetable_soup') or None,
+                seven_spices=data.get('seven_spices') or None,
+                ghee=data.get('ghee') or None,
+                bulgur=data.get('bulgur') or None,
+                additions=data.get('additions') or None,  # إضافة حقل الإضافات
+                takiya=takiya
             )
-            takiya.taslimat.add(taslima)
-            return JsonResponse({"success": True})
+            return JsonResponse({"success": True, "taslima_id": taslima.id})
+        except Takiya.DoesNotExist:
+            return JsonResponse({"success": False, "error": "التكية غير موجودة"})
         except Exception as e:
             return JsonResponse({"success": False, "error": str(e)})
 
-    return JsonResponse({"success": False, "error": "Invalid request method"})
-
+    return JsonResponse({"success": False, "error": "طريقة الطلب غير صالحة"})
 
 
 @login_required(login_url='login')
 def add_new_makhbaz(request):
     if request.method == "POST":
-        name = request.POST.get("name")
-        owner_name = request.POST.get("owner_name")
-        address = request.POST.get("address")
-        mobile_number = request.POST.get("mobile_number")
+        data = {
+            'name': request.POST.get("name") or None,
+            'governorate': request.POST.get("governorate") or None,
+            'address': request.POST.get("address") or None,
+            'owner_name': request.POST.get("owner_name") or None,
+            'owner_id': request.POST.get("owner_id") or None,
+            'mobile_number': request.POST.get("mobile_number") or None,
+            'coordinates': request.POST.get("coordinates") or None,
+            'oven_type': request.POST.get("oven_type") or None,
+            'production_capacity': request.POST.get("production_capacity") or None,
+            'contract_type': request.POST.get("contract_type") or None,
+            'status': request.POST.get("status") or None,
+        }
 
-        if name and owner_name and address and mobile_number:
-            Makhbaz.objects.create(
-                name=name,
-                owner_name=owner_name,
-                address=address,
-                mobile_number=mobile_number
-            )
-            messages.success(request, "✅ تم إضافة المخبز بنجاح")
-            return redirect("makhabez_list")  # بعد الحفظ يرجع لقائمة المخابز
-        else:
-            messages.error(request, "⚠️ الرجاء تعبئة جميع الحقول المطلوبة")
+        # تحويل الإنتاجية اليومية من نص لرقم لو موجود
+        if data['production_capacity']:
+            try:
+                data['production_capacity'] = int(data['production_capacity'])
+            except ValueError:
+                data['production_capacity'] = None
+
+        Makhbaz.objects.create(**data)
+        messages.success(request, "✅ تم إضافة المخبز بنجاح")
+        return redirect("makhabez_list")
 
     return render(request, "add_new_makhbaz.html")
-
 
 
 @login_required(login_url='login')
 def add_new_takiya(request):
     if request.method == "POST":
         name = request.POST.get("name")
-        owner_name = request.POST.get("owner_name")
+        governorate = request.POST.get("governorate")
         address = request.POST.get("address")
+        owner_name = request.POST.get("owner_name")
+        owner_id = request.POST.get("owner_id")
         mobile_number = request.POST.get("mobile_number")
+        coordinates = request.POST.get("coordinates")
 
-        # 📝 إنشاء تكية جديدة
+        # تحويل القيم الرقمية إلى Integers مع معالجة الحقول الفارغة
+        total_pots = int(request.POST.get("total_pots") or 0)
+        pots_80 = int(request.POST.get("pots_80") or 0)
+        pots_100 = int(request.POST.get("pots_100") or 0)
+        pots_120 = int(request.POST.get("pots_120") or 0)
+        pots_150 = int(request.POST.get("pots_150") or 0)
+        pots_200 = int(request.POST.get("pots_200") or 0)
+        daily_capacity = int(request.POST.get("daily_capacity") or 0)
+
+        status = request.POST.get("status")
+
+        # إنشاء التكية الجديدة
         Takiya.objects.create(
             name=name,
-            owner_name=owner_name,
+            governorate=governorate,
             address=address,
-            mobile_number=mobile_number
+            owner_name=owner_name,
+            owner_id=owner_id,
+            mobile_number=mobile_number,
+            coordinates=coordinates,
+            total_pots=total_pots,
+            pots_80=pots_80,
+            pots_100=pots_100,
+            pots_120=pots_120,
+            pots_150=pots_150,
+            pots_200=pots_200,
+            daily_capacity=daily_capacity,
+            status=status,
         )
 
-        # ✅ رسالة نجاح
         messages.success(request, "✅ تم إضافة التكية بنجاح.")
-        return redirect("takiyat_list")  # اسم صفحة عرض التكيات
+        return redirect("takiyat_list")
 
     return render(request, "add_new_takiya.html")
-
 
 
 @login_required(login_url='login')

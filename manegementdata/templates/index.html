@@ -1,302 +1,450 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>الفارس الشهم 3</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>عملية الفارس الشهم 3</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            direction: rtl;
-            background-color: #f8fafb;
-            color: #2c3e50;
-            line-height: 1.6;
-            padding: 20px;
-        }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #f8fafb 0%, #e8f4f8 100%);
+      color: #2c3e50;
+      min-height: 100vh;
+      padding: 20px;
+      position: relative;
+      overflow-x: hidden;
+    }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
+    /* خلفية متحركة خفيفة */
+    body::before {
+      content: '';
+      position: fixed;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(41, 128, 185, 0.03) 1px, transparent 1px);
+      background-size: 50px 50px;
+      animation: backgroundMove 20s linear infinite;
+      z-index: 0;
+      pointer-events: none;
+    }
 
-        /* Header Section */
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
+    @keyframes backgroundMove {
+      0% {
+        transform: translate(0, 0);
+      }
+      100% {
+        transform: translate(50px, 50px);
+      }
+    }
 
-        .header h1 {
-            font-size: 1.8rem;
-            color: #2980b9;
-            margin-bottom: 20px;
-            font-weight: 700;
-        }
+    .container {
+      position: relative;
+      z-index: 1;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
 
-        /* Navigation Buttons */
-        .nav-buttons {
-            display: flex;
-            justify-content: center;
-            gap: 12px;
-            margin-bottom: 25px;
-            flex-wrap: wrap;
-        }
+    /* Header Styles */
+    .header {
+      padding: 30px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 40px;
+      max-width: 900px;
+      margin: 0 auto;
+      animation: fadeInDown 0.8s ease-out;
+    }
 
-        .nav-btn {
-            padding: 10px 18px;
-            background: #3498db;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 500;
-            text-decoration: none;
-            transition: all 0.3s ease;
-            font-size: 14px;
-        }
+    .header-content {
+      text-align: right;
+      flex: 1;
+    }
 
-        .nav-btn:hover {
-            background: #2980b9;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
-        }
+    .logo-container {
+      animation: scaleIn 0.6s ease-out;
+      flex-shrink: 0;
+    }
 
-        /* Search Box */
-        .search-container {
-            max-width: 400px;
-            margin: 0 auto 30px;
-        }
+    .header img {
+      width: 250px;
+      height: 250px;
+      border-radius: 50%;
+      box-shadow: 0 8px 24px rgba(41, 128, 185, 0.2);
+      border: 4px solid white;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
 
-        .search-box {
-            width: 100%;
-            padding: 12px 16px;
-            font-size: 16px;
-            border: 2px solid #bdc3c7;
-            border-radius: 8px;
-            outline: none;
-            transition: border-color 0.3s ease;
-        }
+    .header img:hover {
+      transform: scale(1.05) rotate(5deg);
+      box-shadow: 0 12px 32px rgba(41, 128, 185, 0.3);
+    }
 
-        .search-box:focus {
-            border-color: #3498db;
-            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
-        }
+    .header h1 {
+      font-size: 2.4rem;
+      color: #2980b9;
+      margin-bottom: 12px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      animation: fadeIn 0.8s ease-out 0.2s both;
+    }
 
-        /* Divider */
-        .divider {
-            height: 2px;
-            background: linear-gradient(to right, transparent, #3498db, transparent);
-            margin: 30px 0;
-        }
+    .header .subtitle {
+      color: #7f8c8d;
+      font-size: 1.4rem;
+      margin-bottom: 8px;
+      animation: fadeIn 0.8s ease-out 0.3s both;
+    }
 
-        /* Table Section */
-        .table-section {
-            background: white;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 4px 20px rgba(52, 152, 219, 0.1);
-        }
+    .header .program-name {
+      color: #34495e;
+      font-size: 1.3rem;
+      font-weight: 500;
+      animation: fadeIn 0.8s ease-out 0.4s both;
+    }
 
-        .data-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
+    /* Decorative Line */
+    .decorative-line {
+      width: 80px;
+      height: 3px;
+      background: linear-gradient(90deg, #3498db, transparent);
+      margin: 20px 0;
+      margin-right: 0;
+      animation: expandWidth 1s ease-out 0.5s both;
+    }
 
-        .data-table th {
-            background: linear-gradient(135deg, #3498db, #2980b9);
-            color: white;
-            padding: 16px;
-            font-weight: 600;
-            text-align: center;
-            font-size: 15px;
-        }
+    @keyframes expandWidth {
+      from {
+        width: 0;
+      }
+      to {
+        width: 80px;
+      }
+    }
 
-        .data-table td {
-            padding: 14px 16px;
-            border-bottom: 1px solid #ecf0f1;
-            text-align: center;
-        }
+    /* Main Section */
+    .main-section {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      flex-wrap: wrap;
+      margin: 50px auto;
+      padding: 0 20px;
+    }
 
-        .data-table tbody tr:nth-child(even) {
-            background-color: #f8fafb;
-        }
+    /* Card Styles */
+    .card {
+      flex: 1;
+      min-width: 260px;
+      max-width: 350px;
+      background: white;
+      padding: 40px 30px;
+      border-radius: 16px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      text-decoration: none;
+      color: inherit;
+      position: relative;
+      overflow: hidden;
+      animation: fadeInUp 0.6s ease-out both;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
 
-        .data-table tbody tr:hover {
-            background-color: #e8f4f8;
-            transition: background-color 0.2s ease;
-        }
+    .card:nth-child(1) {
+      animation-delay: 0.2s;
+    }
 
-        .data-table a {
-            color: #3498db;
-            text-decoration: none;
-            font-weight: 500;
-            transition: color 0.3s ease;
-        }
+    .card:nth-child(2) {
+      animation-delay: 0.4s;
+    }
 
-        .data-table a:hover {
-            color: #2980b9;
-            text-decoration: underline;
-        }
+    /* تأثير الخلفية المتحركة للبطاقة */
+    .card::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(52, 152, 219, 0.1) 0%, transparent 70%);
+      transition: transform 0.6s ease;
+      transform: scale(0);
+    }
 
-        /* Empty State */
-        .empty-state {
-            padding: 40px;
-            text-align: center;
-            color: #7f8c8d;
-            font-style: italic;
-        }
+    .card:hover::before {
+      transform: scale(1);
+    }
 
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .container {
-                padding: 10px;
-            }
+    .card:hover {
+      transform: translateY(-10px) scale(1.02);
+      box-shadow: 0 15px 40px rgba(52, 152, 219, 0.25);
+    }
 
-            .header h1 {
-                font-size: 1.5rem;
-            }
+    .icon-container {
+      position: relative;
+      z-index: 1;
+      margin-bottom: 20px;
+      animation: float 3s ease-in-out infinite;
+    }
 
-            .nav-buttons {
-                gap: 8px;
-            }
+    @keyframes float {
+      0%, 100% {
+        transform: translateY(0px);
+      }
+      50% {
+        transform: translateY(-10px);
+      }
+    }
 
-            .nav-btn {
-                padding: 8px 14px;
-                font-size: 13px;
-            }
+    .card:nth-child(2) .icon-container {
+      animation-delay: 1.5s;
+    }
 
-            .data-table {
-                font-size: 14px;
-            }
+    .card i {
+      color: #3498db;
+      transition: all 0.3s ease;
+      filter: drop-shadow(0 4px 8px rgba(52, 152, 219, 0.3));
+    }
 
-            .data-table th,
-            .data-table td {
-                padding: 10px 8px;
-            }
+    .card:hover i {
+      transform: scale(1.15) rotate(5deg);
+      color: #2980b9;
+    }
 
-            .search-box {
-                font-size: 14px;
-                padding: 10px 14px;
-            }
-        }
+    .card h2 {
+      color: #2980b9;
+      margin-bottom: 12px;
+      font-size: 1.5rem;
+      font-weight: 600;
+      position: relative;
+      z-index: 1;
+      transition: color 0.3s ease;
+    }
 
-        @media (max-width: 480px) {
-            .nav-buttons {
-                flex-direction: column;
-                align-items: center;
-            }
+    .card:hover h2 {
+      color: #1f5f8b;
+    }
 
-            .nav-btn {
-                width: 200px;
-            }
-        }
-    </style>
+    .card p {
+      color: #7f8c8d;
+      line-height: 1.6;
+      position: relative;
+      z-index: 1;
+      font-size: 0.95rem;
+    }
+
+    /* Logout Button */
+    .logout-container {
+      text-align: center;
+      margin-top: 40px;
+      animation: fadeIn 1s ease-out 0.6s both;
+    }
+
+    .logout-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 28px;
+      background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+      color: white;
+      border-radius: 30px;
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .logout-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: left 0.5s ease;
+    }
+
+    .logout-btn:hover::before {
+      left: 100%;
+    }
+
+    .logout-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
+      background: linear-gradient(135deg, #2980b9 0%, #1f5f8b 100%);
+    }
+
+    .logout-btn:active {
+      transform: translateY(0);
+    }
+
+    /* Animations */
+    @keyframes fadeInDown {
+      from {
+        opacity: 0;
+        transform: translateY(-30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    @keyframes scaleIn {
+      from {
+        opacity: 0;
+        transform: scale(0.8);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .header {
+        flex-direction: column;
+        text-align: center;
+        gap: 25px;
+      }
+
+      .header-content {
+        text-align: center;
+      }
+
+      .decorative-line {
+        margin: 20px auto;
+        background: linear-gradient(90deg, transparent, #3498db, transparent);
+      }
+
+      .header h1 {
+        font-size: 1.8rem;
+      }
+
+      .header .subtitle {
+        font-size: 1.2rem;
+      }
+
+      .header .program-name {
+        font-size: 1.1rem;
+      }
+
+      .main-section {
+        gap: 20px;
+        margin: 30px auto;
+      }
+
+      .card {
+        min-width: 100%;
+        padding: 35px 25px;
+      }
+
+      .logout-btn {
+        padding: 10px 24px;
+        font-size: 0.95rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .header img {
+        width: 160px;
+        height: 160px;
+      }
+
+      .header h1 {
+        font-size: 1.5rem;
+      }
+
+      .header .subtitle {
+        font-size: 1.1rem;
+      }
+
+      .header .program-name {
+        font-size: 1rem;
+      }
+
+      .card h2 {
+        font-size: 1.3rem;
+      }
+    }
+  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
-
 <body>
-    <div class="container">
-        <!-- Header Section -->
-        <div class="header">
-            <h1>إدارة بيانات أصحاب المخابز والتكيات الخيرية</h1>
-            <p style="color: #7f8c8d; margin-top: -10px;">التابعة للهلال الأحمر الإماراتي - "عملية الفارس الشهم 3"</p>
-        </div>
+  <div class="container">
+    <header class="header">
+      <div class="header-content">
+        <h1>عملية الفارس الشهم "3"</h1>
+        <div class="decorative-line"></div>
+        <p class="subtitle">دائرة المشاريع</p>
+        <p class="program-name">برنامج المخابز والتكيات</p>
+      </div>
+      <div class="logo-container">
+        <img src="{% static 'images/logo.jpg' %}" alt="شعار المنصة">
+      </div>
+    </header>
 
-        <!-- Navigation Buttons -->
-        <div class="nav-buttons">
-            <a href="{% url 'takiyat_list' %}" class="nav-btn">التكيات</a>
-            <a href="{% url 'makhabez_list' %}" class="nav-btn">المخابز</a>
-            <a href="{% url 'add_new_makhbaz' %}" class="nav-btn">إضافة مخبز جديد</a>
-            <a href="{% url 'add_new_takiya' %}" class="nav-btn">إضافة تكية جديدة</a>
-            <a href="{% url 'logout' %}" class="nav-btn">تسجيل الخروج </a>
+    <main class="main-section">
+      <a href="{% url 'makhabez_list' %}" class="card">
+        <div class="icon-container">
+          <i class="fas fa-bread-slice fa-3x"></i>
         </div>
+        <h2>المخابز</h2>
+        <p>إدارة بيانات أصحاب المخابز</p>
+      </a>
 
-        <!-- Search Box -->
-        <div class="search-container">
-            <input 
-                type="text" 
-                id="searchBox" 
-                class="search-box"
-                placeholder="ابحث باسم المخبز أو التكية..." 
-                onkeyup="filterTable()"
-            >
+      <a href="{% url 'takiyat_list' %}" class="card">
+        <div class="icon-container">
+          <i class="fas fa-hand-holding-heart fa-3x"></i>
         </div>
-        <!-- Divider -->
-        <div class="divider"></div>
+        <h2>التكيات</h2>
+        <p>إدارة بيانات أصحاب التكيات الخيرية</p>
+      </a>
+    </main>
 
-        <!-- Data Table -->
-        <div class="table-section">
-            <table class="data-table" id="dataTable">
-                <thead>
-                    <tr>
-                        <th>اسم المخبز/التكية</th>
-                        <th>رقم الهاتف</th>
-                        <th>العنوان</th>
-                        <th>اسم المالك</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for makhbez in makhabiz %}
-                    <tr>
-                        <td><a href="{% url 'makhabez_detail' makhbez.id %}">{{ makhbez.name }}</a></td>
-                        <td>{{ makhbez.mobile_number }}</td>
-                        <td>{{ makhbez.address }}</td>
-                        <td>{{ makhbez.owner_name }}</td>
-                    </tr>
-                    {% endfor %}
-
-                    {% for takiya in takiyat %}
-                    <tr>
-                        <td><a href="{% url 'takiya_detail' takiya.id %}">{{ takiya.name }}</a></td>
-                        <td>{{ takiya.mobile_number }}</td>
-                        <td>{{ takiya.address }}</td>
-                        <td>{{ takiya.owner_name }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-            
-            <!-- Show empty state if no data -->
-            {% if not makhabiz and not takiyat %}
-            <div class="empty-state">
-                لا توجد بيانات متاحة حالياً
-            </div>
-            {% endif %}
-        </div>
+    <div class="logout-container">
+      <a href="{% url 'logout' %}" class="logout-btn">
+        <i class="fas fa-sign-out-alt"></i>
+        <span>تسجيل الخروج</span>
+      </a>
     </div>
-
-    <!-- JavaScript -->
-    <script>
-        function filterTable() {
-            const searchInput = document.getElementById("searchBox");
-            const filter = searchInput.value.toLowerCase().trim();
-            const table = document.getElementById("dataTable");
-            const rows = table.getElementsByTagName("tr");
-
-            // Start from index 1 to skip the header row
-            for (let i = 1; i < rows.length; i++) {
-                const nameCell = rows[i].getElementsByTagName("td")[0];
-                
-                if (nameCell) {
-                    const cellText = nameCell.textContent || nameCell.innerText;
-                    const shouldShow = cellText.toLowerCase().includes(filter);
-                    rows[i].style.display = shouldShow ? "" : "none";
-                }
-            }
-        }
-
-        // Add keyboard support for better accessibility
-        document.getElementById("searchBox").addEventListener("keydown", function(event) {
-            if (event.key === "Escape") {
-                this.value = "";
-                filterTable();
-                this.blur();
-            }
-        });
-    </script>
+  </div>
 </body>
 </html>

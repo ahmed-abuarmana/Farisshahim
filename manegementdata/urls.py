@@ -24,6 +24,8 @@ urlpatterns = [
     path('makhabez/<int:makhbaz_id>/delete/', views.delete_makhbaz, name='delete_makhbaz'),
     path('takiyat/<int:takiya_id>/delete/', views.delete_takiya, name='delete_takiya'),
 
+    path('makhabez/<int:pk>/update/', views.update_makhbaz, name='update_makhbaz'),
 
+    path('takiyat/<int:pk>/update/', views.update_takiya, name='update_takiya'),
 
 ]
