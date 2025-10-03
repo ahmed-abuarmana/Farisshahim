@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -13,24 +14,47 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            direction: rtl;
             background: linear-gradient(135deg, #f8fafb 0%, #e8f4f8 100%);
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* خلفية متحركة خفيفة */
+        body::before {
+            content: '';
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(41, 128, 185, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: backgroundMove 20s linear infinite;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        @keyframes backgroundMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
         }
 
         .login-container {
             background: white;
-            padding: 40px;
-            border-radius: 16px;
-            box-shadow: 0 8px 32px rgba(52, 152, 219, 0.15);
+            padding: 45px 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(52, 152, 219, 0.2);
             width: 100%;
-            max-width: 400px;
+            max-width: 450px;
             position: relative;
             overflow: hidden;
+            animation: fadeInUp 0.8s ease-out;
+            z-index: 1;
         }
 
         .login-container::before {
@@ -39,159 +63,216 @@
             top: 0;
             left: 0;
             right: 0;
-            height: 4px;
+            height: 5px;
             background: linear-gradient(135deg, #3498db, #2980b9);
         }
 
         /* Header Section */
         .header {
             text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .header h1 {
-            color: #3498db;
-            font-size: 1.8rem;
-            margin-bottom: 8px;
-            font-weight: 700;
-        }
-
-        .header p {
-            color: #7f8c8d;
-            font-size: 0.9rem;
-            margin-bottom: 20px;
+            margin-bottom: 35px;
+            animation: fadeInDown 0.8s ease-out 0.2s both;
         }
 
         .logo {
-            width: 60px;
-            height: 60px;
+            width: 80px;
+            height: 80px;
             background: linear-gradient(135deg, #3498db, #2980b9);
             border-radius: 50%;
             margin: 0 auto 20px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 24px;
-            color: white;
-            font-weight: bold;
+            font-size: 36px;
+            box-shadow: 0 8px 24px rgba(52, 152, 219, 0.3);
+            animation: scaleIn 0.6s ease-out 0.3s both;
+            transition: transform 0.3s ease;
+        }
+
+        .logo:hover {
+            transform: scale(1.05) rotate(5deg);
+        }
+
+        .header h1 {
+            color: #2980b9;
+            font-size: 2rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header p {
+            color: #7f8c8d;
+            font-size: 0.95rem;
+            line-height: 1.5;
         }
 
         /* Error Messages */
         .error-message {
-            background-color: #fee;
+            background: linear-gradient(135deg, #fee 0%, #fdd 100%);
             border: 2px solid #e74c3c;
             color: #c0392b;
-            padding: 12px 16px;
-            border-radius: 8px;
-            margin-bottom: 20px;
+            padding: 14px 18px;
+            border-radius: 10px;
+            margin-bottom: 25px;
             text-align: center;
             font-weight: 500;
             animation: shake 0.5s ease-in-out;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            box-shadow: 0 4px 12px rgba(231, 76, 60, 0.2);
         }
 
         @keyframes shake {
             0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-5px); }
-            75% { transform: translateX(5px); }
+            25% { transform: translateX(-8px); }
+            75% { transform: translateX(8px); }
         }
 
         /* Form Elements */
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 24px;
             position: relative;
+            animation: fadeIn 0.6s ease-out both;
         }
+
+        .form-group:nth-child(1) { animation-delay: 0.4s; }
+        .form-group:nth-child(2) { animation-delay: 0.5s; }
 
         .form-label {
             display: block;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
             font-weight: 600;
             color: #2c3e50;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .form-label::before {
+            content: '•';
+            color: #3498db;
+            font-size: 1.2rem;
+        }
+
+        .form-input-wrapper {
+            position: relative;
         }
 
         .form-input {
             width: 100%;
-            padding: 14px 16px;
+            padding: 16px 50px 16px 18px;
             border: 2px solid #e1e8ed;
-            border-radius: 10px;
+            border-radius: 12px;
             font-size: 16px;
             transition: all 0.3s ease;
-            background-color: #f8fafb;
-            text-align: right;
+            background: linear-gradient(135deg, #f8fafb 0%, #ffffff 100%);
         }
 
         .form-input:focus {
             outline: none;
             border-color: #3498db;
-            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
-            background-color: white;
+            box-shadow: 0 0 0 4px rgba(52, 152, 219, 0.15);
+            background: white;
+            transform: translateY(-2px);
         }
 
         .form-input::placeholder {
             color: #95a5a6;
-            text-align: right;
+        }
+
+        .form-input:valid:not(:placeholder-shown) {
+            border-color: #27ae60;
         }
 
         /* Icons for inputs */
-        .input-with-icon {
-            position: relative;
-        }
-
         .input-icon {
             position: absolute;
-            left: 16px;
+            left: 18px;
             top: 50%;
             transform: translateY(-50%);
-            color: #7f8c8d;
-            font-size: 18px;
+            font-size: 20px;
             pointer-events: none;
+            transition: transform 0.3s ease;
         }
 
-        .form-input.with-icon {
-            padding-left: 50px;
+        .form-input:focus ~ .input-icon {
+            transform: translateY(-50%) scale(1.1);
         }
 
         /* Submit Button */
         .submit-btn {
             width: 100%;
-            padding: 16px 20px;
-            background: linear-gradient(135deg, #3498db, #2980b9);
+            padding: 18px 24px;
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
             color: white;
             border: none;
-            border-radius: 10px;
-            font-size: 16px;
+            border-radius: 12px;
+            font-size: 17px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
+            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.25);
+            margin-top: 10px;
+            animation: fadeIn 0.6s ease-out 0.6s both;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .submit-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .submit-btn:hover::before {
+            left: 100%;
         }
 
         .submit-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(52, 152, 219, 0.3);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(52, 152, 219, 0.35);
         }
 
         .submit-btn:active {
-            transform: translateY(0);
+            transform: translateY(-1px);
         }
 
         .submit-btn:disabled {
-            background: #bdc3c7;
+            background: linear-gradient(135deg, #bdc3c7 0%, #95a5a6 100%);
             cursor: not-allowed;
             transform: none;
+            box-shadow: none;
+        }
+
+        .submit-btn:disabled::before {
+            display: none;
         }
 
         /* Loading Animation */
         .loading-spinner {
             display: none;
-            width: 20px;
-            height: 20px;
-            border: 2px solid #ffffff;
-            border-top: 2px solid transparent;
+            width: 18px;
+            height: 18px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top: 2px solid #ffffff;
             border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin-right: 10px;
+            animation: spin 0.8s linear infinite;
+        }
+
+        .loading-spinner.show {
+            display: inline-block;
         }
 
         @keyframes spin {
@@ -202,35 +283,92 @@
         /* Footer */
         .footer {
             text-align: center;
-            margin-top: 30px;
-            padding-top: 20px;
-            border-top: 1px solid #ecf0f1;
+            margin-top: 35px;
+            padding-top: 25px;
+            border-top: 2px solid #ecf0f1;
+            animation: fadeIn 0.8s ease-out 0.7s both;
         }
 
         .footer p {
             color: #7f8c8d;
-            font-size: 0.85rem;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
         }
 
         /* Responsive Design */
         @media (max-width: 480px) {
             .login-container {
-                padding: 30px 20px;
+                padding: 35px 25px;
                 margin: 10px;
+                border-radius: 16px;
             }
 
             .header h1 {
-                font-size: 1.5rem;
+                font-size: 1.7rem;
+            }
+
+            .header p {
+                font-size: 0.9rem;
+            }
+
+            .logo {
+                width: 70px;
+                height: 70px;
+                font-size: 32px;
             }
 
             .form-input {
-                padding: 12px 14px;
+                padding: 14px 45px 14px 16px;
                 font-size: 15px;
             }
 
             .submit-btn {
-                padding: 14px 18px;
-                font-size: 15px;
+                padding: 16px 20px;
+                font-size: 16px;
+            }
+
+            .input-icon {
+                font-size: 18px;
+                left: 16px;
             }
         }
 
@@ -245,16 +383,19 @@
             outline-offset: 2px;
         }
     </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 
 <body>
     <div class="login-container">
         <!-- Logo and Header -->
-        <div class="header">
-            <div class="logo">🛡️</div>
+        <header class="header">
+            <div class="logo">
+                <i class="fas fa-shield-alt"></i>
+            </div>
             <h1>تسجيل الدخول</h1>
             <p>الفارس الشهم 3 - نظام إدارة المخابز والتكيات</p>
-        </div>
+        </header>
 
         <!-- Login Form -->
         <form method="post" id="loginForm">
@@ -263,6 +404,7 @@
             <!-- Error Messages -->
             {% if error %}
             <div class="error-message">
+                <i class="fas fa-exclamation-triangle"></i>
                 {{ error }}
             </div>
             {% endif %}
@@ -270,48 +412,49 @@
             <!-- Username Field -->
             <div class="form-group">
                 <label for="username" class="form-label">اسم المستخدم</label>
-                <div class="input-with-icon">
+                <div class="form-input-wrapper">
                     <input 
                         type="text" 
                         id="username" 
                         name="username" 
-                        class="form-input with-icon"
+                        class="form-input"
                         placeholder="أدخل اسم المستخدم"
                         required
                         autocomplete="username"
                     >
-                    <span class="input-icon">👤</span>
+                    <span class="input-icon"><i class="fas fa-user"></i></span>
                 </div>
             </div>
 
             <!-- Password Field -->
             <div class="form-group">
                 <label for="password" class="form-label">كلمة المرور</label>
-                <div class="input-with-icon">
+                <div class="form-input-wrapper">
                     <input 
                         type="password" 
                         id="password" 
                         name="password" 
-                        class="form-input with-icon"
+                        class="form-input"
                         placeholder="أدخل كلمة المرور"
                         required
                         autocomplete="current-password"
                     >
-                    <span class="input-icon">🔒</span>
+                    <span class="input-icon"><i class="fas fa-lock"></i></span>
                 </div>
             </div>
 
             <!-- Submit Button -->
             <button type="submit" class="submit-btn" id="submitBtn">
                 <span class="loading-spinner" id="loadingSpinner"></span>
+                <i class="fas fa-sign-in-alt" id="btnIcon"></i>
                 <span id="btnText">تسجيل الدخول</span>
             </button>
         </form>
 
         <!-- Footer -->
-        <div class="footer">
-            <p>الهلال الأحمر الإماراتي - عملية الفارس الشهم 3</p>
-        </div>
+        <footer class="footer">
+            <p>الهلال الأحمر الإماراتي<br>عملية الفارس الشهم 3</p>
+        </footer>
     </div>
 
     <script>
@@ -320,27 +463,30 @@
             const submitBtn = document.getElementById('submitBtn');
             const loadingSpinner = document.getElementById('loadingSpinner');
             const btnText = document.getElementById('btnText');
+            const btnIcon = document.getElementById('btnIcon');
             const usernameInput = document.getElementById('username');
             const passwordInput = document.getElementById('password');
 
             // Form submission with loading state
             form.addEventListener('submit', function(e) {
-                // Show loading state
-                submitBtn.disabled = true;
-                loadingSpinner.style.display = 'inline-block';
-                btnText.textContent = 'جاري تسجيل الدخول...';
-
-                // If there are validation errors, prevent loading state
+                // Check if form is valid
                 if (!form.checkValidity()) {
                     e.preventDefault();
-                    resetSubmitButton();
+                    validateForm();
                     return;
                 }
+
+                // Show loading state
+                submitBtn.disabled = true;
+                loadingSpinner.classList.add('show');
+                btnIcon.style.display = 'none';
+                btnText.textContent = 'جاري تسجيل الدخول...';
             });
 
             function resetSubmitButton() {
                 submitBtn.disabled = false;
-                loadingSpinner.style.display = 'none';
+                loadingSpinner.classList.remove('show');
+                btnIcon.style.display = 'inline-block';
                 btnText.textContent = 'تسجيل الدخول';
             }
 
@@ -350,6 +496,7 @@
             // Enter key navigation
             usernameInput.addEventListener('keypress', function(e) {
                 if (e.key === 'Enter') {
+                    e.preventDefault();
                     passwordInput.focus();
                 }
             });
@@ -360,11 +507,12 @@
                 [usernameInput, passwordInput].forEach(input => {
                     input.addEventListener('input', function() {
                         errorMessage.style.opacity = '0.5';
+                        errorMessage.style.transition = 'opacity 0.3s ease';
                     });
                 });
             }
 
-            // Validate form before submission
+            // Validate form
             function validateForm() {
                 let isValid = true;
 
@@ -393,6 +541,8 @@
                 input.addEventListener('input', function() {
                     if (this.value.length > 0) {
                         this.style.borderColor = '#27ae60';
+                    } else {
+                        this.style.borderColor = '#e1e8ed';
                     }
                 });
             });
