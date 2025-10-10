@@ -664,6 +664,11 @@
                 الصفحة الرئيسية
             </a>
             
+            <a href="{% url 'export_makhbaz_excel' makhbaz.id %}" class="nav-btn">
+                <i class="fas fa-file-excel"></i>
+                تصدير إلى Excel
+            </a>
+
             <!-- Delete Button -->
             <form action="{% url 'delete_makhbaz' makhbaz.id %}" method="POST" style="display:inline;" onsubmit="return confirm('هل أنت متأكد أنك تريد حذف هذا المخبز؟ سيتم حذف جميع التسليمات المرتبطة به.')">
                 {% csrf_token %}
