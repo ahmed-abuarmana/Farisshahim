@@ -391,8 +391,8 @@ def delete_takiya(request, takiya_id):
     return redirect("takiyat_list")  # اسم صفحة قائمة التكيات
 
 
-
 logger = logging.getLogger(__name__)
+
 @login_required(login_url='login')
 def export_makhbaz_excel(request, makhbaz_id):
     try:
@@ -407,158 +407,159 @@ def export_makhbaz_excel(request, makhbaz_id):
         ws.rightToLeft = True
         ws.sheet_view.rightToLeft = True
 
-        # تنسيقات الألوان
-        HEADER_FILL = PatternFill(start_color='1F4E78', end_color='1F4E78', fill_type='solid') 
-        SECTION_FILL = PatternFill(start_color='C6D9F1', end_color='C6D9F1', fill_type='solid') 
-        DATA_FILL = PatternFill(start_color='DCE6F1', end_color='DCE6F1', fill_type='solid') 
-        PLAIN_DATA_FILL = PatternFill(start_color='FFFFFF', end_color='FFFFFF', fill_type='solid')
+        # تنسيقات الألوان المحسّنة
+        TITLE_FILL = PatternFill(start_color='0B5394', end_color='0B5394', fill_type='solid')
+        HEADER_FILL = PatternFill(start_color='1F4E78', end_color='1F4E78', fill_type='solid')
+        SECTION_FILL = PatternFill(start_color='4A86E8', end_color='4A86E8', fill_type='solid')
+        LABEL_FILL = PatternFill(start_color='CFE2F3', end_color='CFE2F3', fill_type='solid')
+        DATA_FILL = PatternFill(start_color='F3F3F3', end_color='F3F3F3', fill_type='solid')
+        WHITE_FILL = PatternFill(start_color='FFFFFF', end_color='FFFFFF', fill_type='solid')
+        TOTAL_FILL = PatternFill(start_color='F4CCCC', end_color='F4CCCC', fill_type='solid')
 
-        BORDER = Border(
-            left=Side(style='thin', color='000000'), 
-            right=Side(style='thin', color='000000'), 
-            top=Side(style='thin', color='000000'), 
-            bottom=Side(style='thin', color='000000')
+        # حدود محسّنة
+        BORDER_THIN = Border(
+            left=Side(style='thin', color='666666'),
+            right=Side(style='thin', color='666666'),
+            top=Side(style='thin', color='666666'),
+            bottom=Side(style='thin', color='666666')
         )
         
-        # خط عربي
-        title_font = Font(name='Arial', size=16, bold=True, color='FFFFFF')
-        header_font = Font(name='Arial', size=12, bold=True, color='FFFFFF')
-        section_font = Font(name='Arial', size=12, bold=True, color='1F4E78')
-        normal_font = Font(name='Arial', size=11, bold=False, color='000000')
-        bold_font = Font(name='Arial', size=11, bold=True, color='000000')
+        BORDER_THICK = Border(
+            left=Side(style='medium', color='000000'),
+            right=Side(style='medium', color='000000'),
+            top=Side(style='medium', color='000000'),
+            bottom=Side(style='medium', color='000000')
+        )
         
-        # عنوان التقرير
-        ws.merge_cells('A1:J1')
+        # خطوط عربية محسّنة
+        title_font = Font(name='Arial', size=18, bold=True, color='FFFFFF')
+        section_font = Font(name='Arial', size=13, bold=True, color='FFFFFF')
+        header_font = Font(name='Arial', size=11, bold=True, color='FFFFFF')
+        label_font = Font(name='Arial', size=11, bold=True, color='1F4E78')
+        normal_font = Font(name='Arial', size=10, bold=False, color='000000')
+        bold_font = Font(name='Arial', size=10, bold=True, color='000000')
+        total_font = Font(name='Arial', size=11, bold=True, color='990000')
+        
+        # ====================================================
+        # العنوان الرئيسي
+        # ====================================================
+        ws.merge_cells('A1:J2')
         title_cell = ws['A1']
-        title_cell.value = f"📊 تقرير مفصل - مخبز {makhbaz.name or 'غير محدد'} 🥖"
-        title_cell.fill = HEADER_FILL
+        title_cell.value = f"🥖  تقرير شامل لمخبز {makhbaz.name or 'غير محدد'}  🥖"
+        title_cell.fill = TITLE_FILL
         title_cell.font = title_font
         title_cell.alignment = Alignment(horizontal='center', vertical='center')
-        ws.row_dimensions[1].height = 25
+        title_cell.border = BORDER_THICK
+        ws.row_dimensions[1].height = 35
+        ws.row_dimensions[2].height = 35
 
-        # ----------------------------------------------------
-        ## بيانات المخبز الأساسية
-        # ----------------------------------------------------
-        
-        start_row_info = 3
-        ws.merge_cells(f'A{start_row_info}:J{start_row_info}')
-        section_title1 = ws[f'A{start_row_info}']
-        section_title1.value = "البيانات الأساسية للمخبز"
-        section_title1.fill = SECTION_FILL
-        section_title1.font = section_font
-        section_title1.alignment = Alignment(horizontal='center', vertical='center')
-        
-        headers_info = [
-            'اسم المخبز', 'اسم صاحب المخبز', 'رقم الهوية', 'رقم الجوال', 
-            'العنوان', 'المحافظة', 'الإحداثيات', 'نوع الفرن', 
-            'القدرة الإنتاجية', 'نوع التعاقد', 'حالة المخبز', 'تاريخ الإضافة'
+        # ====================================================
+        # قسم البيانات الأساسية
+        # ====================================================
+        start_row = 4
+        ws.merge_cells(f'A{start_row}:J{start_row}')
+        section_cell = ws[f'A{start_row}']
+        section_cell.value = "📋  البيانات الأساسية للمخبز"
+        section_cell.fill = SECTION_FILL
+        section_cell.font = section_font
+        section_cell.alignment = Alignment(horizontal='center', vertical='center')
+        section_cell.border = BORDER_THICK
+        ws.row_dimensions[start_row].height = 25
+
+        # البيانات
+        info_data = [
+            ('اسم المخبز', makhbaz.name or "غير محدد", 'اسم صاحب المخبز', makhbaz.owner_name or "غير محدد"),
+            ('رقم الهوية', makhbaz.owner_id or "غير محدد", 'رقم الجوال', makhbaz.mobile_number or "غير محدد"),
+            ('العنوان', makhbaz.address or "غير محدد", 'المحافظة', makhbaz.governorate or "غير محدد"),
+            ('الإحداثيات', makhbaz.coordinates or "غير محدد", 'نوع الفرن', makhbaz.oven_type or "غير محدد"),
+            ('القدرة الإنتاجية', makhbaz.production_capacity or "غير محدد", 'نوع التعاقد', makhbaz.contract_type or "غير محدد"),
+            ('حالة المخبز', makhbaz.status or "غير محدد", 'تاريخ الإضافة', makhbaz.created_at.strftime("%Y-%m-%d") if makhbaz.created_at else "غير محدد")
         ]
-        
-        values_info = [
-            makhbaz.name or "غير محدد",
-            makhbaz.owner_name or "غير محدد", 
-            makhbaz.owner_id or "غير محدد",
-            makhbaz.mobile_number or "غير محدد",
-            makhbaz.address or "غير محدد",
-            makhbaz.governorate or "غير محدد",
-            makhbaz.coordinates or "غير محدد",
-            makhbaz.oven_type or "غير محدد",
-            makhbaz.production_capacity or "غير محدد",
-            makhbaz.contract_type or "غير محدد",
-            makhbaz.status or "غير محدد",
-            makhbaz.created_at.strftime("%Y-%m-%d") if makhbaz.created_at else "غير محدد"
-        ]
-        
-        current_row = start_row_info + 1
-        for i, (header, value) in enumerate(zip(headers_info, values_info)):
-            if i % 2 == 0:
-                # الحقل الأول في الصف
-                cell_key = ws.cell(row=current_row, column=1)
-                cell_key.value = header
-                cell_key.fill = DATA_FILL
-                cell_key.font = bold_font
-                cell_key.border = BORDER
-                cell_key.alignment = Alignment(horizontal='right', vertical='center', wrap_text=True)
 
-                # دمج الخلايا للقيمة (B إلى D)
-                ws.merge_cells(f'B{current_row}:D{current_row}')
-                cell_value = ws.cell(row=current_row, column=2)
-                cell_value.value = value
-                cell_value.fill = PLAIN_DATA_FILL
-                cell_value.font = normal_font
-                cell_value.border = BORDER
-                cell_value.alignment = Alignment(horizontal='right', vertical='center', wrap_text=True)
-
-                # تطبيق التنسيق على الخلايا المدمجة
-                for col in [3, 4]:  # الأعمدة C و D
-                    cell = ws.cell(row=current_row, column=col)
-                    cell.border = BORDER
-                    cell.fill = PLAIN_DATA_FILL
+        current_row = start_row + 1
+        for label1, value1, label2, value2 in info_data:
+            # العمود الأول - التسمية
+            cell = ws.cell(row=current_row, column=1)
+            cell.value = label1
+            cell.fill = LABEL_FILL
+            cell.font = label_font
+            cell.border = BORDER_THIN
+            cell.alignment = Alignment(horizontal='center', vertical='center', wrap_text=True)
             
-            else:
-                # الحقل الثاني في نفس الصف
-                cell_key = ws.cell(row=current_row, column=6)  # العمود F
-                cell_key.value = header
-                cell_key.fill = DATA_FILL
-                cell_key.font = bold_font
-                cell_key.border = BORDER
-                cell_key.alignment = Alignment(horizontal='right', vertical='center', wrap_text=True)
-
-                # دمج الخلايا للقيمة (G إلى J)
-                ws.merge_cells(f'G{current_row}:J{current_row}')
-                cell_value = ws.cell(row=current_row, column=7)  # العمود G
-                cell_value.value = value
-                cell_value.fill = PLAIN_DATA_FILL
-                cell_value.font = normal_font
-                cell_value.border = BORDER
-                cell_value.alignment = Alignment(horizontal='right', vertical='center', wrap_text=True)
-
-                # تطبيق التنسيق على الخلايا المدمجة
-                for col in [8, 9, 10]:  # الأعمدة H, I, J
-                    cell = ws.cell(row=current_row, column=col)
-                    cell.border = BORDER
-                    cell.fill = PLAIN_DATA_FILL
-                
-                current_row += 1
-
-        # إذا كان عدد الحقول فردياً، ننهي الصف الأخير
-        if len(headers_info) % 2 != 0:
-            # نملأ الخلايا الفارغة في النصف الثاني من الصف
-            for col in [6, 7, 8, 9, 10]:  # الأعمدة F إلى J
-                cell = ws.cell(row=current_row, column=col)
-                cell.border = BORDER
-                cell.fill = DATA_FILL
+            # العمود الثاني - القيمة
+            ws.merge_cells(f'B{current_row}:D{current_row}')
+            cell = ws.cell(row=current_row, column=2)
+            cell.value = value1
+            cell.fill = WHITE_FILL
+            cell.font = normal_font
+            cell.border = BORDER_THIN
+            cell.alignment = Alignment(horizontal='right', vertical='center', wrap_text=True)
+            
+            for col in [3, 4]:
+                ws.cell(row=current_row, column=col).border = BORDER_THIN
+            
+            # العمود الخامس - فاصل
+            cell = ws.cell(row=current_row, column=5)
+            cell.fill = SECTION_FILL
+            cell.border = BORDER_THIN
+            
+            # العمود السادس - التسمية
+            cell = ws.cell(row=current_row, column=6)
+            cell.value = label2
+            cell.fill = LABEL_FILL
+            cell.font = label_font
+            cell.border = BORDER_THIN
+            cell.alignment = Alignment(horizontal='center', vertical='center', wrap_text=True)
+            
+            # الأعمدة 7-10 - القيمة
+            ws.merge_cells(f'G{current_row}:J{current_row}')
+            cell = ws.cell(row=current_row, column=7)
+            cell.value = value2
+            cell.fill = WHITE_FILL
+            cell.font = normal_font
+            cell.border = BORDER_THIN
+            cell.alignment = Alignment(horizontal='right', vertical='center', wrap_text=True)
+            
+            for col in [8, 9, 10]:
+                ws.cell(row=current_row, column=col).border = BORDER_THIN
+            
+            ws.row_dimensions[current_row].height = 20
             current_row += 1
 
-        # ----------------------------------------------------
-        ## قسم التسليمات
-        # ----------------------------------------------------
-        empty_row = current_row + 1
+        # ====================================================
+        # قسم التسليمات
+        # ====================================================
+        current_row += 1
+        ws.merge_cells(f'A{current_row}:J{current_row}')
+        section_cell = ws.cell(row=current_row, column=1)
+        section_cell.value = "📦  سجل التسليمات والمواد المستلمة"
+        section_cell.fill = SECTION_FILL
+        section_cell.font = section_font
+        section_cell.alignment = Alignment(horizontal='center', vertical='center')
+        section_cell.border = BORDER_THICK
+        ws.row_dimensions[current_row].height = 25
+
+        # عناوين الأعمدة
+        headers = ["التاريخ", "طحين\n(كغ)", "خميرة\n(كغ)", "ملح\n(كغ)", 
+                   "سكر\n(كغ)", "زيت\n(لتر)", "حطب\n(كغ)", "غاز\n(كغ)", "إضافات"]
         
-        ws.merge_cells(f'A{empty_row}:J{empty_row}')
-        section_title2 = ws.cell(row=empty_row, column=1)
-        section_title2.value = "سجل التسليمات والمواد المستلمة"
-        section_title2.fill = SECTION_FILL
-        section_title2.font = section_font
-        section_title2.alignment = Alignment(horizontal='center', vertical='center')
-        
-        tasleem_headers = ["تاريخ التسليم", "طحين (كغ)", "خميرة (كغ)", "ملح (كغ)", 
-                          "سكر (كغ)", "زيت (لتر)", "حطب (كغ)", "غاز (كغ)", "إضافات"]
-        
-        header_row = empty_row + 1
-        for col_index, header in enumerate(tasleem_headers, start=1):
-            cell = ws.cell(row=header_row, column=col_index)
+        header_row = current_row + 1
+        for col_idx, header in enumerate(headers, start=1):
+            cell = ws.cell(row=header_row, column=col_idx)
             cell.value = header
             cell.fill = HEADER_FILL
             cell.font = header_font
-            cell.border = BORDER
+            cell.border = BORDER_THIN
             cell.alignment = Alignment(horizontal='center', vertical='center', wrap_text=True)
         
+        ws.row_dimensions[header_row].height = 35
+
+        # البيانات
         data_row = header_row + 1
-        total_flour = total_yeast = total_salt = total_sugar = 0
-        total_oil = total_wood = total_gas = 0
+        totals = {'flour': 0, 'yeast': 0, 'salt': 0, 'sugar': 0, 
+                  'oil': 0, 'wood': 0, 'gas': 0}
         
-        for t in tasleemat:
+        for idx, t in enumerate(tasleemat):
             flour = t.flour or 0
             yeast = t.yeast or 0
             salt = t.salt or 0
@@ -569,75 +570,76 @@ def export_makhbaz_excel(request, makhbaz_id):
             
             row_data = [
                 t.taslima_date.strftime("%Y-%m-%d") if t.taslima_date else "غير محدد",
-                flour,
-                yeast, 
-                salt,
-                sugar,
-                oil,
-                wood,
-                gas,
+                flour, yeast, salt, sugar, oil, wood, gas,
                 t.additions or ""
             ]
             
-            for col_index, value in enumerate(row_data, start=1):
-                cell = ws.cell(row=data_row, column=col_index)
+            fill = WHITE_FILL if idx % 2 == 0 else DATA_FILL
+            
+            for col_idx, value in enumerate(row_data, start=1):
+                cell = ws.cell(row=data_row, column=col_idx)
                 cell.value = value
-                cell.border = BORDER
+                cell.border = BORDER_THIN
                 cell.font = normal_font
-                cell.fill = PLAIN_DATA_FILL if data_row % 2 != 0 else DATA_FILL
+                cell.fill = fill
                 
-                if col_index in [2, 3, 4, 5, 6, 7, 8]:  # الأعمدة الرقمية
-                    cell.number_format = '0.00'
+                if col_idx == 1:
                     cell.alignment = Alignment(horizontal='center', vertical='center')
-                elif col_index == 1:  # التاريخ
+                elif col_idx in [2, 3, 4, 5, 6, 7, 8]:
+                    cell.number_format = '#,##0.00'
                     cell.alignment = Alignment(horizontal='center', vertical='center')
-                else:  # الإضافات
+                else:
                     cell.alignment = Alignment(horizontal='right', vertical='center', wrap_text=True)
             
-            total_flour += flour
-            total_yeast += yeast
-            total_salt += salt
-            total_sugar += sugar
-            total_oil += oil
-            total_wood += wood
-            total_gas += gas
+            totals['flour'] += flour
+            totals['yeast'] += yeast
+            totals['salt'] += salt
+            totals['sugar'] += sugar
+            totals['oil'] += oil
+            totals['wood'] += wood
+            totals['gas'] += gas
             
+            ws.row_dimensions[data_row].height = 18
             data_row += 1
-        
-        # إضافة صف الإجمالي
+
+        # صف الإجمالي
         if tasleemat:
             total_row = data_row
             
-            # خلية "الإجمالي الكلي"
-            ws.merge_cells(f'A{total_row}:A{total_row}')
-            total_cell = ws.cell(row=total_row, column=1)
-            total_cell.value = "الإجمالي الكلي"
-            total_cell.fill = HEADER_FILL
-            total_cell.font = header_font
-            total_cell.border = BORDER
-            total_cell.alignment = Alignment(horizontal='center', vertical='center')
+            cell = ws.cell(row=total_row, column=1)
+            cell.value = "📊 الإجمالي الكلي"
+            cell.fill = TOTAL_FILL
+            cell.font = total_font
+            cell.border = BORDER_THICK
+            cell.alignment = Alignment(horizontal='center', vertical='center')
             
-            totals = [total_flour, total_yeast, total_salt, total_sugar, 
-                     total_oil, total_wood, total_gas, ""]
+            total_values = [totals['flour'], totals['yeast'], totals['salt'], 
+                           totals['sugar'], totals['oil'], totals['wood'], 
+                           totals['gas'], ""]
             
-            for col_index, total in enumerate(totals, start=2):
-                cell = ws.cell(row=total_row, column=col_index)
+            for col_idx, total in enumerate(total_values, start=2):
+                cell = ws.cell(row=total_row, column=col_idx)
                 cell.value = total
-                cell.fill = SECTION_FILL
-                cell.font = bold_font
-                cell.border = BORDER
+                cell.fill = TOTAL_FILL
+                cell.font = total_font
+                cell.border = BORDER_THICK
                 cell.alignment = Alignment(horizontal='center', vertical='center')
-                if col_index < 9:  # الأعمدة الرقمية فقط
-                    cell.number_format = '0.00'
+                if col_idx < 9:
+                    cell.number_format = '#,##0.00'
+            
+            ws.row_dimensions[total_row].height = 22
 
-        # ضبط أبعاد الأعمدة
+        # ضبط عرض الأعمدة
         column_widths = {
-            'A': 18, 'B': 25, 'C': 12, 'D': 12, 'E': 12,
-            'F': 18, 'G': 25, 'H': 12, 'I': 12, 'J': 20
+            'A': 16, 'B': 14, 'C': 14, 'D': 12, 'E': 12,
+            'F': 14, 'G': 12, 'H': 12, 'I': 25, 'J': 2
         }
         
         for col_letter, width in column_widths.items():
             ws.column_dimensions[col_letter].width = width
+
+        # تجميد الصفوف العلوية
+        ws.freeze_panes = f'A{header_row + 1}'
 
         # إعداد الاستجابة
         response = HttpResponse(
@@ -656,10 +658,360 @@ def export_makhbaz_excel(request, makhbaz_id):
         
     except Exception as e:
         logger.error(f"Error exporting Excel for makhbaz {makhbaz_id}: {str(e)}")
-        # للتصحيح، يمكنك طباعة الخطأ في الكونسول
         print(f"DEBUG - Error: {str(e)}")
         from django.contrib import messages
         messages.error(request, f"حدث خطأ أثناء تصدير الملف: {str(e)}")
         from django.shortcuts import redirect
-        return redirect('makhabez_list')  # استبدل باسم view مناسب
+        return redirect('makhabez_list')
+
+
+
+logger = logging.getLogger(__name__)
+
+@login_required(login_url='login')
+def export_takiya_excel(request, takiya_id):
+    try:
+        takiya = get_object_or_404(Takiya, id=takiya_id)
+        tasleemat = Taslima_takiya.objects.filter(takiya=takiya)
+
+        wb = Workbook()
+        ws = wb.active
+        ws.title = "تقرير التكية"
         
+        # تفعيل الاتجاه من اليمين لليسار (RTL)
+        ws.rightToLeft = True
+        ws.sheet_view.rightToLeft = True
+
+        # تنسيقات الألوان المحسّنة
+        TITLE_FILL = PatternFill(start_color='0B5394', end_color='0B5394', fill_type='solid')
+        HEADER_FILL = PatternFill(start_color='1F4E78', end_color='1F4E78', fill_type='solid')
+        SECTION_FILL = PatternFill(start_color='4A86E8', end_color='4A86E8', fill_type='solid')
+        LABEL_FILL = PatternFill(start_color='CFE2F3', end_color='CFE2F3', fill_type='solid')
+        DATA_FILL = PatternFill(start_color='F3F3F3', end_color='F3F3F3', fill_type='solid')
+        WHITE_FILL = PatternFill(start_color='FFFFFF', end_color='FFFFFF', fill_type='solid')
+        TOTAL_FILL = PatternFill(start_color='F4CCCC', end_color='F4CCCC', fill_type='solid')
+        POT_FILL = PatternFill(start_color='D9EAD3', end_color='D9EAD3', fill_type='solid')
+
+        # حدود محسّنة
+        BORDER_THIN = Border(
+            left=Side(style='thin', color='666666'),
+            right=Side(style='thin', color='666666'),
+            top=Side(style='thin', color='666666'),
+            bottom=Side(style='thin', color='666666')
+        )
+        
+        BORDER_THICK = Border(
+            left=Side(style='medium', color='000000'),
+            right=Side(style='medium', color='000000'),
+            top=Side(style='medium', color='000000'),
+            bottom=Side(style='medium', color='000000')
+        )
+        
+        # خطوط عربية محسّنة
+        title_font = Font(name='Arial', size=18, bold=True, color='FFFFFF')
+        section_font = Font(name='Arial', size=13, bold=True, color='FFFFFF')
+        header_font = Font(name='Arial', size=11, bold=True, color='FFFFFF')
+        label_font = Font(name='Arial', size=11, bold=True, color='1F4E78')
+        normal_font = Font(name='Arial', size=10, bold=False, color='000000')
+        bold_font = Font(name='Arial', size=10, bold=True, color='000000')
+        total_font = Font(name='Arial', size=11, bold=True, color='990000')
+        pot_font = Font(name='Arial', size=10, bold=True, color='274E13')
+        
+        # ====================================================
+        # العنوان الرئيسي
+        # ====================================================
+        ws.merge_cells('A1:P2')
+        title_cell = ws['A1']
+        title_cell.value = f"🍲  تقرير شامل لتكية {takiya.name or 'غير محدد'}  🍲"
+        title_cell.fill = TITLE_FILL
+        title_cell.font = title_font
+        title_cell.alignment = Alignment(horizontal='center', vertical='center')
+        title_cell.border = BORDER_THICK
+        ws.row_dimensions[1].height = 35
+        ws.row_dimensions[2].height = 35
+
+        # ====================================================
+        # قسم البيانات الأساسية
+        # ====================================================
+        start_row = 4
+        ws.merge_cells(f'A{start_row}:P{start_row}')
+        section_cell = ws[f'A{start_row}']
+        section_cell.value = "📋  البيانات الأساسية للتكية"
+        section_cell.fill = SECTION_FILL
+        section_cell.font = section_font
+        section_cell.alignment = Alignment(horizontal='center', vertical='center')
+        section_cell.border = BORDER_THICK
+        ws.row_dimensions[start_row].height = 25
+
+        # البيانات
+        info_data = [
+            ('اسم التكية', takiya.name or "غير محدد", 'اسم صاحب التكية', takiya.owner_name or "غير محدد"),
+            ('رقم الهوية', takiya.owner_id or "غير محدد", 'رقم الجوال', takiya.mobile_number or "غير محدد"),
+            ('العنوان', takiya.address or "غير محدد", 'المحافظة', takiya.governorate or "غير محدد"),
+            ('الإحداثيات', takiya.coordinates or "غير محدد", 'القدرة الإنتاجية اليومية', f"{takiya.daily_capacity or 0} قدر" if takiya.daily_capacity else "غير محدد"),
+            ('حالة التكية', takiya.status or "غير محدد", 'تاريخ الإضافة', takiya.created_at.strftime("%Y-%m-%d") if takiya.created_at else "غير محدد")
+        ]
+
+        current_row = start_row + 1
+        for label1, value1, label2, value2 in info_data:
+            # العمود الأول - التسمية
+            cell = ws.cell(row=current_row, column=1)
+            cell.value = label1
+            cell.fill = LABEL_FILL
+            cell.font = label_font
+            cell.border = BORDER_THIN
+            cell.alignment = Alignment(horizontal='center', vertical='center', wrap_text=True)
+            
+            # الأعمدة 2-6 - القيمة
+            ws.merge_cells(f'B{current_row}:F{current_row}')
+            cell = ws.cell(row=current_row, column=2)
+            cell.value = value1
+            cell.fill = WHITE_FILL
+            cell.font = normal_font
+            cell.border = BORDER_THIN
+            cell.alignment = Alignment(horizontal='right', vertical='center', wrap_text=True)
+            
+            for col in range(3, 7):
+                ws.cell(row=current_row, column=col).border = BORDER_THIN
+            
+            # العمود السابع - فاصل
+            cell = ws.cell(row=current_row, column=7)
+            cell.fill = SECTION_FILL
+            cell.border = BORDER_THIN
+            
+            # العمود الثامن - التسمية
+            cell = ws.cell(row=current_row, column=8)
+            cell.value = label2
+            cell.fill = LABEL_FILL
+            cell.font = label_font
+            cell.border = BORDER_THIN
+            cell.alignment = Alignment(horizontal='center', vertical='center', wrap_text=True)
+            
+            # الأعمدة 9-16 - القيمة
+            ws.merge_cells(f'I{current_row}:P{current_row}')
+            cell = ws.cell(row=current_row, column=9)
+            cell.value = value2
+            cell.fill = WHITE_FILL
+            cell.font = normal_font
+            cell.border = BORDER_THIN
+            cell.alignment = Alignment(horizontal='right', vertical='center', wrap_text=True)
+            
+            for col in range(10, 17):
+                ws.cell(row=current_row, column=col).border = BORDER_THIN
+            
+            ws.row_dimensions[current_row].height = 20
+            current_row += 1
+
+        # ====================================================
+        # قسم القدور والإمكانيات
+        # ====================================================
+        current_row += 1
+        ws.merge_cells(f'A{current_row}:P{current_row}')
+        section_cell = ws.cell(row=current_row, column=1)
+        section_cell.value = "🍯  القدور والإمكانيات"
+        section_cell.fill = SECTION_FILL
+        section_cell.font = section_font
+        section_cell.alignment = Alignment(horizontal='center', vertical='center')
+        section_cell.border = BORDER_THICK
+        ws.row_dimensions[current_row].height = 25
+
+        # عناوين القدور
+        pot_headers = [
+            'إجمالي القدور', 'قدور 80 لتر', 'قدور 100 لتر',
+            'قدور 120 لتر', 'قدور 150 لتر', 'قدور 200 لتر'
+        ]
+        
+        pot_values = [
+            takiya.total_pots or 0,
+            takiya.pots_80 or 0,
+            takiya.pots_100 or 0,
+            takiya.pots_120 or 0,
+            takiya.pots_150 or 0,
+            takiya.pots_200 or 0
+        ]
+
+        pot_row = current_row + 1
+        for col_idx, header in enumerate(pot_headers, start=1):
+            cell = ws.cell(row=pot_row, column=col_idx)
+            cell.value = header
+            cell.fill = LABEL_FILL
+            cell.font = label_font
+            cell.border = BORDER_THIN
+            cell.alignment = Alignment(horizontal='center', vertical='center', wrap_text=True)
+        
+        ws.row_dimensions[pot_row].height = 20
+
+        pot_data_row = pot_row + 1
+        for col_idx, value in enumerate(pot_values, start=1):
+            cell = ws.cell(row=pot_data_row, column=col_idx)
+            cell.value = value
+            cell.fill = POT_FILL
+            cell.font = pot_font
+            cell.border = BORDER_THIN
+            cell.alignment = Alignment(horizontal='center', vertical='center')
+            cell.number_format = '#,##0'
+        
+        ws.row_dimensions[pot_data_row].height = 20
+
+        # ====================================================
+        # قسم التسليمات
+        # ====================================================
+        current_row = pot_data_row + 2
+        ws.merge_cells(f'A{current_row}:P{current_row}')
+        section_cell = ws.cell(row=current_row, column=1)
+        section_cell.value = "📦  سجل التسليمات والمواد المستلمة"
+        section_cell.fill = SECTION_FILL
+        section_cell.font = section_font
+        section_cell.alignment = Alignment(horizontal='center', vertical='center')
+        section_cell.border = BORDER_THICK
+        ws.row_dimensions[current_row].height = 25
+
+        # عناوين الأعمدة
+        headers = [
+            "التاريخ", "ملح\n(كغ)", "معكرونة\n(كغ)", "رز\n(كغ)",
+            "زيت\n(لتر)", "بازيلا\n(علبة)", "عدس\n(كغ)", "لوبيا\n(كغ)",
+            "صلصة\n(علبة)", "لانشون\n(علبة)", "بهار ماجي\n(كغ)", "شوربة خضار\n(كغ)",
+            "٧ بهارات\n(كغ)", "سمنة\n(علبة)", "برغل\n(كغ)", "إضافات"
+        ]
+        
+        header_row = current_row + 1
+        for col_idx, header in enumerate(headers, start=1):
+            cell = ws.cell(row=header_row, column=col_idx)
+            cell.value = header
+            cell.fill = HEADER_FILL
+            cell.font = header_font
+            cell.border = BORDER_THIN
+            cell.alignment = Alignment(horizontal='center', vertical='center', wrap_text=True)
+        
+        ws.row_dimensions[header_row].height = 35
+
+        # البيانات
+        data_row = header_row + 1
+        totals = {
+            'salt': 0, 'macaroni': 0, 'rice': 0, 'oil': 0, 'peas': 0,
+            'lentils': 0, 'beans': 0, 'sauce': 0, 'luncheon': 0,
+            'maggi_spice': 0, 'vegetable_soup': 0, 'seven_spices': 0,
+            'ghee': 0, 'bulgur': 0
+        }
+        
+        for idx, t in enumerate(tasleemat):
+            row_data = [
+                t.taslima_date.strftime("%Y-%m-%d") if t.taslima_date else "غير محدد",
+                t.salt or 0,
+                t.macaroni or 0,
+                t.rice or 0,
+                t.oil or 0,
+                t.peas or 0,
+                t.lentils or 0,
+                t.beans or 0,
+                t.sauce or 0,
+                t.luncheon or 0,
+                t.maggi_spice or 0,
+                t.vegetable_soup or 0,
+                t.seven_spices or 0,
+                t.ghee or 0,
+                t.bulgur or 0,
+                t.additions or ""
+            ]
+            
+            # تحديث المجاميع
+            totals['salt'] += t.salt or 0
+            totals['macaroni'] += t.macaroni or 0
+            totals['rice'] += t.rice or 0
+            totals['oil'] += t.oil or 0
+            totals['peas'] += t.peas or 0
+            totals['lentils'] += t.lentils or 0
+            totals['beans'] += t.beans or 0
+            totals['sauce'] += t.sauce or 0
+            totals['luncheon'] += t.luncheon or 0
+            totals['maggi_spice'] += t.maggi_spice or 0
+            totals['vegetable_soup'] += t.vegetable_soup or 0
+            totals['seven_spices'] += t.seven_spices or 0
+            totals['ghee'] += t.ghee or 0
+            totals['bulgur'] += t.bulgur or 0
+            
+            fill = WHITE_FILL if idx % 2 == 0 else DATA_FILL
+            
+            for col_idx, value in enumerate(row_data, start=1):
+                cell = ws.cell(row=data_row, column=col_idx)
+                cell.value = value
+                cell.border = BORDER_THIN
+                cell.font = normal_font
+                cell.fill = fill
+                
+                if col_idx == 1:
+                    cell.alignment = Alignment(horizontal='center', vertical='center')
+                elif col_idx in range(2, 16):
+                    cell.number_format = '#,##0'
+                    cell.alignment = Alignment(horizontal='center', vertical='center')
+                else:
+                    cell.alignment = Alignment(horizontal='right', vertical='center', wrap_text=True)
+            
+            ws.row_dimensions[data_row].height = 18
+            data_row += 1
+
+        # صف الإجمالي
+        if tasleemat:
+            total_row = data_row
+            
+            cell = ws.cell(row=total_row, column=1)
+            cell.value = "📊 الإجمالي الكلي"
+            cell.fill = TOTAL_FILL
+            cell.font = total_font
+            cell.border = BORDER_THICK
+            cell.alignment = Alignment(horizontal='center', vertical='center')
+            
+            total_values = [
+                totals['salt'], totals['macaroni'], totals['rice'], totals['oil'],
+                totals['peas'], totals['lentils'], totals['beans'], totals['sauce'],
+                totals['luncheon'], totals['maggi_spice'], totals['vegetable_soup'],
+                totals['seven_spices'], totals['ghee'], totals['bulgur'], ""
+            ]
+            
+            for col_idx, total in enumerate(total_values, start=2):
+                cell = ws.cell(row=total_row, column=col_idx)
+                cell.value = total
+                cell.fill = TOTAL_FILL
+                cell.font = total_font
+                cell.border = BORDER_THICK
+                cell.alignment = Alignment(horizontal='center', vertical='center')
+                if col_idx < 16:
+                    cell.number_format = '#,##0'
+            
+            ws.row_dimensions[total_row].height = 22
+
+        # ضبط عرض الأعمدة
+        column_widths = {
+            'A': 14, 'B': 10, 'C': 11, 'D': 10, 'E': 11,
+            'F': 11, 'G': 10, 'H': 10, 'I': 11, 'J': 11,
+            'K': 11, 'L': 12, 'M': 11, 'N': 11, 'O': 10, 'P': 20
+        }
+        
+        for col_letter, width in column_widths.items():
+            ws.column_dimensions[col_letter].width = width
+
+        # تجميد الصفوف العلوية
+        ws.freeze_panes = f'A{header_row + 1}'
+
+        # إعداد الاستجابة
+        response = HttpResponse(
+            content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        )
+        
+        filename = f"تقرير_تكية_{takiya.name or 'غير_محدد'}.xlsx"
+        import urllib.parse
+        encoded_filename = urllib.parse.quote(filename.encode('utf-8'))
+        
+        response['Content-Disposition'] = f'attachment; filename="{encoded_filename}"'
+        response['Content-Encoding'] = 'utf-8'
+
+        wb.save(response)
+        return response
+        
+    except Exception as e:
+        logger.error(f"Error exporting Excel for takiya {takiya_id}: {str(e)}")
+        print(f"DEBUG - Error: {str(e)}")
+        from django.contrib import messages
+        messages.error(request, f"حدث خطأ أثناء تصدير الملف: {str(e)}")
+        from django.shortcuts import redirect
+        return redirect('takaya_list')

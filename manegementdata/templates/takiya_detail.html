@@ -660,6 +660,11 @@
                 الصفحة الرئيسية
             </a>
             
+            <a href="{% url 'export_takiya_excel' takiya.id %}" class="nav-btn">
+                <i class="fas fa-file-excel"></i>
+                تصدير إلى Excel
+            </a>
+
             <!-- Delete Button -->
             <form action="{% url 'delete_takiya' takiya.id %}" method="POST" style="display:inline;" onsubmit="return confirm('هل أنت متأكد أنك تريد حذف هذه التكية؟ سيتم حذف جميع التسليمات المرتبطة بها.')">
                 {% csrf_token %}
