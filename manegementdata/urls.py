@@ -27,5 +27,6 @@ urlpatterns = [
     path('makhabez/<int:pk>/update/', views.update_makhbaz, name='update_makhbaz'),
 
     path('takiyat/<int:pk>/update/', views.update_takiya, name='update_takiya'),
+    path('makhabez/<int:makhbaz_id>/export_excel/', views.export_makhbaz_excel, name='export_makhbaz_excel'),
 
 ]
