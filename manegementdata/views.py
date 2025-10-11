@@ -178,7 +178,7 @@ def takiya_detail(request, pk):
 
     latest_taslim = all_tasleemat.first() if all_tasleemat.exists() else None
 
-    # حساب الإجماليات لجميع الحقول
+    # حساب الإجماليات لجميع الحقول (بما فيها الحقول الجديدة)
     total_salt = sum(t.salt or 0 for t in all_tasleemat)
     total_macaroni = sum(t.macaroni or 0 for t in all_tasleemat)
     total_rice = sum(t.rice or 0 for t in all_tasleemat)
@@ -193,6 +193,7 @@ def takiya_detail(request, pk):
     total_seven_spices = sum(t.seven_spices or 0 for t in all_tasleemat)
     total_ghee = sum(t.ghee or 0 for t in all_tasleemat)
     total_bulgur = sum(t.bulgur or 0 for t in all_tasleemat)
+    total_vegetable = sum(t.amount_of_vegetables or 0 for t in all_tasleemat)  # الحقل الجديد
 
     context = {
         "takiya": takiya,
@@ -215,6 +216,7 @@ def takiya_detail(request, pk):
         "total_seven_spices": total_seven_spices,
         "total_ghee": total_ghee,
         "total_bulgur": total_bulgur,
+        "total_vegetable": total_vegetable,  # الحقل الجديد
         
         # بيانات التكية الأساسية
         "governorate_choices": Takiya.GOVERNORATE_CHOICES,
@@ -228,7 +230,6 @@ def takiya_detail(request, pk):
 
     return render(request, "takiya_detail.html", context)
 
-
 @login_required(login_url='login')
 def add_tasleema_for_makhbaz(request, makhbaz_id):
     if request.method == "POST":
@@ -236,26 +237,33 @@ def add_tasleema_for_makhbaz(request, makhbaz_id):
             data = json.loads(request.body)
             makhbaz = Makhbaz.objects.get(id=makhbaz_id)
             
+            # التحقق من وجود تاريخ التسليم (إجباري)
+            if not data.get('taslima_date'):
+                return JsonResponse({"success": False, "error": "تاريخ التسليم مطلوب"})
+            
             # إنشاء التسليمة
             taslima = Taslima_makhbaz.objects.create(
-                taslima_date = data.get('taslima_date'),
-                flour = data.get('flour') or None,
-                yeast = data.get('yeast') or None,
-                salt = data.get('salt') or None,
-                sugar = data.get('sugar') or None,
-                cooking_oil = data.get('cooking_oil') or None,
-                wood = data.get('wood') or None,
-                gas = data.get('gas') or None,
-                additions = data.get('additions') or None,
-                makhbaz = makhbaz
+                taslima_date=data.get('taslima_date'),
+                flour=data.get('flour'),
+                yeast=data.get('yeast'),
+                salt=data.get('salt'),
+                sugar=data.get('sugar'),
+                cooking_oil=data.get('cooking_oil'),
+                wood=data.get('wood'),
+                gas=data.get('gas'),
+                additions=data.get('additions'),
+                until_date=data.get('until_date'),  # إضافة الحقل الجديد
+                makhbaz=makhbaz
             )
             
-            return JsonResponse({"success": True})
+            return JsonResponse({"success": True, "taslima_id": taslima.id})
+            
+        except Makhbaz.DoesNotExist:
+            return JsonResponse({"success": False, "error": "المخبز غير موجود"})
         except Exception as e:
             return JsonResponse({"success": False, "error": str(e)})
 
-    return JsonResponse({"success": False, "error": "Invalid request method"})
-
+    return JsonResponse({"success": False, "error": "طريقة الطلب غير صالحة"})
 
 @login_required(login_url='login')
 def add_tasleema_for_takiya(request, takiya_id):
@@ -264,26 +272,32 @@ def add_tasleema_for_takiya(request, takiya_id):
             data = json.loads(request.body)
             takiya = Takiya.objects.get(id=takiya_id)
             
+            # إنشاء تسليم جديد مع جميع الحقول بما فيها الحقول الجديدة
             taslima = Taslima_takiya.objects.create(
                 taslima_date=data.get('taslima_date'),
-                salt=data.get('salt') or None,
-                macaroni=data.get('macaroni') or None,
-                rice=data.get('rice') or None,
-                oil=data.get('oil') or None,
-                peas=data.get('peas') or None,
-                lentils=data.get('lentils') or None,
-                beans=data.get('beans') or None,
-                sauce=data.get('sauce') or None,
-                luncheon=data.get('luncheon') or None,
-                maggi_spice=data.get('maggi_spice') or None,
-                vegetable_soup=data.get('vegetable_soup') or None,
-                seven_spices=data.get('seven_spices') or None,
-                ghee=data.get('ghee') or None,
-                bulgur=data.get('bulgur') or None,
-                additions=data.get('additions') or None,  # إضافة حقل الإضافات
+                salt=data.get('salt'),
+                macaroni=data.get('macaroni'),
+                rice=data.get('rice'),
+                oil=data.get('oil'),
+                peas=data.get('peas'),
+                lentils=data.get('lentils'),
+                beans=data.get('beans'),
+                sauce=data.get('sauce'),
+                luncheon=data.get('luncheon'),
+                maggi_spice=data.get('maggi_spice'),
+                vegetable_soup=data.get('vegetable_soup'),
+                seven_spices=data.get('seven_spices'),
+                ghee=data.get('ghee'),
+                bulgur=data.get('bulgur'),
+                vegetable=data.get('vegetable'),  # الحقل الجديد
+                amount_of_vegetables=data.get('amount_of_vegetables'),  # الحقل الجديد
+                additions=data.get('additions'),
+                until_date=data.get('until_date'),
                 takiya=takiya
             )
+            
             return JsonResponse({"success": True, "taslima_id": taslima.id})
+            
         except Takiya.DoesNotExist:
             return JsonResponse({"success": False, "error": "التكية غير موجودة"})
         except Exception as e:
@@ -541,7 +555,8 @@ def export_makhbaz_excel(request, makhbaz_id):
 
         # عناوين الأعمدة
         headers = ["التاريخ", "طحين\n(كغ)", "خميرة\n(كغ)", "ملح\n(كغ)", 
-                   "سكر\n(كغ)", "زيت\n(لتر)", "حطب\n(كغ)", "غاز\n(كغ)", "إضافات"]
+                "سكر\n(كغ)", "زيت\n(لتر)", "حطب\n(كغ)", "غاز\n(كغ)", 
+                "إضافات", "صالح حتى"] 
         
         header_row = current_row + 1
         for col_idx, header in enumerate(headers, start=1):
@@ -571,7 +586,8 @@ def export_makhbaz_excel(request, makhbaz_id):
             row_data = [
                 t.taslima_date.strftime("%Y-%m-%d") if t.taslima_date else "غير محدد",
                 flour, yeast, salt, sugar, oil, wood, gas,
-                t.additions or ""
+                t.additions or "",
+                t.until_date.strftime("%Y-%m-%d") if t.until_date else "غير محدد" 
             ]
             
             fill = WHITE_FILL if idx % 2 == 0 else DATA_FILL
@@ -614,8 +630,8 @@ def export_makhbaz_excel(request, makhbaz_id):
             cell.alignment = Alignment(horizontal='center', vertical='center')
             
             total_values = [totals['flour'], totals['yeast'], totals['salt'], 
-                           totals['sugar'], totals['oil'], totals['wood'], 
-                           totals['gas'], ""]
+                        totals['sugar'], totals['oil'], totals['wood'], 
+                        totals['gas'], "", ""] 
             
             for col_idx, total in enumerate(total_values, start=2):
                 cell = ws.cell(row=total_row, column=col_idx)
@@ -632,7 +648,7 @@ def export_makhbaz_excel(request, makhbaz_id):
         # ضبط عرض الأعمدة
         column_widths = {
             'A': 16, 'B': 14, 'C': 14, 'D': 12, 'E': 12,
-            'F': 14, 'G': 12, 'H': 12, 'I': 25, 'J': 2
+            'F': 14, 'G': 12, 'H': 12, 'I': 25, 'J': 12, 'K': 2  # إضافة عمود جديد
         }
         
         for col_letter, width in column_widths.items():
@@ -663,7 +679,6 @@ def export_makhbaz_excel(request, makhbaz_id):
         messages.error(request, f"حدث خطأ أثناء تصدير الملف: {str(e)}")
         from django.shortcuts import redirect
         return redirect('makhabez_list')
-
 
 
 logger = logging.getLogger(__name__)
@@ -720,7 +735,7 @@ def export_takiya_excel(request, takiya_id):
         # ====================================================
         # العنوان الرئيسي
         # ====================================================
-        ws.merge_cells('A1:P2')
+        ws.merge_cells('A1:R2')
         title_cell = ws['A1']
         title_cell.value = f"🍲  تقرير شامل لتكية {takiya.name or 'غير محدد'}  🍲"
         title_cell.fill = TITLE_FILL
@@ -734,7 +749,7 @@ def export_takiya_excel(request, takiya_id):
         # قسم البيانات الأساسية
         # ====================================================
         start_row = 4
-        ws.merge_cells(f'A{start_row}:P{start_row}')
+        ws.merge_cells(f'A{start_row}:R{start_row}')
         section_cell = ws[f'A{start_row}']
         section_cell.value = "📋  البيانات الأساسية للتكية"
         section_cell.fill = SECTION_FILL
@@ -762,8 +777,8 @@ def export_takiya_excel(request, takiya_id):
             cell.border = BORDER_THIN
             cell.alignment = Alignment(horizontal='center', vertical='center', wrap_text=True)
             
-            # الأعمدة 2-6 - القيمة
-            ws.merge_cells(f'B{current_row}:F{current_row}')
+            # الأعمدة 2-7 - القيمة
+            ws.merge_cells(f'B{current_row}:G{current_row}')
             cell = ws.cell(row=current_row, column=2)
             cell.value = value1
             cell.fill = WHITE_FILL
@@ -771,32 +786,32 @@ def export_takiya_excel(request, takiya_id):
             cell.border = BORDER_THIN
             cell.alignment = Alignment(horizontal='right', vertical='center', wrap_text=True)
             
-            for col in range(3, 7):
+            for col in range(3, 8):
                 ws.cell(row=current_row, column=col).border = BORDER_THIN
             
-            # العمود السابع - فاصل
-            cell = ws.cell(row=current_row, column=7)
+            # العمود الثامن - فاصل
+            cell = ws.cell(row=current_row, column=8)
             cell.fill = SECTION_FILL
             cell.border = BORDER_THIN
             
-            # العمود الثامن - التسمية
-            cell = ws.cell(row=current_row, column=8)
+            # العمود التاسع - التسمية
+            cell = ws.cell(row=current_row, column=9)
             cell.value = label2
             cell.fill = LABEL_FILL
             cell.font = label_font
             cell.border = BORDER_THIN
             cell.alignment = Alignment(horizontal='center', vertical='center', wrap_text=True)
             
-            # الأعمدة 9-16 - القيمة
-            ws.merge_cells(f'I{current_row}:P{current_row}')
-            cell = ws.cell(row=current_row, column=9)
+            # الأعمدة 10-18 - القيمة
+            ws.merge_cells(f'J{current_row}:R{current_row}')
+            cell = ws.cell(row=current_row, column=10)
             cell.value = value2
             cell.fill = WHITE_FILL
             cell.font = normal_font
             cell.border = BORDER_THIN
             cell.alignment = Alignment(horizontal='right', vertical='center', wrap_text=True)
             
-            for col in range(10, 17):
+            for col in range(11, 19):
                 ws.cell(row=current_row, column=col).border = BORDER_THIN
             
             ws.row_dimensions[current_row].height = 20
@@ -806,7 +821,7 @@ def export_takiya_excel(request, takiya_id):
         # قسم القدور والإمكانيات
         # ====================================================
         current_row += 1
-        ws.merge_cells(f'A{current_row}:P{current_row}')
+        ws.merge_cells(f'A{current_row}:R{current_row}')
         section_cell = ws.cell(row=current_row, column=1)
         section_cell.value = "🍯  القدور والإمكانيات"
         section_cell.fill = SECTION_FILL
@@ -857,7 +872,7 @@ def export_takiya_excel(request, takiya_id):
         # قسم التسليمات
         # ====================================================
         current_row = pot_data_row + 2
-        ws.merge_cells(f'A{current_row}:P{current_row}')
+        ws.merge_cells(f'A{current_row}:R{current_row}')
         section_cell = ws.cell(row=current_row, column=1)
         section_cell.value = "📦  سجل التسليمات والمواد المستلمة"
         section_cell.fill = SECTION_FILL
@@ -866,12 +881,13 @@ def export_takiya_excel(request, takiya_id):
         section_cell.border = BORDER_THICK
         ws.row_dimensions[current_row].height = 25
 
-        # عناوين الأعمدة
+        # عناوين الأعمدة مع الحقول الجديدة
         headers = [
             "التاريخ", "ملح\n(كغ)", "معكرونة\n(كغ)", "رز\n(كغ)",
             "زيت\n(لتر)", "بازيلا\n(علبة)", "عدس\n(كغ)", "لوبيا\n(كغ)",
             "صلصة\n(علبة)", "لانشون\n(علبة)", "بهار ماجي\n(كغ)", "شوربة خضار\n(كغ)",
-            "٧ بهارات\n(كغ)", "سمنة\n(علبة)", "برغل\n(كغ)", "إضافات"
+            "٧ بهارات\n(كغ)", "سمنة\n(علبة)", "برغل\n(كغ)", "نوع الخضار", 
+            "كمية الخضار\n(كغ)", "إضافات", "صالح حتى" 
         ]
         
         header_row = current_row + 1
@@ -891,7 +907,7 @@ def export_takiya_excel(request, takiya_id):
             'salt': 0, 'macaroni': 0, 'rice': 0, 'oil': 0, 'peas': 0,
             'lentils': 0, 'beans': 0, 'sauce': 0, 'luncheon': 0,
             'maggi_spice': 0, 'vegetable_soup': 0, 'seven_spices': 0,
-            'ghee': 0, 'bulgur': 0
+            'ghee': 0, 'bulgur': 0, 'amount_of_vegetables': 0
         }
         
         for idx, t in enumerate(tasleemat):
@@ -911,7 +927,10 @@ def export_takiya_excel(request, takiya_id):
                 t.seven_spices or 0,
                 t.ghee or 0,
                 t.bulgur or 0,
-                t.additions or ""
+                t.vegetable or "",
+                t.amount_of_vegetables or 0,
+                t.additions or "",
+                t.until_date.strftime("%Y-%m-%d") if t.until_date else "غير محدد"  # إضافة الحقل الجديد
             ]
             
             # تحديث المجاميع
@@ -929,6 +948,7 @@ def export_takiya_excel(request, takiya_id):
             totals['seven_spices'] += t.seven_spices or 0
             totals['ghee'] += t.ghee or 0
             totals['bulgur'] += t.bulgur or 0
+            totals['amount_of_vegetables'] += t.amount_of_vegetables or 0
             
             fill = WHITE_FILL if idx % 2 == 0 else DATA_FILL
             
@@ -941,7 +961,7 @@ def export_takiya_excel(request, takiya_id):
                 
                 if col_idx == 1:
                     cell.alignment = Alignment(horizontal='center', vertical='center')
-                elif col_idx in range(2, 16):
+                elif col_idx in range(2, 16) or col_idx == 17:  # الحقول الرقمية بما فيها كمية الخضار
                     cell.number_format = '#,##0'
                     cell.alignment = Alignment(horizontal='center', vertical='center')
                 else:
@@ -965,7 +985,8 @@ def export_takiya_excel(request, takiya_id):
                 totals['salt'], totals['macaroni'], totals['rice'], totals['oil'],
                 totals['peas'], totals['lentils'], totals['beans'], totals['sauce'],
                 totals['luncheon'], totals['maggi_spice'], totals['vegetable_soup'],
-                totals['seven_spices'], totals['ghee'], totals['bulgur'], ""
+                totals['seven_spices'], totals['ghee'], totals['bulgur'], 
+                "", totals['amount_of_vegetables'], "", ""  # إضافة عمود فارغ للحقل الجديد
             ]
             
             for col_idx, total in enumerate(total_values, start=2):
@@ -975,7 +996,7 @@ def export_takiya_excel(request, takiya_id):
                 cell.font = total_font
                 cell.border = BORDER_THICK
                 cell.alignment = Alignment(horizontal='center', vertical='center')
-                if col_idx < 16:
+                if col_idx < 15 or col_idx == 17:  # الحقول الرقمية بما فيها كمية الخضار
                     cell.number_format = '#,##0'
             
             ws.row_dimensions[total_row].height = 22
@@ -984,7 +1005,8 @@ def export_takiya_excel(request, takiya_id):
         column_widths = {
             'A': 14, 'B': 10, 'C': 11, 'D': 10, 'E': 11,
             'F': 11, 'G': 10, 'H': 10, 'I': 11, 'J': 11,
-            'K': 11, 'L': 12, 'M': 11, 'N': 11, 'O': 10, 'P': 20
+            'K': 11, 'L': 12, 'M': 11, 'N': 11, 'O': 10,
+            'P': 15, 'Q': 12, 'R': 20, 'S': 12  # إضافة عمود جديد
         }
         
         for col_letter, width in column_widths.items():
@@ -1015,3 +1037,4 @@ def export_takiya_excel(request, takiya_id):
         messages.error(request, f"حدث خطأ أثناء تصدير الملف: {str(e)}")
         from django.shortcuts import redirect
         return redirect('takaya_list')
+    

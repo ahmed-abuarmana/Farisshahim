@@ -99,6 +99,8 @@ class Taslima_makhbaz(models.Model):
     
     additions = models.TextField(null=True, blank=True, verbose_name="إضافات")
     
+    until_date = models.DateField(null=True, blank=True, verbose_name="حتى تاريخ")
+
     # كل تسليمة مرتبطة بمخبز واحد
     makhbaz = models.ForeignKey(
         Makhbaz,
@@ -245,7 +247,13 @@ class Taslima_takiya(models.Model):
     ghee = models.PositiveIntegerField(null=True, blank=True, verbose_name="سمنة (علبة)")
     bulgur = models.PositiveIntegerField(null=True, blank=True, verbose_name="برغل (كيلو)")
 
+    vegetable = models.TextField(null=True, blank=True, verbose_name="خضار")
+    amount_of_vegetables = models.PositiveIntegerField(null=True, blank=True, verbose_name="كمية الخضار")
+
     additions = models.TextField(null=True, blank=True, verbose_name="إضافات")
+    
+    until_date = models.DateField(null=True, blank=True, verbose_name="حتى تاريخ")
+
 
     # كل تسليمة مرتبطة بتكية واحدة
     takiya = models.ForeignKey(
