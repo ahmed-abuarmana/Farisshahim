@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Makhbaz, Takiya, Taslima_makhbaz, Taslima_takiya
+from .models import Makhbaz, Takiya, Taslima_makhbaz, Taslima_takiya, Beneficiary_takiya, Beneficiary_makhbaz
 from django.http import JsonResponse
 import json
 from django.contrib import messages
@@ -42,7 +42,10 @@ def index(request):
     context = {
         "makhabiz": makhabiz,
         "takiyat": takiyat,
+        "total_makhabez_count": makhabiz.count(),  # إجمالي عدد المخابز
+        "total_takiyat_count": takiyat.count(),  # إجمالي عدد التكيات
     }
+
     return render(request, "index.html", context)
 
 
@@ -51,7 +54,10 @@ def index(request):
 # عرض كل المخابز
 def makhabez_list(request):
     makhabiz = Makhbaz.objects.all()
-    return render(request, "makhabez_list.html", {"makhabiz": makhabiz})
+    return render(request, "makhabez_list.html", {
+        "makhabiz": makhabiz,
+        'user_can_edit': request.user.is_authenticated and request.user.is_staff,
+        })
 
 
 
@@ -75,6 +81,7 @@ def makhabez_detail(request, pk):
     total_gas = sum(t.gas or 0 for t in all_tasleemat)
 
     context = {
+        'user_can_edit': request.user.is_authenticated and request.user.is_staff,
         "makhbaz": makhbaz,
         "all_tasleemat": all_tasleemat,
         "latest_taslim": latest_taslim,
@@ -160,11 +167,15 @@ def update_takiya(request, pk):
         return JsonResponse({"success": False, "error": str(e)}, status=400)
 
 
+
 @login_required(login_url='login')
 # عرض كل التكيات
 def takiyat_list(request):
     takiyat = Takiya.objects.all()
-    return render(request, "takiyat_list.html", {"takiyat": takiyat})
+    return render(request, "takiyat_list.html", {
+        "takiyat": takiyat,
+        'user_can_edit': request.user.is_authenticated and request.user.is_staff,
+        })
 
 
 
@@ -196,11 +207,13 @@ def takiya_detail(request, pk):
     total_vegetable = sum(t.amount_of_vegetables or 0 for t in all_tasleemat)  # الحقل الجديد
 
     context = {
+        'user_can_edit': request.user.is_authenticated and request.user.is_staff,
         "takiya": takiya,
         "all_tasleemat": all_tasleemat,
         "latest_taslim": latest_taslim,
         "total_deliveries": all_tasleemat.count(),
-        
+        'beneficiaries': takiya.beneficiaries.all().order_by('-distribution_date'),
+
         # إجماليات التسليمات
         "total_salt": total_salt,
         "total_macaroni": total_macaroni,
@@ -229,6 +242,8 @@ def takiya_detail(request, pk):
     }
 
     return render(request, "takiya_detail.html", context)
+
+
 
 @login_required(login_url='login')
 def add_tasleema_for_makhbaz(request, makhbaz_id):
@@ -264,6 +279,8 @@ def add_tasleema_for_makhbaz(request, makhbaz_id):
             return JsonResponse({"success": False, "error": str(e)})
 
     return JsonResponse({"success": False, "error": "طريقة الطلب غير صالحة"})
+
+
 
 @login_required(login_url='login')
 def add_tasleema_for_takiya(request, takiya_id):
@@ -306,6 +323,7 @@ def add_tasleema_for_takiya(request, takiya_id):
     return JsonResponse({"success": False, "error": "طريقة الطلب غير صالحة"})
 
 
+
 @login_required(login_url='login')
 def add_new_makhbaz(request):
     if request.method == "POST":
@@ -335,6 +353,7 @@ def add_new_makhbaz(request):
         return redirect("makhabez_list")
 
     return render(request, "add_new_makhbaz.html")
+
 
 
 @login_required(login_url='login')
@@ -412,6 +431,7 @@ def export_makhbaz_excel(request, makhbaz_id):
     try:
         makhbaz = get_object_or_404(Makhbaz, id=makhbaz_id)
         tasleemat = Taslima_makhbaz.objects.filter(makhbaz=makhbaz)
+        beneficiaries = Beneficiary_makhbaz.objects.filter(makhbaz=makhbaz)
 
         wb = Workbook()
         ws = wb.active
@@ -429,6 +449,7 @@ def export_makhbaz_excel(request, makhbaz_id):
         DATA_FILL = PatternFill(start_color='F3F3F3', end_color='F3F3F3', fill_type='solid')
         WHITE_FILL = PatternFill(start_color='FFFFFF', end_color='FFFFFF', fill_type='solid')
         TOTAL_FILL = PatternFill(start_color='F4CCCC', end_color='F4CCCC', fill_type='solid')
+        BENEFICIARY_FILL = PatternFill(start_color='E6B8AF', end_color='E6B8AF', fill_type='solid')
 
         # حدود محسّنة
         BORDER_THIN = Border(
@@ -453,6 +474,7 @@ def export_makhbaz_excel(request, makhbaz_id):
         normal_font = Font(name='Arial', size=10, bold=False, color='000000')
         bold_font = Font(name='Arial', size=10, bold=True, color='000000')
         total_font = Font(name='Arial', size=11, bold=True, color='990000')
+        beneficiary_font = Font(name='Arial', size=10, bold=True, color='7D0552')
         
         # ====================================================
         # العنوان الرئيسي
@@ -618,12 +640,12 @@ def export_makhbaz_excel(request, makhbaz_id):
             ws.row_dimensions[data_row].height = 18
             data_row += 1
 
-        # صف الإجمالي
+        # صف الإجمالي للتسليمات
         if tasleemat:
             total_row = data_row
             
             cell = ws.cell(row=total_row, column=1)
-            cell.value = "📊 الإجمالي الكلي"
+            cell.value = "📊 الإجمالي الكلي للتسليمات"
             cell.fill = TOTAL_FILL
             cell.font = total_font
             cell.border = BORDER_THICK
@@ -645,10 +667,97 @@ def export_makhbaz_excel(request, makhbaz_id):
             
             ws.row_dimensions[total_row].height = 22
 
+        # ====================================================
+        # قسم المستفيدين
+        # ====================================================
+        current_row = data_row + 2
+        ws.merge_cells(f'A{current_row}:J{current_row}')
+        section_cell = ws.cell(row=current_row, column=1)
+        section_cell.value = "👥  سجل المستفيدين من المخبز"
+        section_cell.fill = BENEFICIARY_FILL
+        section_cell.font = section_font
+        section_cell.alignment = Alignment(horizontal='center', vertical='center')
+        section_cell.border = BORDER_THICK
+        ws.row_dimensions[current_row].height = 25
+
+        # عناوين أعمدة المستفيدين
+        beneficiary_headers = [
+            "تاريخ التسليم", "نوع التوزيع", "اسم الجهة المستفيدة", 
+            "شخص الاتصال", "رقم الجوال", "ملاحظات"
+        ]
+        
+        beneficiary_header_row = current_row + 1
+        for col_idx, header in enumerate(beneficiary_headers, start=1):
+            cell = ws.cell(row=beneficiary_header_row, column=col_idx)
+            cell.value = header
+            cell.fill = HEADER_FILL
+            cell.font = header_font
+            cell.border = BORDER_THIN
+            cell.alignment = Alignment(horizontal='center', vertical='center', wrap_text=True)
+        
+        ws.row_dimensions[beneficiary_header_row].height = 35
+
+        # بيانات المستفيدين
+        beneficiary_data_row = beneficiary_header_row + 1
+        beneficiary_count = 0
+        
+        for idx, beneficiary in enumerate(beneficiaries):
+            row_data = [
+                beneficiary.distribution_date.strftime("%Y-%m-%d") if beneficiary.distribution_date else "غير محدد",
+                beneficiary.get_distribution_type_display(),
+                beneficiary.beneficiary_name or "",
+                beneficiary.contact_person or "",
+                beneficiary.phone_number or "",
+                beneficiary.notes or ""
+            ]
+            
+            fill = WHITE_FILL if idx % 2 == 0 else DATA_FILL
+            
+            for col_idx, value in enumerate(row_data, start=1):
+                cell = ws.cell(row=beneficiary_data_row, column=col_idx)
+                cell.value = value
+                cell.border = BORDER_THIN
+                cell.font = normal_font
+                cell.fill = fill
+                cell.alignment = Alignment(horizontal='center', vertical='center', wrap_text=True)
+            
+            ws.row_dimensions[beneficiary_data_row].height = 20
+            beneficiary_data_row += 1
+            beneficiary_count += 1
+
+        # صف الإجمالي للمستفيدين
+        if beneficiaries:
+            beneficiary_total_row = beneficiary_data_row
+            
+            cell = ws.cell(row=beneficiary_total_row, column=1)
+            cell.value = "👥 إجمالي عدد المستفيدين"
+            cell.fill = TOTAL_FILL
+            cell.font = total_font
+            cell.border = BORDER_THICK
+            cell.alignment = Alignment(horizontal='center', vertical='center')
+            
+            cell = ws.cell(row=beneficiary_total_row, column=2)
+            cell.value = beneficiary_count
+            cell.fill = TOTAL_FILL
+            cell.font = total_font
+            cell.border = BORDER_THICK
+            cell.alignment = Alignment(horizontal='center', vertical='center')
+            
+            # دمج الخلايا المتبقية
+            ws.merge_cells(f'C{beneficiary_total_row}:J{beneficiary_total_row}')
+            cell = ws.cell(row=beneficiary_total_row, column=3)
+            cell.value = f"إجمالي عدد المستفيدين المسجلين: {beneficiary_count}"
+            cell.fill = TOTAL_FILL
+            cell.font = total_font
+            cell.border = BORDER_THICK
+            cell.alignment = Alignment(horizontal='center', vertical='center')
+            
+            ws.row_dimensions[beneficiary_total_row].height = 22
+
         # ضبط عرض الأعمدة
         column_widths = {
             'A': 16, 'B': 14, 'C': 14, 'D': 12, 'E': 12,
-            'F': 14, 'G': 12, 'H': 12, 'I': 25, 'J': 12, 'K': 2  # إضافة عمود جديد
+            'F': 14, 'G': 12, 'H': 12, 'I': 25, 'J': 12
         }
         
         for col_letter, width in column_widths.items():
@@ -681,6 +790,7 @@ def export_makhbaz_excel(request, makhbaz_id):
         return redirect('makhabez_list')
 
 
+
 logger = logging.getLogger(__name__)
 
 @login_required(login_url='login')
@@ -688,6 +798,7 @@ def export_takiya_excel(request, takiya_id):
     try:
         takiya = get_object_or_404(Takiya, id=takiya_id)
         tasleemat = Taslima_takiya.objects.filter(takiya=takiya)
+        beneficiaries = Beneficiary_takiya.objects.filter(takiya=takiya)
 
         wb = Workbook()
         ws = wb.active
@@ -706,6 +817,7 @@ def export_takiya_excel(request, takiya_id):
         WHITE_FILL = PatternFill(start_color='FFFFFF', end_color='FFFFFF', fill_type='solid')
         TOTAL_FILL = PatternFill(start_color='F4CCCC', end_color='F4CCCC', fill_type='solid')
         POT_FILL = PatternFill(start_color='D9EAD3', end_color='D9EAD3', fill_type='solid')
+        BENEFICIARY_FILL = PatternFill(start_color='E6B8AF', end_color='E6B8AF', fill_type='solid')
 
         # حدود محسّنة
         BORDER_THIN = Border(
@@ -731,6 +843,7 @@ def export_takiya_excel(request, takiya_id):
         bold_font = Font(name='Arial', size=10, bold=True, color='000000')
         total_font = Font(name='Arial', size=11, bold=True, color='990000')
         pot_font = Font(name='Arial', size=10, bold=True, color='274E13')
+        beneficiary_font = Font(name='Arial', size=10, bold=True, color='7D0552')
         
         # ====================================================
         # العنوان الرئيسي
@@ -930,7 +1043,7 @@ def export_takiya_excel(request, takiya_id):
                 t.vegetable or "",
                 t.amount_of_vegetables or 0,
                 t.additions or "",
-                t.until_date.strftime("%Y-%m-%d") if t.until_date else "غير محدد"  # إضافة الحقل الجديد
+                t.until_date.strftime("%Y-%m-%d") if t.until_date else "غير محدد"
             ]
             
             # تحديث المجاميع
@@ -970,12 +1083,12 @@ def export_takiya_excel(request, takiya_id):
             ws.row_dimensions[data_row].height = 18
             data_row += 1
 
-        # صف الإجمالي
+        # صف الإجمالي للتسليمات
         if tasleemat:
             total_row = data_row
             
             cell = ws.cell(row=total_row, column=1)
-            cell.value = "📊 الإجمالي الكلي"
+            cell.value = "📊 الإجمالي الكلي للتسليمات"
             cell.fill = TOTAL_FILL
             cell.font = total_font
             cell.border = BORDER_THICK
@@ -986,7 +1099,7 @@ def export_takiya_excel(request, takiya_id):
                 totals['peas'], totals['lentils'], totals['beans'], totals['sauce'],
                 totals['luncheon'], totals['maggi_spice'], totals['vegetable_soup'],
                 totals['seven_spices'], totals['ghee'], totals['bulgur'], 
-                "", totals['amount_of_vegetables'], "", ""  # إضافة عمود فارغ للحقل الجديد
+                "", totals['amount_of_vegetables'], "", ""
             ]
             
             for col_idx, total in enumerate(total_values, start=2):
@@ -1001,12 +1114,99 @@ def export_takiya_excel(request, takiya_id):
             
             ws.row_dimensions[total_row].height = 22
 
+        # ====================================================
+        # قسم المستفيدين
+        # ====================================================
+        current_row = data_row + 2
+        ws.merge_cells(f'A{current_row}:R{current_row}')
+        section_cell = ws.cell(row=current_row, column=1)
+        section_cell.value = "👥  سجل المستفيدين من التكية"
+        section_cell.fill = BENEFICIARY_FILL
+        section_cell.font = section_font
+        section_cell.alignment = Alignment(horizontal='center', vertical='center')
+        section_cell.border = BORDER_THICK
+        ws.row_dimensions[current_row].height = 25
+
+        # عناوين أعمدة المستفيدين
+        beneficiary_headers = [
+            "تاريخ التسليم", "نوع التوزيع", "اسم الجهة المستفيدة", 
+            "شخص الاتصال", "رقم الجوال", "ملاحظات"
+        ]
+        
+        beneficiary_header_row = current_row + 1
+        for col_idx, header in enumerate(beneficiary_headers, start=1):
+            cell = ws.cell(row=beneficiary_header_row, column=col_idx)
+            cell.value = header
+            cell.fill = HEADER_FILL
+            cell.font = header_font
+            cell.border = BORDER_THIN
+            cell.alignment = Alignment(horizontal='center', vertical='center', wrap_text=True)
+        
+        ws.row_dimensions[beneficiary_header_row].height = 35
+
+        # بيانات المستفيدين
+        beneficiary_data_row = beneficiary_header_row + 1
+        beneficiary_count = 0
+        
+        for idx, beneficiary in enumerate(beneficiaries):
+            row_data = [
+                beneficiary.distribution_date.strftime("%Y-%m-%d") if beneficiary.distribution_date else "غير محدد",
+                beneficiary.get_distribution_type_display(),
+                beneficiary.beneficiary_name or "",
+                beneficiary.contact_person or "",
+                beneficiary.phone_number or "",
+                beneficiary.notes or ""
+            ]
+            
+            fill = WHITE_FILL if idx % 2 == 0 else DATA_FILL
+            
+            for col_idx, value in enumerate(row_data, start=1):
+                cell = ws.cell(row=beneficiary_data_row, column=col_idx)
+                cell.value = value
+                cell.border = BORDER_THIN
+                cell.font = normal_font
+                cell.fill = fill
+                cell.alignment = Alignment(horizontal='center', vertical='center', wrap_text=True)
+            
+            ws.row_dimensions[beneficiary_data_row].height = 20
+            beneficiary_data_row += 1
+            beneficiary_count += 1
+
+        # صف الإجمالي للمستفيدين
+        if beneficiaries:
+            beneficiary_total_row = beneficiary_data_row
+            
+            cell = ws.cell(row=beneficiary_total_row, column=1)
+            cell.value = "👥 إجمالي عدد المستفيدين"
+            cell.fill = TOTAL_FILL
+            cell.font = total_font
+            cell.border = BORDER_THICK
+            cell.alignment = Alignment(horizontal='center', vertical='center')
+            
+            cell = ws.cell(row=beneficiary_total_row, column=2)
+            cell.value = beneficiary_count
+            cell.fill = TOTAL_FILL
+            cell.font = total_font
+            cell.border = BORDER_THICK
+            cell.alignment = Alignment(horizontal='center', vertical='center')
+            
+            # دمج الخلايا المتبقية
+            ws.merge_cells(f'C{beneficiary_total_row}:R{beneficiary_total_row}')
+            cell = ws.cell(row=beneficiary_total_row, column=3)
+            cell.value = f"إجمالي عدد المستفيدين المسجلين: {beneficiary_count}"
+            cell.fill = TOTAL_FILL
+            cell.font = total_font
+            cell.border = BORDER_THICK
+            cell.alignment = Alignment(horizontal='center', vertical='center')
+            
+            ws.row_dimensions[beneficiary_total_row].height = 22
+
         # ضبط عرض الأعمدة
         column_widths = {
             'A': 14, 'B': 10, 'C': 11, 'D': 10, 'E': 11,
             'F': 11, 'G': 10, 'H': 10, 'I': 11, 'J': 11,
             'K': 11, 'L': 12, 'M': 11, 'N': 11, 'O': 10,
-            'P': 15, 'Q': 12, 'R': 20, 'S': 12  # إضافة عمود جديد
+            'P': 15, 'Q': 12, 'R': 20, 'S': 12
         }
         
         for col_letter, width in column_widths.items():
@@ -1037,4 +1237,105 @@ def export_takiya_excel(request, takiya_id):
         messages.error(request, f"حدث خطأ أثناء تصدير الملف: {str(e)}")
         from django.shortcuts import redirect
         return redirect('takaya_list')
+
+
+
+@login_required
+def add_beneficiary_for_takiya(request, takiya_id):
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+            takiya = Takiya.objects.get(id=takiya_id)
+            
+            beneficiary = Beneficiary_takiya.objects.create(
+                takiya=takiya,
+                distribution_date=data.get('distribution_date'),
+                distribution_type=data.get('distribution_type'),
+                beneficiary_name=data.get('beneficiary_name'),
+                contact_person=data.get('contact_person'),
+                phone_number=data.get('phone_number'),
+                notes=data.get('notes')
+            )
+            
+            return JsonResponse({'success': True, 'id': beneficiary.id})
+            
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)})
     
+    return JsonResponse({'success': False, 'error': 'Method not allowed'})
+
+
+
+@login_required
+def add_beneficiary_for_makhbaz(request, makhbaz_id):
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+            makhbaz = Makhbaz.objects.get(id=makhbaz_id)
+            
+            beneficiary = Beneficiary_makhbaz.objects.create(
+                makhbaz=makhbaz,
+                distribution_date=data.get('distribution_date'),
+                distribution_type=data.get('distribution_type'),
+                beneficiary_name=data.get('beneficiary_name'),
+                contact_person=data.get('contact_person'),
+                phone_number=data.get('phone_number'),
+                notes=data.get('notes')
+            )
+            
+            return JsonResponse({'success': True, 'id': beneficiary.id})
+            
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)})
+    
+    return JsonResponse({'success': False, 'error': 'Method not allowed'})
+
+
+
+
+@login_required(login_url='login')
+def all_beneficiaries_takiya(request):
+    # جلب جميع المستفيدين من التكيات
+    beneficiaries = Beneficiary_takiya.objects.all().select_related('takiya').order_by('-distribution_date')
+    
+    # إحصائيات
+    total_beneficiaries = beneficiaries.count()
+    personal_count = beneficiaries.filter(distribution_type='شخصي').count()
+    camp_count = beneficiaries.filter(distribution_type='مخيم').count()
+    organization_count = beneficiaries.filter(distribution_type='مؤسسة').count()
+    inside_count = beneficiaries.filter(distribution_type='داخل التكية').count()
+    
+    context = {
+        'beneficiaries': beneficiaries,
+        'total_beneficiaries': total_beneficiaries,
+        'personal_count': personal_count,
+        'camp_count': camp_count,
+        'organization_count': organization_count,
+        'inside_count': inside_count,
+    }
+    
+    return render(request, 'all_beneficiaries_takiya.html', context)
+
+
+@login_required(login_url='login')
+def all_beneficiaries_makhbaz(request):
+    # جلب جميع المستفيدين من المخابز
+    beneficiaries = Beneficiary_makhbaz.objects.all().select_related('makhbaz').order_by('-distribution_date')
+    
+    # إحصائيات
+    total_beneficiaries = beneficiaries.count()
+    personal_count = beneficiaries.filter(distribution_type='شخصي').count()
+    camp_count = beneficiaries.filter(distribution_type='مخيم').count()
+    organization_count = beneficiaries.filter(distribution_type='مؤسسة').count()
+    inside_count = beneficiaries.filter(distribution_type='داخل التكية').count()
+    
+    context = {
+        'beneficiaries': beneficiaries,
+        'total_beneficiaries': total_beneficiaries,
+        'personal_count': personal_count,
+        'camp_count': camp_count,
+        'organization_count': organization_count,
+        'inside_count': inside_count,
+    }
+    
+    return render(request, 'all_beneficiaries_makhbaz.html', context)

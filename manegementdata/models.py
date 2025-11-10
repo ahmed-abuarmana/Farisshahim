@@ -1,6 +1,6 @@
 from django.db import models
 from django.core.validators import RegexValidator
-
+from django.utils import timezone
 
 GOVERNORATE_CHOICES = [
     ("الوسطى", "الوسطى"),
@@ -21,18 +21,21 @@ class Makhbaz(models.Model):
 
     address = models.CharField(max_length=300, verbose_name="العنوان بالتفصيل", null=True, blank=True)
     owner_name = models.CharField(max_length=200, verbose_name="اسم صاحب المخبز", null=True, blank=True)
+
     owner_id = models.CharField(
         max_length=9,
         validators=[RegexValidator(r'^\d{9}$', "رقم الهوية يجب أن يكون 9 أرقام")],
         verbose_name="رقم هوية صاحب المخبز",
         null=True, blank=True
     )
+
     mobile_number = models.CharField(
         max_length=10,
         validators=[RegexValidator(r'^\d{10}$', "رقم الجوال يجب أن يكون 10 أرقام")],
         verbose_name="رقم الجوال",
         null=True, blank=True
     )
+
     coordinates = models.CharField(
         max_length=50,
         verbose_name="إحداثيات الموقع",
@@ -45,6 +48,7 @@ class Makhbaz(models.Model):
         ("نص آلي", "نص آلي"),
         ("آلي", "آلي"),
     ]
+
     oven_type = models.CharField(
         max_length=20,
         choices=OVEN_TYPE_CHOICES,
@@ -61,6 +65,7 @@ class Makhbaz(models.Model):
         ("مجاني", "مخبز مجاني"),
         ("مدعم", "مخبز مدعوم"),
     ]
+
     contract_type = models.CharField(
         max_length=10,
         choices=CONTRACT_TYPE_CHOICES,
@@ -72,6 +77,7 @@ class Makhbaz(models.Model):
         ("فعال", "فعال"),
         ("متوقف", "متوقف"),
     ]
+
     status = models.CharField(
         max_length=10,
         choices=STATUS_CHOICES,
@@ -114,6 +120,82 @@ class Taslima_makhbaz(models.Model):
     def __str__(self):
         return f"تسليمة بتاريخ {self.taslima_date} للمخبز: {self.makhbaz.name if self.makhbaz else 'غير محدد'}"
 
+
+
+class Beneficiary_makhbaz(models.Model):
+    # خيارات التوزيع
+    DISTRIBUTION_CHOICES = [
+        ('شخصي', 'شخصي'),
+        ('مخيم', 'مخيم'),
+        ('مؤسسة', 'مؤسسة'),
+        ('داخل التكية', 'داخل التكية'),
+    ]
+    
+    # العلاقة مع المخبز
+    makhbaz = models.ForeignKey(
+        'Makhbaz',
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name='beneficiaries',
+        verbose_name="المخبز"
+    )
+    
+    # تاريخ تسليم الإغاثة
+    distribution_date = models.DateField(
+        default=timezone.now,
+        verbose_name="تاريخ تسليم الإغاثة"
+    )
+    
+    # نوع التوزيع
+    distribution_type = models.CharField(
+        max_length=20,
+        choices=DISTRIBUTION_CHOICES,
+        verbose_name="نوع التوزيع"
+    )
+    
+    # اسم الجهة المستفيدة
+    beneficiary_name = models.CharField(
+        max_length=255,
+        verbose_name="اسم الجهة المستفيدة"
+    )
+    
+    # شخص الاتصال
+    contact_person = models.CharField(
+        max_length=255,
+        verbose_name="شخص الاتصال"
+    )
+    
+    # رقم الجوال
+    phone_number = models.CharField(
+        max_length=15,
+        verbose_name="رقم الجوال"
+    )
+    
+    # الحقول الإضافية
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name="تاريخ الإضافة"
+    )
+    
+    updated_at = models.DateTimeField(
+        auto_now=True,
+        verbose_name="تاريخ التحديث"
+    )
+    
+    notes = models.TextField(
+        blank=True,
+        null=True,
+        verbose_name="ملاحظات"
+    )
+    
+    class Meta:
+        verbose_name = "مستفيد المخبز"
+        verbose_name_plural = "مستفيدو المخابز"
+        ordering = ['-distribution_date', 'beneficiary_name']
+    
+    def __str__(self):
+        return f"{self.beneficiary_name} - {self.makhbaz.name if self.makhbaz else 'بدون مخبز'}"
 
 
 
@@ -185,18 +267,22 @@ class Takiya(models.Model):
         verbose_name="عدد القدور سعة 80 لتر",
         null=True, blank=True
     )
+
     pots_100 = models.PositiveIntegerField(
         verbose_name="عدد القدور سعة 100 لتر",
         null=True, blank=True
     )
+
     pots_120 = models.PositiveIntegerField(
         verbose_name="عدد القدور سعة 120 لتر",
         null=True, blank=True
     )
+
     pots_150 = models.PositiveIntegerField(
         verbose_name="عدد القدور سعة 150 لتر",
         null=True, blank=True
     )
+
     pots_200 = models.PositiveIntegerField(
         verbose_name="عدد القدور سعة 200 لتر",
         null=True, blank=True
@@ -211,6 +297,7 @@ class Takiya(models.Model):
         ("فعال", "فعال"),
         ("متوقف", "متوقف"),
     ]
+
     status = models.CharField(
         max_length=10,
         choices=STATUS_CHOICES,
@@ -225,7 +312,6 @@ class Takiya(models.Model):
 
     def __str__(self):
         return self.name if self.name else "تكية غير مسماة"
-    
 
 
 class Taslima_takiya(models.Model):
@@ -268,3 +354,79 @@ class Taslima_takiya(models.Model):
     def __str__(self):
         return f"تسليمة بتاريخ {self.taslima_date} للتكية: {self.takiya.name if self.takiya else 'غير محدد'}"
 
+
+
+class Beneficiary_takiya(models.Model):
+    # خيارات التوزيع
+    DISTRIBUTION_CHOICES = [
+        ('شخصي', 'شخصي'),
+        ('مخيم', 'مخيم'),
+        ('مؤسسة', 'مؤسسة'),
+        ('داخل التكية', 'داخل التكية'),
+    ]
+    
+    # العلاقة مع التكية
+    takiya = models.ForeignKey(
+        'Takiya',  # أو استبدلها باسم التطبيق إذا كان في تطبيق مختلف
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name='beneficiaries',  # تغيير related_name ليكون أكثر وضوحاً
+        verbose_name="التكية"
+    )
+    
+    # تاريخ تسليم الإغاثة
+    distribution_date = models.DateField(
+        default=timezone.now,
+        verbose_name="تاريخ تسليم الإغاثة"
+    )
+    
+    # نوع التوزيع
+    distribution_type = models.CharField(
+        max_length=20,
+        choices=DISTRIBUTION_CHOICES,
+        verbose_name="نوع التوزيع"
+    )
+    
+    # اسم الجهة المستفيدة
+    beneficiary_name = models.CharField(
+        max_length=255,
+        verbose_name="اسم الجهة المستفيدة"
+    )
+    
+    # شخص الاتصال
+    contact_person = models.CharField(
+        max_length=255,
+        verbose_name="شخص الاتصال"
+    )
+    
+    # رقم الجوال
+    phone_number = models.CharField(
+        max_length=15,
+        verbose_name="رقم الجوال"
+    )
+    
+    # الحقول الإضافية التي قد تكون مفيدة
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name="تاريخ الإضافة"
+    )
+    
+    updated_at = models.DateTimeField(
+        auto_now=True,
+        verbose_name="تاريخ التحديث"
+    )
+    
+    notes = models.TextField(
+        blank=True,
+        null=True,
+        verbose_name="ملاحظات"
+    )
+    
+    class Meta:
+        verbose_name = "مستفيد التكية"
+        verbose_name_plural = "مستفيدو التكايا"
+        ordering = ['-distribution_date', 'beneficiary_name']
+    
+    def __str__(self):
+        return f"{self.beneficiary_name} - {self.takiya.name if self.takiya else 'بدون تكية'}"

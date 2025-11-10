@@ -5,26 +5,49 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>تسجيل الدخول - الفارس الشهم 3</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
+        /* ==================================== */
+        /* 1. المتغيرات الأساسية (مطابقة للصفحة الرئيسية) */
+        /* ==================================== */
+        :root {
+            --primary-color: #007bff; /* الأزرق الأساسي */
+            --primary-dark: #0056b3;
+            --primary-light: #3399ff;
+            --accent-color: #28a745; /* الأخضر للتأكيد/النجاح */
+            --text-dark: #343a40;
+            --error-color: #dc3545; /* أحمر جديد للأخطاء */
+            --background-light: #f8f9fa; /* الخلفية الفاتحة */
+            --form-bg: rgba(255, 255, 255, 0.95);
+            --shadow-strong: 0 15px 40px rgba(0, 0, 0, 0.1);
+            --border-radius-large: 15px;
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            position: relative;
+        html, body {
+            height: 100%;
             overflow: hidden;
         }
 
-        /* خلفية متحركة متقدمة */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            /* استخدام نفس تدرج الخلفية من الصفحة الرئيسية */
+            background: linear-gradient(135deg, var(--background-light) 0%, #e0f7ff 100%);
+            color: var(--text-dark);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        /* ==================================== */
+        /* 2. الخلفية الديناميكية (مطابقة للصفحة الرئيسية) */
+        /* ==================================== */
         body::before {
             content: '';
             position: fixed;
@@ -32,190 +55,110 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: 
-                radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
-                radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
-                radial-gradient(circle at 40% 20%, rgba(255, 255, 255, 0.08) 0%, transparent 50%);
-            animation: backgroundPulse 15s ease-in-out infinite;
+            background:
+                radial-gradient(circle, rgba(0, 123, 255, 0.05) 1px, transparent 1px),
+                radial-gradient(circle, rgba(51, 153, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px, 70px 70px;
+            animation: backgroundMove 40s linear infinite;
             z-index: 0;
-        }
-
-        body::after {
-            content: '';
-            position: fixed;
-            width: 150%;
-            height: 150%;
-            top: -25%;
-            left: -25%;
-            background-image: 
-                linear-gradient(45deg, rgba(255, 255, 255, 0.03) 25%, transparent 25%),
-                linear-gradient(-45deg, rgba(255, 255, 255, 0.03) 25%, transparent 25%),
-                linear-gradient(45deg, transparent 75%, rgba(255, 255, 255, 0.03) 75%),
-                linear-gradient(-45deg, transparent 75%, rgba(255, 255, 255, 0.03) 75%);
-            background-size: 60px 60px;
-            animation: backgroundMove 30s linear infinite;
-            z-index: 0;
-        }
-
-        @keyframes backgroundPulse {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.8; transform: scale(1.1); }
+            pointer-events: none;
         }
 
         @keyframes backgroundMove {
-            0% { transform: translate(0, 0) rotate(0deg); }
-            100% { transform: translate(60px, 60px) rotate(360deg); }
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(100px, 100px); }
         }
 
+        /* ==================================== */
+        /* 3. حاوية تسجيل الدخول (Login Card) */
+        /* ==================================== */
         .login-container {
-            background: rgba(255, 255, 255, 0.98);
-            backdrop-filter: blur(20px);
-            padding: 50px 45px;
-            border-radius: 24px;
-            box-shadow: 
-                0 20px 60px rgba(0, 0, 0, 0.3),
-                0 0 0 1px rgba(255, 255, 255, 0.2) inset;
-            width: 100%;
-            max-width: 480px;
+            background: var(--form-bg);
+            border-radius: var(--border-radius-large);
+            box-shadow: var(--shadow-strong);
+            padding: 40px;
+            width: 90%;
+            max-width: 420px;
+            text-align: center;
             position: relative;
+            z-index: 1;
             overflow: hidden;
             animation: fadeInUp 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
-            z-index: 1;
+            /* شريط أزرق علوي مميز */
+            border-top: 5px solid var(--primary-color);
         }
 
-        .login-container::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 6px;
-            background: linear-gradient(90deg, #3498db, #2980b9, #5dade2);
-            background-size: 200% 100%;
-            animation: gradientShift 3s ease infinite;
-        }
-
-        @keyframes gradientShift {
-            0%, 100% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
+        .login-container:hover {
+            transform: translateY(-3px);
+            transition: transform 0.3s ease;
         }
 
         /* Header Section */
         .header {
             text-align: center;
-            margin-bottom: 40px;
-            animation: fadeInDown 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s both;
+            margin-bottom: 30px;
+            animation: fadeInDown 0.8s ease-out 0.2s both;
         }
 
         .logo {
-            width: 90px;
-            height: 90px;
-            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            width: 100px;
+            height: 100px;
+            /* خلفية شعار متوهجة مطابقة لتصميم الصفحة الرئيسية */
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
             border-radius: 50%;
-            margin: 0 auto 25px;
+            margin: 0 auto 15px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 42px;
-            box-shadow: 
-                0 10px 30px rgba(52, 152, 219, 0.4),
-                0 0 0 10px rgba(52, 152, 219, 0.1);
-            animation: scaleIn 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) 0.3s both;
-            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-            position: relative;
+            font-size: 45px;
+            color: white;
+            box-shadow: 0 10px 30px rgba(0, 123, 255, 0.4);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            animation: scaleIn 0.8s ease-out 0.3s both;
         }
 
-        .logo::before {
-            content: '';
-            position: absolute;
-            inset: -5px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #3498db, #2980b9);
-            opacity: 0;
-            filter: blur(10px);
-            transition: opacity 0.4s ease;
-        }
-
-        .logo:hover::before {
-            opacity: 0.6;
-            animation: pulse 2s ease infinite;
+        .logo i {
+             /* جعل الأيقونة بيضاء */
+             color: white;
         }
 
         .logo:hover {
-            transform: scale(1.08) rotate(-5deg);
-            box-shadow: 
-                0 15px 40px rgba(52, 152, 219, 0.5),
-                0 0 0 15px rgba(52, 152, 219, 0.15);
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
+            transform: scale(1.1) rotate(5deg);
         }
 
         .header h1 {
-            color: #2d3748;
-            font-size: 2.2rem;
-            margin-bottom: 12px;
+            color: var(--primary-dark);
+            font-size: 2rem;
+            margin-bottom: 5px;
             font-weight: 800;
-            letter-spacing: -0.5px;
-            background: linear-gradient(135deg, #3498db, #2980b9);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
         }
 
         .header p {
-            color: #718096;
-            font-size: 1rem;
-            line-height: 1.6;
-            font-weight: 500;
+            color: var(--text-light);
+            font-size: 0.95rem;
         }
 
         /* Error Messages */
         .error-message {
-            background: linear-gradient(135deg, #fff5f5 0%, #fed7d7 100%);
-            border: 2px solid #fc8181;
-            border-radius: 14px;
-            color: #c53030;
-            padding: 16px 20px;
-            margin-bottom: 28px;
+            background-color: #fff0f3;
+            border: 1px solid var(--error-color);
+            border-radius: var(--border-radius-large);
+            color: var(--error-color);
+            padding: 15px 20px;
+            margin-bottom: 25px;
             text-align: center;
             font-weight: 600;
-            animation: shake 0.5s ease-in-out, fadeIn 0.4s ease;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 12px;
-            box-shadow: 0 4px 12px rgba(252, 129, 129, 0.2);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .error-message::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-            animation: shimmer 2s infinite;
-        }
-
-        @keyframes shimmer {
-            to { left: 100%; }
-        }
-
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            10%, 30%, 50%, 70%, 90% { transform: translateX(-10px); }
-            20%, 40%, 60%, 80% { transform: translateX(10px); }
+            gap: 10px;
+            animation: shake 0.5s ease-in-out, fadeIn 0.4s ease;
+            box-shadow: 0 4px 10px rgba(220, 53, 69, 0.1);
         }
 
         /* Form Elements */
         .form-group {
-            margin-bottom: 26px;
+            margin-bottom: 20px;
             position: relative;
             animation: fadeIn 0.6s ease both;
         }
@@ -225,23 +168,12 @@
 
         .form-label {
             display: block;
-            margin-bottom: 12px;
-            font-weight: 700;
-            color: #2d3748;
-            font-size: 0.95rem;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: color 0.3s ease;
-        }
-
-        .form-label::before {
-            content: '';
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #3498db, #2980b9)
-            box-shadow: 0 0 10px rgba(102, 126, 234, 0.5);
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text-dark);
+            font-size: 0.9rem;
+            text-align: right;
+            padding-right: 5px;
         }
 
         .form-input-wrapper {
@@ -250,120 +182,86 @@
 
         .form-input {
             width: 100%;
-            padding: 18px 55px 18px 20px;
-            border: 2px solid #e2e8f0;
-            border-radius: 14px;
+            /* زيادة البادينج الأيمن ليتناسب مع الأيقونة التي ستكون يسارًا في RTL */
+            padding: 15px 50px 15px 15px; 
+            border: 2px solid #e9ecef;
+            border-radius: var(--border-radius-large);
             font-size: 16px;
-            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-            background: #f7fafc;
+            transition: all 0.3s ease;
+            background: #ffffff;
             font-weight: 500;
-            color: #2d3748;
-        }
-
-        .form-input:hover {
-            border-color: #cbd5e0;
-            background: #fff;
         }
 
         .form-input:focus {
             outline: none;
-            border-color: linear-gradient(135deg, #3498db, #2980b9);
-            box-shadow: 
-                0 0 0 4px rgba(102, 126, 234, 0.15),
-                0 8px 20px rgba(102, 126, 234, 0.1);
-            background: #fff;
-            transform: translateY(-2px);
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+            transform: translateY(-1px); /* تأثير خفيف للتركيز */
         }
 
         .form-input::placeholder {
-            color: #a0aec0;
-            font-weight: 400;
+            color: #adb5bd;
         }
-
-        .form-input:valid:not(:placeholder-shown) {
-            border-color: #48bb78;
-            background: #f0fff4;
-        }
-
-        /* Icons for inputs */
+        
+        /* Icons for inputs (تم تغيير الـ left إلى right لأن اتجاه الموقع RTL) */
         .input-icon {
             position: absolute;
-            left: 20px;
+            right: 15px; /* تم تغييرها من left إلى right */
             top: 50%;
             transform: translateY(-50%);
             font-size: 20px;
-            color: #a0aec0;
+            color: #adb5bd;
             pointer-events: none;
-            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transition: color 0.3s ease;
         }
 
         .form-input:focus ~ .input-icon {
-            transform: translateY(-50%) scale(1.15);
-            color: #667eea;
+            color: var(--primary-color);
         }
 
-        .form-input:valid:not(:placeholder-shown) ~ .input-icon {
-            color: #48bb78;
-        }
-
-        /* Submit Button */
+        /* Submit Button (مطابق لزر تسجيل الخروج في الصفحة الرئيسية) */
         .submit-btn {
             width: 100%;
-            padding: 20px 28px;
-            background: linear-gradient(135deg, #3498db, #2980b9);
+            padding: 15px 25px;
+            /* استخدام نفس تدرج اللون الأخضر ليتوافق مع زر تسجيل الخروج */
+            background: linear-gradient(135deg, var(--accent-color) 0%, #218838 100%);
             color: white;
             border: none;
-            border-radius: 14px;
-            font-size: 18px;
+            border-radius: var(--border-radius-large);
+            font-size: 1.1rem;
             font-weight: 700;
             cursor: pointer;
-            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             position: relative;
             overflow: hidden;
-            box-shadow: 
-                0 10px 25px rgba(102, 126, 234, 0.3),
-                0 0 0 0 rgba(102, 126, 234, 0.4);
-            margin-top: 15px;
+            box-shadow: 0 8px 20px rgba(40, 167, 69, 0.3);
+            margin-top: 20px;
             animation: fadeIn 0.6s ease 0.6s both;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 12px;
+            gap: 10px;
         }
 
         .submit-btn::before {
             content: '';
             position: absolute;
-            inset: 0;
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), transparent);
-            transform: translateX(-100%) skewX(-15deg);
-            transition: transform 0.6s ease;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.2);
+            transition: left 0.5s ease;
+            transform: skewX(-20deg);
         }
 
         .submit-btn:hover::before {
-            transform: translateX(100%) skewX(-15deg);
+            left: 100%;
         }
 
         .submit-btn:hover {
             transform: translateY(-4px);
-            box-shadow: 
-                0 15px 35px rgba(102, 126, 234, 0.4),
-                0 0 0 5px rgba(102, 126, 234, 0.1);
-        }
-
-        .submit-btn:active {
-            transform: translateY(-2px);
-        }
-
-        .submit-btn:disabled {
-            background: linear-gradient(135deg, #cbd5e0 0%, #a0aec0 100%);
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
-        }
-
-        .submit-btn:disabled::before {
-            display: none;
+            box-shadow: 0 12px 30px rgba(40, 167, 69, 0.5);
         }
 
         /* Loading Animation */
@@ -371,7 +269,7 @@
             display: none;
             width: 20px;
             height: 20px;
-            border: 3px solid rgba(255, 255, 255, 0.3);
+            border: 3px solid rgba(255, 255, 255, 0.4);
             border-top: 3px solid #ffffff;
             border-radius: 50%;
             animation: spin 0.8s linear infinite;
@@ -381,148 +279,92 @@
             display: inline-block;
         }
 
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
         /* Footer */
         .footer {
             text-align: center;
-            margin-top: 40px;
-            padding-top: 30px;
-            border-top: 2px solid #e2e8f0;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e9ecef;
             animation: fadeIn 0.8s ease 0.7s both;
         }
 
         .footer p {
-            color: #718096;
-            font-size: 0.95rem;
-            line-height: 1.8;
-            font-weight: 600;
+            color: #6c757d;
+            font-size: 0.85rem;
+            font-weight: 500;
         }
 
-        /* Animations */
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(40px) scale(0.95);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
-        }
-
-        @keyframes fadeInDown {
-            from {
-                opacity: 0;
-                transform: translateY(-40px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        @keyframes scaleIn {
-            from {
-                opacity: 0;
-                transform: scale(0.7) rotate(-10deg);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1) rotate(0deg);
-            }
+        /* ==================================== */
+        /* 4. التحريكات (Animations) */
+        /* ==================================== */
+        @keyframes fadeInDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes scaleIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        @keyframes shake { /* نفس تحريك الـ shake لرسالة الخطأ */
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
         }
 
         /* Responsive Design */
-        @media (max-width: 480px) {
-            body {
-                padding: 15px;
-            }
-
+        @media (max-width: 500px) {
             .login-container {
-                padding: 40px 30px;
-                border-radius: 20px;
+                padding: 30px;
             }
-
             .header h1 {
-                font-size: 1.8rem;
+                font-size: 1.7rem;
             }
-
-            .header p {
-                font-size: 0.9rem;
-            }
-
             .logo {
                 width: 80px;
                 height: 80px;
-                font-size: 38px;
+                font-size: 35px;
             }
-
             .form-input {
-                padding: 16px 50px 16px 18px;
-                font-size: 15px;
+                padding: 14px 45px 14px 15px;
             }
-
             .submit-btn {
-                padding: 18px 24px;
-                font-size: 17px;
-            }
-
-            .input-icon {
-                font-size: 18px;
-                left: 18px;
+                padding: 15px 20px;
+                font-size: 1rem;
             }
         }
 
-        /* Accessibility */
-        .form-input:focus-visible,
-        .submit-btn:focus-visible {
-            outline: 3px solid linear-gradient(135deg, #3498db, #2980b9);
-            outline-offset: 3px;
-        }
-
-        /* Additional micro-interactions */
-        .form-group:hover .form-label::before {
-            animation: pulse 1s ease infinite;
-        }
     </style>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 
 <body>
+    <div class="particles" id="particles"></div>
+
     <div class="login-container">
         <header class="header">
             <div class="logo">
-                <i class="fas fa-shield-alt"></i>
+                <i class="fas fa-shield-alt"></i> 
             </div>
-            <h1>تسجيل الدخول</h1>
-            <p>عملية الفارس الشهم "3" - نظام إدارة المخابز والتكيات</p>
+            <h1>تسجيل الدخول الآمن</h1>
+            <p>للوصول إلى لوحة تحكم برنامج المخابز والتكيات</p>
         </header>
 
         <form method="post" id="loginForm">
             {% csrf_token %}
 
-            {% if error %}
+            {% comment %}
+                افترض أن متغير الخطأ يمرر من Django View 
+                (مثل: if form.errors or error_message)
+            {% endcomment %}
+            {% if form.errors %}
             <div class="error-message">
                 <i class="fas fa-exclamation-triangle"></i>
-                {{ error }}
+                خطأ في اسم المستخدم أو كلمة المرور.
             </div>
             {% endif %}
 
             <div class="form-group">
-                <label for="username" class="form-label">اسم المستخدم</label>
+                <label for="id_username" class="form-label">اسم المستخدم</label>
                 <div class="form-input-wrapper">
                     <input 
                         type="text" 
-                        id="username" 
+                        id="id_username" 
                         name="username" 
                         class="form-input"
                         placeholder="أدخل اسم المستخدم"
@@ -534,11 +376,11 @@
             </div>
 
             <div class="form-group">
-                <label for="password" class="form-label">كلمة المرور</label>
+                <label for="id_password" class="form-label">كلمة المرور</label>
                 <div class="form-input-wrapper">
                     <input 
                         type="password" 
-                        id="password" 
+                        id="id_password" 
                         name="password" 
                         class="form-input"
                         placeholder="أدخل كلمة المرور"
@@ -557,7 +399,7 @@
         </form>
 
         <footer class="footer">
-            <p>عملية الفارس الشهم 3<br>نظام آمن ومحمي</p>
+            <p>&copy; عملية الفارس الشهم 3</p>
         </footer>
     </div>
 
@@ -568,68 +410,47 @@
             const loadingSpinner = document.getElementById('loadingSpinner');
             const btnText = document.getElementById('btnText');
             const btnIcon = document.getElementById('btnIcon');
-            const usernameInput = document.getElementById('username');
-            const passwordInput = document.getElementById('password');
+            const usernameInput = document.getElementById('id_username');
+            const passwordInput = document.getElementById('id_password');
+            const errorMessage = document.querySelector('.error-message');
 
+            // لتشغيل تأثير التحميل عند الضغط على الزر
             form.addEventListener('submit', function(e) {
                 if (!form.checkValidity()) {
-                    e.preventDefault();
-                    validateForm();
-                    return;
+                     // منع الإرسال إذا كانت الحقول فارغة (متصفحياً)
+                    return; 
                 }
-
+                
+                // تفعيل حالة التحميل
                 submitBtn.disabled = true;
                 loadingSpinner.classList.add('show');
                 btnIcon.style.display = 'none';
-                btnText.textContent = 'جاري تسجيل الدخول...';
+                btnText.textContent = 'جاري التحقق...';
             });
 
+            // تركيز على حقل اسم المستخدم عند تحميل الصفحة
             usernameInput.focus();
 
-            usernameInput.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    e.preventDefault();
-                    passwordInput.focus();
-                }
-            });
-
-            const errorMessage = document.querySelector('.error-message');
+            // إزالة تأثير الاهتزاز لرسالة الخطأ عند بدء الكتابة
             if (errorMessage) {
                 [usernameInput, passwordInput].forEach(input => {
                     input.addEventListener('input', function() {
-                        errorMessage.style.opacity = '0.5';
-                        errorMessage.style.transition = 'opacity 0.3s ease';
+                        // إزالة الاهتزاز عند بدء التفاعل
+                        errorMessage.style.animation = 'fadeIn 0.3s ease';
+                        // يمكن إخفاؤها تدريجياً لتبدو أن المستخدم يصحح الخطأ
+                        // errorMessage.style.opacity = '0.5'; 
                     });
                 });
             }
 
-            function validateForm() {
-                let isValid = true;
-
-                if (usernameInput.value.trim() === '') {
-                    usernameInput.style.borderColor = '#fc8181';
-                    isValid = false;
-                } else {
-                    usernameInput.style.borderColor = '#e2e8f0';
-                }
-
-                if (passwordInput.value === '') {
-                    passwordInput.style.borderColor = '#fc8181';
-                    isValid = false;
-                } else {
-                    passwordInput.style.borderColor = '#e2e8f0';
-                }
-
-                return isValid;
-            }
-
-            [usernameInput, passwordInput].forEach(input => {
-                input.addEventListener('blur', validateForm);
-                input.addEventListener('input', function() {
-                    if (this.value.length > 0) {
-                        this.style.borderColor = '#48bb78';
+            // لضمان ظهور شريط الخطأ بلون أحمر إذا تم إرسال حقل فارغ
+             [usernameInput, passwordInput].forEach(input => {
+                input.addEventListener('blur', function() {
+                    if (this.value.trim() === '') {
+                        this.style.borderColor = var(--error-color);
                     } else {
-                        this.style.borderColor = '#e2e8f0';
+                        // إعادة اللون الطبيعي أو لون النجاح
+                        this.style.borderColor = '#e9ecef';
                     }
                 });
             });

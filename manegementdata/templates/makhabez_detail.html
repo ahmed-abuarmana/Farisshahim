@@ -5,7 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ makhbaz.name }} - الفارس الشهم 3</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
+        /* ====== Reset & Base Styles ====== */
         * {
             margin: 0;
             padding: 0;
@@ -17,7 +19,7 @@
             background: linear-gradient(135deg, #f8fafb 0%, #e8f4f8 100%);
             color: #2c3e50;
             min-height: 100vh;
-            padding: 20px;
+            padding: 16px;
             position: relative;
             overflow-x: hidden;
         }
@@ -36,11 +38,7 @@
             pointer-events: none;
         }
 
-        @keyframes backgroundMove {
-            0% { transform: translate(0, 0); }
-            100% { transform: translate(50px, 50px); }
-        }
-
+        /* ====== Container ====== */
         .container {
             max-width: 1400px;
             margin: 0 auto;
@@ -48,12 +46,13 @@
             z-index: 1;
         }
 
+        /* ====== Messages ====== */
         .success-message {
             background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
             color: #155724;
-            padding: 16px 24px;
+            padding: 14px 20px;
             border-radius: 10px;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
             border: 2px solid #28a745;
             display: none;
             animation: slideInDown 0.5s ease-out;
@@ -66,12 +65,13 @@
             display: block;
         }
 
+        /* ====== Header ====== */
         .header {
             background: linear-gradient(135deg, #3498db, #2980b9);
             color: white;
-            padding: 40px 35px;
+            padding: clamp(24px, 5vw, 40px) clamp(20px, 4vw, 35px);
             border-radius: 16px;
-            margin-bottom: 35px;
+            margin-bottom: 24px;
             box-shadow: 0 8px 24px rgba(52, 152, 219, 0.25);
             text-align: center;
             animation: fadeInDown 0.8s ease-out;
@@ -91,14 +91,9 @@
             animation: headerBgMove 15s linear infinite;
         }
 
-        @keyframes headerBgMove {
-            0% { transform: translate(0, 0); }
-            100% { transform: translate(30px, 30px); }
-        }
-
         .header h1 {
-            font-size: 2.4rem;
-            margin-bottom: 12px;
+            font-size: clamp(1.5rem, 4vw, 2.4rem);
+            margin-bottom: 8px;
             font-weight: 700;
             position: relative;
             z-index: 1;
@@ -107,22 +102,23 @@
 
         .header .subtitle {
             opacity: 0.95;
-            font-size: 1.2rem;
+            font-size: clamp(0.9rem, 2.5vw, 1.2rem);
             position: relative;
             z-index: 1;
         }
 
+        /* ====== Navigation Buttons ====== */
         .nav-buttons {
             display: flex;
             justify-content: center;
-            gap: 15px;
-            margin-bottom: 35px;
+            gap: 12px;
+            margin-bottom: 24px;
             flex-wrap: wrap;
             animation: fadeInUp 0.8s ease-out 0.2s both;
         }
 
         .nav-btn {
-            padding: 12px 24px;
+            padding: 10px 20px;
             background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
             color: white;
             border: none;
@@ -131,13 +127,13 @@
             font-weight: 500;
             text-decoration: none;
             transition: all 0.3s ease;
-            font-size: 15px;
+            font-size: clamp(13px, 2vw, 15px);
             box-shadow: 0 4px 12px rgba(52, 152, 219, 0.25);
             position: relative;
             overflow: hidden;
             display: inline-flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
         }
 
         .nav-btn::before {
@@ -156,7 +152,7 @@
         }
 
         .nav-btn:hover {
-            transform: translateY(-3px);
+            transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(52, 152, 219, 0.35);
         }
 
@@ -182,11 +178,12 @@
             background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%);
         }
 
+        /* ====== Cards ====== */
         .card {
             background: white;
             border-radius: 16px;
-            padding: 30px;
-            margin-bottom: 35px;
+            padding: clamp(20px, 4vw, 30px);
+            margin-bottom: 24px;
             box-shadow: 0 6px 24px rgba(52, 152, 219, 0.12);
             animation: fadeInUp 0.8s ease-out both;
             transition: transform 0.3s ease;
@@ -203,20 +200,21 @@
 
         .card h2 {
             color: #2980b9;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
             padding-bottom: 12px;
             border-bottom: 3px solid #3498db;
             font-weight: 600;
-            font-size: 1.6rem;
+            font-size: clamp(1.2rem, 3vw, 1.6rem);
             display: flex;
             align-items: center;
             gap: 10px;
         }
 
+        /* ====== Info Grid ====== */
         .info-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr));
+            gap: 16px;
         }
 
         .info-item {
@@ -225,29 +223,25 @@
             animation: fadeIn 0.6s ease-out both;
         }
 
-        .info-item:nth-child(1) { animation-delay: 0.1s; }
-        .info-item:nth-child(2) { animation-delay: 0.15s; }
-        .info-item:nth-child(3) { animation-delay: 0.2s; }
-        .info-item:nth-child(4) { animation-delay: 0.25s; }
-
         .info-label {
             font-weight: 600;
             color: #7f8c8d;
-            margin-bottom: 10px;
-            font-size: 0.95rem;
+            margin-bottom: 8px;
+            font-size: clamp(0.85rem, 2vw, 0.95rem);
         }
 
         .info-value {
-            padding: 14px 18px;
+            padding: 12px 16px;
             background: linear-gradient(135deg, #f8fafb 0%, #ecf0f1 100%);
             border-radius: 10px;
             border-right: 4px solid #3498db;
             color: #2c3e50;
             font-weight: 500;
-            min-height: 50px;
+            min-height: 48px;
             display: flex;
             align-items: center;
             transition: all 0.3s ease;
+            font-size: clamp(0.9rem, 2vw, 1rem);
         }
 
         .info-value:hover {
@@ -255,36 +249,35 @@
             transform: translateX(-3px);
         }
 
-        .editable-input, .editable-select {
+        .editable-input,
+        .editable-select {
             width: 100%;
-            padding: 12px 16px;
+            padding: 12px 14px;
             border: 2px solid #3498db;
             border-radius: 10px;
             background-color: white;
-            font-size: 15px;
+            font-size: clamp(14px, 2vw, 15px);
             transition: all 0.3s ease;
             box-shadow: 0 2px 8px rgba(52, 152, 219, 0.1);
         }
 
-        .editable-input:focus, .editable-select:focus {
+        .editable-input:focus,
+        .editable-select:focus {
             outline: none;
             box-shadow: 0 0 0 4px rgba(52, 152, 219, 0.15);
             transform: translateY(-2px);
         }
 
-        .editable-select {
-            cursor: pointer;
-        }
-
+        /* ====== Stats Grid ====== */
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(min(100%, 160px), 1fr));
+            gap: 16px;
         }
 
         .stat-item {
             text-align: center;
-            padding: 25px 20px;
+            padding: 20px 16px;
             background: linear-gradient(135deg, #f8fafb 0%, #ecf0f1 100%);
             border-radius: 12px;
             border-top: 4px solid #3498db;
@@ -293,73 +286,59 @@
             cursor: default;
         }
 
-        .stat-item:nth-child(1) { animation-delay: 0.1s; }
-        .stat-item:nth-child(2) { animation-delay: 0.15s; }
-        .stat-item:nth-child(3) { animation-delay: 0.2s; }
-        .stat-item:nth-child(4) { animation-delay: 0.25s; }
-        .stat-item:nth-child(5) { animation-delay: 0.3s; }
-        .stat-item:nth-child(6) { animation-delay: 0.35s; }
-        .stat-item:nth-child(7) { animation-delay: 0.4s; }
-        .stat-item:nth-child(8) { animation-delay: 0.45s; }
-
         .stat-item:hover {
-            transform: translateY(-5px) scale(1.02);
+            transform: translateY(-4px) scale(1.02);
             box-shadow: 0 8px 20px rgba(52, 152, 219, 0.15);
         }
 
         .stat-value {
-            font-size: 1.8rem;
+            font-size: clamp(1.4rem, 4vw, 1.8rem);
             font-weight: 700;
             color: #3498db;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
 
         .stat-label {
             color: #7f8c8d;
             font-weight: 500;
-            font-size: 0.95rem;
+            font-size: clamp(0.8rem, 2vw, 0.95rem);
         }
 
+        /* ====== Table ====== */
         .table-container {
             overflow-x: auto;
             background: white;
             border-radius: 14px;
             box-shadow: 0 4px 16px rgba(52, 152, 219, 0.1);
+            -webkit-overflow-scrolling: touch;
         }
 
         .data-table {
             width: 100%;
             border-collapse: collapse;
-            min-width: 1000px;
+            min-width: 800px;
         }
 
         .data-table th {
             background: linear-gradient(135deg, #3498db, #2980b9);
             color: white;
-            padding: 18px 14px;
+            padding: 14px 10px;
             text-align: center;
             font-weight: 600;
-            font-size: 0.95rem;
+            font-size: clamp(0.8rem, 2vw, 0.95rem);
             white-space: nowrap;
-            position: relative;
-        }
-
-        .data-table th::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 2px;
-            background: rgba(255, 255, 255, 0.3);
+            position: sticky;
+            top: 0;
+            z-index: 10;
         }
 
         .data-table td {
-            padding: 14px 12px;
+            padding: 12px 10px;
             text-align: center;
             border-bottom: 1px solid #ecf0f1;
             color: #2c3e50;
             transition: background-color 0.2s ease;
+            font-size: clamp(0.8rem, 2vw, 0.95rem);
         }
 
         .data-table tbody tr:nth-child(even) {
@@ -368,7 +347,6 @@
 
         .data-table tbody tr:hover {
             background-color: #e8f4f8;
-            transform: scale(1.005);
         }
 
         .add-row {
@@ -384,62 +362,43 @@
         .add-row td {
             color: #3498db !important;
             font-weight: 600;
-            padding: 18px !important;
-            font-size: 1.05rem;
+            padding: 16px !important;
+            font-size: clamp(0.9rem, 2vw, 1.05rem);
         }
 
         .form-input {
             width: 90%;
-            padding: 10px 12px;
+            padding: 8px 10px;
             border: 2px solid #bdc3c7;
             border-radius: 8px;
             outline: none;
             transition: all 0.3s ease;
-            font-size: 14px;
+            font-size: clamp(12px, 2vw, 14px);
             background: white;
         }
 
         .form-input:focus {
             border-color: #3498db;
             box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.15);
-            transform: scale(1.02);
-        }
-
-        .form-input.date-input {
-            min-width: 140px;
         }
 
         .date-cell {
-            min-width: 140px;
+            min-width: 120px;
         }
 
+        /* ====== Action Buttons ====== */
         .action-btn {
-            padding: 12px 24px;
+            padding: 10px 20px;
             border: none;
             border-radius: 8px;
             cursor: pointer;
             font-weight: 500;
             transition: all 0.3s ease;
-            margin: 12px 6px;
-            font-size: 15px;
+            margin: 10px 5px;
+            font-size: clamp(13px, 2vw, 15px);
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
             position: relative;
             overflow: hidden;
-        }
-
-        .action-btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            transition: left 0.5s ease;
-        }
-
-        .action-btn:hover::before {
-            left: 100%;
         }
 
         .action-btn.save {
@@ -448,7 +407,7 @@
         }
 
         .action-btn.save:hover {
-            transform: translateY(-3px);
+            transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(39, 174, 96, 0.3);
         }
 
@@ -458,15 +417,15 @@
         }
 
         .action-btn.cancel:hover {
-            transform: translateY(-3px);
+            transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(149, 165, 166, 0.3);
         }
 
         .edit-controls {
             display: none;
             text-align: center;
-            margin-top: 25px;
-            padding-top: 25px;
+            margin-top: 20px;
+            padding-top: 20px;
             border-top: 2px solid #ecf0f1;
             animation: fadeIn 0.5s ease-out;
         }
@@ -475,11 +434,12 @@
             display: block;
         }
 
+        /* ====== Back Link ====== */
         .back-link {
             display: inline-flex;
             align-items: center;
-            gap: 10px;
-            padding: 14px 28px;
+            gap: 8px;
+            padding: 12px 24px;
             background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
             color: white;
             text-decoration: none;
@@ -487,69 +447,38 @@
             transition: all 0.3s ease;
             font-weight: 500;
             box-shadow: 0 4px 12px rgba(52, 152, 219, 0.25);
-            margin-top: 25px;
+            margin-top: 20px;
+            font-size: clamp(13px, 2vw, 15px);
         }
 
         .back-link:hover {
-            transform: translateY(-3px);
+            transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(52, 152, 219, 0.35);
         }
 
+        /* ====== No Data ====== */
         .no-data {
             text-align: center;
-            padding: 50px 20px;
+            padding: 40px 20px;
             color: #7f8c8d;
             font-style: italic;
             background: #f8fafb;
             border-radius: 8px;
-            font-size: 1.1rem;
+            font-size: clamp(0.95rem, 2vw, 1.1rem);
         }
 
-        .input-with-hint {
-            position: relative;
+        /* ====== Animations ====== */
+        @keyframes backgroundMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
         }
 
-        .input-hint {
-            position: absolute;
-            top: -22px;
-            right: 0;
-            font-size: 0.75rem;
-            color: #7f8c8d;
-            font-style: italic;
+        @keyframes headerBgMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(30px, 30px); }
         }
 
         @keyframes fadeInDown {
-            from {
-                opacity: 0;
-                transform: translateY(-30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-            to {
-                opacity: 1;
-            }
-        }
-
-        @keyframes slideInDown {
             from {
                 opacity: 0;
                 transform: translateY(-20px);
@@ -560,10 +489,37 @@
             }
         }
 
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-15px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
         @keyframes scaleIn {
             from {
                 opacity: 0;
-                transform: scale(0.9);
+                transform: scale(0.95);
             }
             to {
                 opacity: 1;
@@ -571,114 +527,95 @@
             }
         }
 
+        /* ====== Media Queries ====== */
         @media (max-width: 768px) {
             body {
-                padding: 15px;
-            }
-
-            .header h1 {
-                font-size: 1.8rem;
-            }
-
-            .header .subtitle {
-                font-size: 1rem;
+                padding: 12px;
             }
 
             .nav-buttons {
-                gap: 10px;
+                gap: 8px;
             }
 
-            .nav-btn {
-                padding: 10px 18px;
-                font-size: 14px;
-            }
-
-            .info-grid,
-            .stats-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .data-table {
-                font-size: 0.85rem;
+            .card {
+                padding: 16px;
             }
 
             .data-table th,
             .data-table td {
-                padding: 10px 8px;
-            }
-
-            .stat-value {
-                font-size: 1.4rem;
-            }
-
-            .card {
-                padding: 20px;
-            }
-
-            .card h2 {
-                font-size: 1.4rem;
+                padding: 10px 6px;
             }
         }
 
         @media (max-width: 480px) {
             .nav-buttons {
                 flex-direction: column;
-                align-items: center;
+                align-items: stretch;
             }
 
             .nav-btn {
                 width: 100%;
-                max-width: 300px;
+                justify-content: center;
             }
 
-            .header h1 {
-                font-size: 1.5rem;
+            .info-grid,
+            .stats-grid {
+                grid-template-columns: 1fr;
             }
         }
     </style>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 
 <body>
     <div class="container">
+        <!-- Success Message -->
         <div class="success-message" id="success-message">
             <i class="fas fa-check-circle" style="margin-left: 8px;"></i>
             تم تحديث بيانات المخبز بنجاح!
         </div>
 
+        <!-- Header -->
         <div class="header">
-            <h1 id="makhbaz-name"><i class="fas fa-bread-slice" style="margin-left: 12px;"></i>{{ makhbaz.name }}</h1>
+            <h1 id="makhbaz-name">
+                <i class="fas fa-bread-slice" style="margin-left: 12px;"></i>
+                {{ makhbaz.name }}
+            </h1>
             <div class="subtitle">تفاصيل المخبز - عملية الفارس الشهم 3</div>
         </div>
 
+        <!-- Navigation -->
         <nav class="nav-buttons">
             <a href="{% url 'makhabez_list' %}" class="nav-btn">
                 <i class="fas fa-list"></i>
-                قائمة المخابز
+                <span>قائمة المخابز</span>
             </a>
+            {% if user_can_edit %}
             <button class="nav-btn edit" id="edit-toggle-btn">
                 <i class="fas fa-edit"></i>
-                تعديل البيانات
+                <span>تعديل البيانات</span>
             </button>
+            {% endif %}
             <a href="{% url 'index' %}" class="nav-btn">
                 <i class="fas fa-home"></i>
-                الصفحة الرئيسية
+                <span>الصفحة الرئيسية</span>
             </a>
-            
             <a href="{% url 'export_makhbaz_excel' makhbaz.id %}" class="nav-btn">
                 <i class="fas fa-file-excel"></i>
-                تصدير إلى Excel
+                <span>تصدير Excel</span>
             </a>
-
-            <form action="{% url 'delete_makhbaz' makhbaz.id %}" method="POST" style="display:inline;" onsubmit="return confirm('هل أنت متأكد أنك تريد حذف هذا المخبز؟ سيتم حذف جميع التسليمات المرتبطة به.')">
+            <form action="{% url 'delete_makhbaz' makhbaz.id %}" method="POST" style="display:inline;" 
+                  onsubmit="return confirm('هل أنت متأكد أنك تريد حذف هذا المخبز؟ سيتم حذف جميع التسليمات المرتبطة به.')">
                 {% csrf_token %}
+                {% if user_can_edit %}
                 <button type="submit" class="nav-btn danger">
                     <i class="fas fa-trash-alt"></i>
-                    حذف المخبز
+                    <span>حذف المخبز</span>
                 </button>
+                {% endif %}
             </form>
         </nav>
 
+        <!-- Basic Info Card -->
         <div class="card">
             <h2><i class="fas fa-info-circle"></i> المعلومات الأساسية</h2>
             <div class="info-grid" id="info-grid">
@@ -744,6 +681,7 @@
             </div>
         </div>
 
+        <!-- Statistics Card -->
         <div class="card">
             <h2><i class="fas fa-chart-bar"></i> إحصائيات التسليم</h2>
             <div class="stats-grid">
@@ -792,6 +730,7 @@
             </div>
         </div>
 
+        <!-- Deliveries Table Card -->
         <div class="card">
             <h2><i class="fas fa-truck"></i> جميع التسليمات</h2>
             <div class="table-container">
@@ -827,7 +766,7 @@
                         {% empty %}
                         <tr>
                             <td colspan="10" class="no-data">
-                                <i class="fas fa-inbox" style="font-size: 2.5rem; color: #bdc3c7; margin-bottom: 10px; display: block;"></i>
+                                <i class="fas fa-inbox" style="font-size: 2rem; color: #bdc3c7; margin-bottom: 10px; display: block;"></i>
                                 لا توجد تسليمات مسجلة لهذا المخبز
                             </td>
                         </tr>
@@ -835,16 +774,67 @@
                     </tbody>
                     <tfoot>
                         <tr class="add-row" id="add-row" onclick="showNewRow()">
+                            {% if user_can_edit %}
                             <td colspan="10">
                                 <i class="fas fa-plus-circle" style="margin-left: 8px;"></i>
                                 إضافة تسليم جديد
                             </td>
+                            {% endif %}
                         </tr>
                     </tfoot>
                 </table>
             </div>
         </div>
 
+        <!-- Beneficiaries Table Card -->
+        <div class="card">
+            <h2><i class="fas fa-users"></i> المستفيدين من المخبز</h2>
+            <div class="table-container">
+                <table class="data-table" id="beneficiary-table">
+                    <thead>
+                        <tr>
+                            <th class="date-cell">تاريخ التسليم</th>
+                            <th>نوع التوزيع</th>
+                            <th>اسم الجهة المستفيدة</th>
+                            <th>شخص الاتصال</th>
+                            <th>رقم الجوال</th>
+                            <th>ملاحظات</th>
+                        </tr>
+                    </thead>
+                    <tbody id="beneficiary-body">
+                        {% for beneficiary in makhbaz.beneficiaries.all %}
+                        <tr>
+                            <td class="date-cell">{{ beneficiary.distribution_date|date:"Y-m-d" }}</td>
+                            <td>{{ beneficiary.get_distribution_type_display }}</td>
+                            <td>{{ beneficiary.beneficiary_name }}</td>
+                            <td>{{ beneficiary.contact_person }}</td>
+                            <td>{{ beneficiary.phone_number }}</td>
+                            <td>{{ beneficiary.notes|default:"-" }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" class="no-data">
+                                <i class="fas fa-users" style="font-size: 2rem; color: #bdc3c7; margin-bottom: 10px; display: block;"></i>
+                                لا توجد مستفيدين مسجلين لهذا المخبز
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                    <tfoot>
+                        <tr class="add-row" id="add-beneficiary-row" onclick="showNewBeneficiaryRow()">
+                            {% if user_can_edit %}
+                            <td colspan="6">
+                                <i class="fas fa-user-plus" style="margin-left: 8px;"></i>
+                                إضافة مستفيد جديد
+                            </td>
+                            {% endif %}
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+
+        <!-- Back Link -->
         <div style="text-align: center;">
             <a href="{% url 'makhabez_list' %}" class="back-link">
                 <i class="fas fa-arrow-right"></i>
@@ -854,6 +844,7 @@
     </div>
 
     <script>
+        // ====== Global Variables ======
         let isEditing = false;
         let originalData = {};
 
@@ -864,16 +855,17 @@
         const successMessage = document.getElementById('success-message');
         const makhbazNameHeader = document.getElementById('makhbaz-name');
 
+        // ====== Choice Data ======
         const governorateChoices = [
             ["الوسطى", "الوسطى"],
             ["خان يونس", "خان يونس"],
-            ["رفح", "رفح"],
+            ["رفح", "رفح"]
         ];
 
         const ovenTypeChoices = [
             ["فرن طينة", "مخبز بدائي (فرن طينة)"],
             ["يدوي دوار", "يدوي دوار"],
-            ["نص آلي", "نص آلي"],
+            ["نصف آلي", "نصف آلي"],
             ["آلي", "آلي"]
         ];
 
@@ -887,11 +879,12 @@
             ["متوقف", "متوقف"]
         ];
 
+        // ====== Edit Functions ======
         function enableEditing() {
             if (isEditing) return;
             
             isEditing = true;
-            editToggleBtn.innerHTML = '<i class="fas fa-ban"></i> إيقاف التعديل';
+            editToggleBtn.innerHTML = '<i class="fas fa-ban"></i><span>إيقاف التعديل</span>';
             editToggleBtn.classList.add('editing');
             editControls.classList.add('show');
             
@@ -962,7 +955,7 @@
             if (!isEditing) return;
             
             isEditing = false;
-            editToggleBtn.innerHTML = '<i class="fas fa-edit"></i> تعديل البيانات';
+            editToggleBtn.innerHTML = '<i class="fas fa-edit"></i><span>تعديل البيانات</span>';
             editToggleBtn.classList.remove('editing');
             editControls.classList.remove('show');
             
@@ -1007,9 +1000,7 @@
             .then(result => {
                 if (result.success) {
                     successMessage.classList.add('show');
-                    setTimeout(() => {
-                        successMessage.classList.remove('show');
-                    }, 3000);
+                    setTimeout(() => successMessage.classList.remove('show'), 3000);
                     
                     fields.forEach(field => {
                         const fieldElement = document.getElementById(`field-${field}`);
@@ -1032,17 +1023,15 @@
             });
         }
 
-        editToggleBtn.addEventListener('click', function() {
-            if (isEditing) {
-                disableEditing();
-            } else {
-                enableEditing();
-            }
+        // ====== Event Listeners ======
+        editToggleBtn.addEventListener('click', () => {
+            isEditing ? disableEditing() : enableEditing();
         });
 
         saveChangesBtn.addEventListener('click', saveChanges);
         cancelEditBtn.addEventListener('click', disableEditing);
 
+        // ====== Delivery Functions ======
         function showNewRow() {
             if (document.getElementById('new-delivery-row')) return;
 
@@ -1052,29 +1041,24 @@
             newRow.style.animation = 'fadeIn 0.5s ease-out';
 
             const fields = [
-                { name: 'taslima_date', type: 'date', label: 'تاريخ التسليم', required: true },
-                { name: 'flour', type: 'number', label: 'طحين' },
-                { name: 'yeast', type: 'number', label: 'خميرة' },
-                { name: 'salt', type: 'number', label: 'ملح' },
-                { name: 'sugar', type: 'number', label: 'سكر' },
-                { name: 'cooking_oil', type: 'number', label: 'زيت' },
-                { name: 'wood', type: 'number', label: 'حطب' },
-                { name: 'gas', type: 'number', label: 'غاز' },
-                { name: 'additions', type: 'text', label: 'إضافات' },
-                { name: 'until_date', type: 'date', label: 'صالح حتى تاريخ' }
+                { name: 'taslima_date', type: 'date', required: true },
+                { name: 'flour', type: 'number' },
+                { name: 'yeast', type: 'number' },
+                { name: 'salt', type: 'number' },
+                { name: 'sugar', type: 'number' },
+                { name: 'cooking_oil', type: 'number', step: '0.1' },
+                { name: 'wood', type: 'number' },
+                { name: 'gas', type: 'number' },
+                { name: 'additions', type: 'text' },
+                { name: 'until_date', type: 'date' }
             ];
 
             fields.forEach(field => {
                 const td = document.createElement('td');
-                const inputWrapper = document.createElement('div');
-                inputWrapper.className = 'input-with-hint';
-                
                 const input = document.createElement('input');
                 input.type = field.type;
                 input.name = field.name;
                 input.className = 'form-input';
-                input.placeholder = field.label;
-                input.title = field.label;
                 
                 if (field.type === 'date') {
                     input.classList.add('date-input');
@@ -1083,108 +1067,56 @@
                 
                 if (field.type === 'number') {
                     input.min = 0;
-                    input.step = field.name === 'cooking_oil' ? '0.1' : '1';
+                    input.step = field.step || '1';
                 }
                 
-                if (field.required) {
-                    input.required = true;
-                    const hint = document.createElement('span');
-                    hint.className = 'input-hint';
-                    hint.textContent = '* مطلوب';
-                    inputWrapper.appendChild(hint);
-                }
+                if (field.required) input.required = true;
                 
-                if (field.name === 'taslima_date') {
-                    input.addEventListener('change', function() {
-                        updateUntilDateMin(this.value);
-                    });
-                }
-                
-                inputWrapper.appendChild(input);
-                td.appendChild(inputWrapper);
+                td.appendChild(input);
                 newRow.appendChild(td);
             });
 
             tbody.appendChild(newRow);
 
             const buttonContainer = document.createElement('div');
-            buttonContainer.style.textAlign = 'center';
-            buttonContainer.style.marginTop = '20px';
-            buttonContainer.style.padding = '20px';
-            buttonContainer.style.background = 'linear-gradient(135deg, #f8fafb 0%, #ecf0f1 100%)';
-            buttonContainer.style.borderRadius = '12px';
+            buttonContainer.style.cssText = 'text-align:center;margin-top:16px;padding:16px;background:linear-gradient(135deg,#f8fafb 0%,#ecf0f1 100%);border-radius:12px';
+            buttonContainer.id = 'action-buttons';
 
             const saveBtn = document.createElement('button');
-            saveBtn.innerHTML = '<i class="fas fa-save" style="margin-left: 6px;"></i> حفظ التسليم';
+            saveBtn.innerHTML = '<i class="fas fa-save" style="margin-left:6px;"></i> حفظ التسليم';
             saveBtn.className = 'action-btn save';
             saveBtn.onclick = saveNewDelivery;
 
             const cancelBtn = document.createElement('button');
-            cancelBtn.innerHTML = '<i class="fas fa-times" style="margin-left: 6px;"></i> إلغاء';
+            cancelBtn.innerHTML = '<i class="fas fa-times" style="margin-left:6px;"></i> إلغاء';
             cancelBtn.className = 'action-btn cancel';
             cancelBtn.onclick = cancelNewDelivery;
 
             buttonContainer.appendChild(saveBtn);
             buttonContainer.appendChild(cancelBtn);
-            
-            buttonContainer.id = 'action-buttons';
             document.querySelector('.table-container').appendChild(buttonContainer);
 
             document.getElementById('add-row').style.display = 'none';
-            
             newRow.querySelector('input[name="taslima_date"]').focus();
-        }
-
-        function updateUntilDateMin(taslimDate) {
-            const untilDateInput = document.querySelector('input[name="until_date"]');
-            if (untilDateInput && taslimDate) {
-                untilDateInput.min = taslimDate;
-                
-                if (untilDateInput.value && untilDateInput.value < taslimDate) {
-                    untilDateInput.value = taslimDate;
-                }
-            }
         }
 
         function saveNewDelivery() {
             const row = document.getElementById('new-delivery-row');
             const inputs = row.querySelectorAll('input');
             const data = {};
-            let hasError = false;
 
             inputs.forEach(input => {
-                if (input.type === 'number') {
-                    data[input.name] = input.value ? parseFloat(input.value) : null;
-                } else {
-                    data[input.name] = input.value || null;
-                }
-                
-                if (input.required && !input.value) {
-                    input.style.borderColor = '#e74c3c';
-                    hasError = true;
-                } else {
-                    input.style.borderColor = '#3498db';
-                }
+                data[input.name] = input.type === 'number' ? (input.value ? parseFloat(input.value) : null) : (input.value || null);
             });
-
-            if (hasError) {
-                alert('يرجى إدخال تاريخ التسليم (الحقل المطلوب)');
-                return;
-            }
 
             if (!data.taslima_date) {
                 alert('يرجى إدخال تاريخ التسليم');
                 return;
             }
 
-            if (data.until_date && data.until_date < data.taslima_date) {
-                alert('تاريخ "صالح حتى" يجب أن يكون بعد أو مساوٍ لتاريخ التسليم');
-                return;
-            }
-
             const saveBtn = document.querySelector('#action-buttons .save');
             const originalText = saveBtn.innerHTML;
-            saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin" style="margin-left: 6px;"></i> جاري الحفظ...';
+            saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الحفظ...';
             saveBtn.disabled = true;
 
             fetch("{% url 'add_tasleema_for_makhbaz' makhbaz.id %}", {
@@ -1200,7 +1132,7 @@
                 if (result.success) {
                     location.reload();
                 } else {
-                    alert("حدث خطأ أثناء الحفظ: " + (result.error || 'خطأ غير معروف'));
+                    alert("حدث خطأ: " + (result.error || 'خطأ غير معروف'));
                     saveBtn.innerHTML = originalText;
                     saveBtn.disabled = false;
                 }
@@ -1223,9 +1155,158 @@
             document.getElementById('add-row').style.display = '';
         }
 
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape' && document.getElementById('new-delivery-row')) {
-                cancelNewDelivery();
+        // ====== Beneficiary Functions ======
+        function showNewBeneficiaryRow() {
+            if (document.getElementById('new-beneficiary-row')) return;
+
+            const tbody = document.getElementById('beneficiary-body');
+            const newRow = document.createElement('tr');
+            newRow.id = 'new-beneficiary-row';
+            newRow.style.animation = 'fadeIn 0.5s ease-out';
+
+            const fields = [
+                'distribution_date', 'distribution_type', 'beneficiary_name', 
+                'contact_person', 'phone_number', 'notes'
+            ];
+
+            fields.forEach(field => {
+                const td = document.createElement('td');
+                let input;
+                
+                if (field === 'distribution_date') {
+                    input = document.createElement('input');
+                    input.type = 'date';
+                    input.className = 'form-input date-input';
+                    input.required = true;
+                    input.value = new Date().toISOString().split('T')[0];
+                } else if (field === 'distribution_type') {
+                    input = document.createElement('select');
+                    input.className = 'form-input';
+                    input.required = true;
+                    
+                    const options = [
+                        ['', '-- اختر نوع التوزيع --'],
+                        ['شخصي', 'شخصي'],
+                        ['مخيم', 'مخيم'],
+                        ['مؤسسة', 'مؤسسة'],
+                        ['داخل التكية', 'داخل التكية']
+                    ];
+                    
+                    options.forEach(option => {
+                        const opt = document.createElement('option');
+                        opt.value = option[0];
+                        opt.textContent = option[1];
+                        input.appendChild(opt);
+                    });
+                } else if (field === 'notes') {
+                    input = document.createElement('textarea');
+                    input.className = 'form-input';
+                    input.rows = 2;
+                    input.placeholder = 'ملاحظات إضافية...';
+                } else {
+                    input = document.createElement('input');
+                    input.type = field === 'phone_number' ? 'tel' : 'text';
+                    input.className = 'form-input';
+                    input.required = field !== 'notes';
+                }
+
+                input.name = field;
+                input.id = `new-beneficiary-${field}`;
+                td.appendChild(input);
+                newRow.appendChild(td);
+            });
+
+            tbody.appendChild(newRow);
+
+            const actionCell = document.createElement('td');
+            actionCell.colSpan = "6";
+            actionCell.style.cssText = 'text-align:center;padding:16px';
+
+            const saveBtn = document.createElement('button');
+            saveBtn.innerHTML = '<i class="fas fa-save" style="margin-left:6px;"></i> حفظ المستفيد';
+            saveBtn.className = 'action-btn save';
+            saveBtn.onclick = saveNewBeneficiary;
+
+            const cancelBtn = document.createElement('button');
+            cancelBtn.innerHTML = '<i class="fas fa-times" style="margin-left:6px;"></i> إلغاء';
+            cancelBtn.className = 'action-btn cancel';
+            cancelBtn.onclick = cancelNewBeneficiary;
+
+            actionCell.appendChild(saveBtn);
+            actionCell.appendChild(cancelBtn);
+            
+            const actionRow = document.createElement('tr');
+            actionRow.id = 'beneficiary-action-buttons-row';
+            actionRow.appendChild(actionCell);
+            
+            tbody.appendChild(actionRow);
+
+            document.getElementById('add-beneficiary-row').style.display = 'none';
+            document.getElementById('new-beneficiary-beneficiary_name').focus();
+        }
+
+        function saveNewBeneficiary() {
+            const row = document.getElementById('new-beneficiary-row');
+            const inputs = row.querySelectorAll('input, select, textarea');
+            const data = {};
+
+            inputs.forEach(input => {
+                data[input.name] = input.value || null;
+            });
+
+            if (!data.distribution_date || !data.distribution_type || !data.beneficiary_name || !data.contact_person) {
+                alert('يرجى ملء جميع الحقول المطلوبة');
+                return;
+            }
+
+            const saveBtn = document.querySelector('#beneficiary-action-buttons-row .save');
+            const originalText = saveBtn.innerHTML;
+            saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الحفظ...';
+            saveBtn.disabled = true;
+
+            fetch("{% url 'add_beneficiary_for_makhbaz' makhbaz.id %}", {
+                method: "POST",
+                headers: {
+                    "X-CSRFToken": "{{ csrf_token }}",
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.success) {
+                    successMessage.textContent = 'تم إضافة المستفيد بنجاح!';
+                    successMessage.classList.add('show');
+                    setTimeout(() => location.reload(), 1500);
+                } else {
+                    alert("حدث خطأ: " + (result.error || 'خطأ غير معروف'));
+                    saveBtn.innerHTML = originalText;
+                    saveBtn.disabled = false;
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                alert("تعذر الاتصال بالخادم");
+                saveBtn.innerHTML = originalText;
+                saveBtn.disabled = false;
+            });
+        }
+
+        function cancelNewBeneficiary() {
+            const row = document.getElementById('new-beneficiary-row');
+            const actionRow = document.getElementById('beneficiary-action-buttons-row');
+            
+            if (row) row.remove();
+            if (actionRow) actionRow.remove();
+            
+            document.getElementById('add-beneficiary-row').style.display = '';
+        }
+
+        // ====== Keyboard Shortcuts ======
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                if (document.getElementById('new-delivery-row')) cancelNewDelivery();
+                if (document.getElementById('new-beneficiary-row')) cancelNewBeneficiary();
             }
         });
     </script>

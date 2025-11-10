@@ -29,4 +29,9 @@ urlpatterns = [
     path('makhabez/<int:makhbaz_id>/export_excel/', views.export_makhbaz_excel, name='export_makhbaz_excel'),
     path('takaya/<int:takiya_id>/export_excel/', views.export_takiya_excel, name='export_takiya_excel'),
 
+    path('takiya/<int:takiya_id>/add-beneficiary/', views.add_beneficiary_for_takiya, name='add_beneficiary_for_takiya'),
+    path('makhbaz/<int:makhbaz_id>/add-beneficiary/', views.add_beneficiary_for_makhbaz, name='add_beneficiary_for_makhbaz'),
+
+    path('beneficiaries/takiya/', views.all_beneficiaries_takiya, name='all_beneficiaries_takiya'),
+    path('beneficiaries/makhbaz/', views.all_beneficiaries_makhbaz, name='all_beneficiaries_makhbaz'),
 ]

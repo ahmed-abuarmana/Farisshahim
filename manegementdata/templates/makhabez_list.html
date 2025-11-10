@@ -470,15 +470,17 @@
 
         <!-- Navigation Buttons -->
         <nav class="nav-buttons">
+            {% if user_can_edit %}
             <a href="{% url 'add_new_makhbaz' %}" class="nav-btn">
                 <i class="fas fa-plus-circle" style="margin-left: 6px;"></i>
                 إضافة مخبز جديد
             </a>
+            {% endif %}
             <a href="{% url 'index' %}" class="nav-btn">
                 <i class="fas fa-home" style="margin-left: 6px;"></i>
                 الصفحة الرئيسية
             </a>
-            <a href="#" class="nav-btn">
+            <a href="{% url 'all_beneficiaries_makhbaz' %}" class="nav-btn">
                 <i class="fas fa-users" style="margin-left: 6px;"></i>
                 المستفيدين
             </a>
