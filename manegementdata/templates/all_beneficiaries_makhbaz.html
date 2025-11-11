@@ -1,0 +1,740 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>المستفيدين من المخابز - الفارس الشهم 3</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f8fafb 0%, #e8f4f8 100%);
+            color: #2c3e50;
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(41, 128, 185, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: backgroundMove 20s linear infinite;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        @keyframes backgroundMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            padding: 40px 35px;
+            border-radius: 16px;
+            margin-bottom: 35px;
+            box-shadow: 0 8px 24px rgba(52, 152, 219, 0.25);
+            text-align: center;
+            animation: fadeInDown 0.8s ease-out;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+            background-size: 30px 30px;
+            animation: headerBgMove 15s linear infinite;
+        }
+
+        @keyframes headerBgMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(30px, 30px); }
+        }
+
+        .header h1 {
+            font-size: 2.4rem;
+            margin-bottom: 12px;
+            font-weight: 700;
+            position: relative;
+            z-index: 1;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .header .subtitle {
+            opacity: 0.95;
+            font-size: 1.2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 35px;
+            flex-wrap: wrap;
+            animation: fadeInUp 0.8s ease-out 0.2s both;
+        }
+
+        .nav-btn {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-size: 15px;
+            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.25);
+            position: relative;
+            overflow: hidden;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .nav-btn:hover::before {
+            left: 100%;
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(52, 152, 219, 0.35);
+        }
+
+        .search-section {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 6px 24px rgba(52, 152, 219, 0.12);
+            animation: fadeInUp 0.8s ease-out 0.3s both;
+        }
+
+        .search-container {
+            position: relative;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 16px 50px 16px 20px;
+            border: 2px solid #3498db;
+            border-radius: 12px;
+            font-size: 16px;
+            background: #f8fafb;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.15);
+        }
+
+        .search-input:focus {
+            outline: none;
+            background: white;
+            box-shadow: 0 6px 20px rgba(52, 152, 219, 0.25);
+            transform: translateY(-2px);
+        }
+
+        .search-input::placeholder {
+            color: #7f8c8d;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #3498db;
+            font-size: 18px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 25px 20px;
+            background: linear-gradient(135deg, #f8fafb 0%, #ecf0f1 100%);
+            border-radius: 12px;
+            border-top: 4px solid #3498db;
+            transition: all 0.3s ease;
+            animation: scaleIn 0.6s ease-out both;
+            cursor: default;
+        }
+
+        .stat-item:nth-child(1) { animation-delay: 0.1s; }
+        .stat-item:nth-child(2) { animation-delay: 0.15s; }
+        .stat-item:nth-child(3) { animation-delay: 0.2s; }
+        .stat-item:nth-child(4) { animation-delay: 0.25s; }
+
+        .stat-item:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 8px 20px rgba(52, 152, 219, 0.15);
+        }
+
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #3498db;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            color: #7f8c8d;
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 35px;
+            box-shadow: 0 6px 24px rgba(52, 152, 219, 0.12);
+            animation: fadeInUp 0.8s ease-out both;
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 28px rgba(52, 152, 219, 0.15);
+        }
+
+        .card h2 {
+            color: #2980b9;
+            margin-bottom: 25px;
+            padding-bottom: 12px;
+            border-bottom: 3px solid #3498db;
+            font-weight: 600;
+            font-size: 1.6rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            background: white;
+            border-radius: 14px;
+            box-shadow: 0 4px 16px rgba(52, 152, 219, 0.1);
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 1200px;
+        }
+
+        .data-table th {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            padding: 18px 14px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 0.95rem;
+            white-space: nowrap;
+            position: relative;
+        }
+
+        .data-table th::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .data-table td {
+            padding: 14px 12px;
+            text-align: center;
+            border-bottom: 1px solid #ecf0f1;
+            color: #2c3e50;
+            transition: background-color 0.2s ease;
+        }
+
+        .data-table tbody tr:nth-child(even) {
+            background-color: #f8fafb;
+        }
+
+        .data-table tbody tr:hover {
+            background-color: #e8f4f8;
+            transform: scale(1.005);
+        }
+
+        .no-data {
+            text-align: center;
+            padding: 50px 20px;
+            color: #7f8c8d;
+            font-style: italic;
+            background: #f8fafb;
+            border-radius: 8px;
+            font-size: 1.1rem;
+        }
+
+        .makhbaz-badge {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            display: inline-block;
+            margin: 2px 0;
+        }
+
+        .distribution-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            display: inline-block;
+        }
+
+        .distribution-personal {
+            background: linear-gradient(135deg, #27ae60, #229954);
+            color: white;
+        }
+
+        .distribution-camp {
+            background: linear-gradient(135deg, #e67e22, #d35400);
+            color: white;
+        }
+
+        .distribution-organization {
+            background: linear-gradient(135deg, #9b59b6, #8e44ad);
+            color: white;
+        }
+
+        .highlight {
+            background-color: #fff3cd !important;
+            color: #856404 !important;
+            font-weight: 600;
+        }
+
+        .results-count {
+            text-align: center;
+            padding: 15px;
+            background: linear-gradient(135deg, #f8fafb 0%, #ecf0f1 100%);
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-weight: 500;
+            color: #2c3e50;
+            border-right: 4px solid #3498db;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 15px;
+            }
+
+            .header h1 {
+                font-size: 1.8rem;
+            }
+
+            .header .subtitle {
+                font-size: 1rem;
+            }
+
+            .nav-buttons {
+                gap: 10px;
+            }
+
+            .nav-btn {
+                padding: 10px 18px;
+                font-size: 14px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .data-table {
+                font-size: 0.85rem;
+            }
+
+            .data-table th,
+            .data-table td {
+                padding: 10px 8px;
+            }
+
+            .stat-value {
+                font-size: 1.4rem;
+            }
+
+            .card {
+                padding: 20px;
+            }
+
+            .card h2 {
+                font-size: 1.4rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .nav-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .nav-btn {
+                width: 100%;
+                max-width: 300px;
+            }
+
+            .header h1 {
+                font-size: 1.5rem;
+            }
+
+            .search-input {
+                padding: 14px 45px 14px 16px;
+                font-size: 14px;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-bread-slice" style="margin-left: 12px;"></i>المستفيدين من المخابز</h1>
+            <div class="subtitle">قائمة شاملة بجميع المستفيدين المسجلين في نظام المخابز - عملية الفارس الشهم 3</div>
+        </div>
+
+        <nav class="nav-buttons">
+            <a href="{% url 'index' %}" class="nav-btn">
+                <i class="fas fa-home"></i>
+                الصفحة الرئيسية
+            </a>
+            <a href="{% url 'makhabez_list' %}" class="nav-btn">
+                <i class="fas fa-bread-slice"></i>
+                قائمة المخابز
+            </a>
+        </nav>
+
+        <!-- قسم الإحصائيات -->
+        <div class="stats-grid">
+            <div class="stat-item">
+                <div class="stat-value" id="total-beneficiaries">{{ total_beneficiaries }}</div>
+                <div class="stat-label">إجمالي المستفيدين</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="personal-distribution">{{ personal_count }}</div>
+                <div class="stat-label">توزيع شخصي</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="camp-distribution">{{ camp_count }}</div>
+                <div class="stat-label">توزيع مخيم</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="organization-distribution">{{ organization_count }}</div>
+                <div class="stat-label">توزيع مؤسسة</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="inside-distribution">{{ inside_count }}</div>
+                <div class="stat-label">توزيع داخل التكية</div>
+            </div>
+        </div>
+
+        <!-- قسم البحث -->
+        <div class="search-section">
+            <div class="search-container">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" 
+                       id="search-input" 
+                       class="search-input" 
+                       placeholder="ابحث باسم الجهة المستفيدة أو شخص الاتصال..."
+                       autocomplete="off">
+            </div>
+        </div>
+
+        <!-- نتائج البحث -->
+        <div class="results-count" id="results-count">
+            عرض جميع المستفيدين ({{ total_beneficiaries }} نتيجة)
+        </div>
+
+        <!-- جدول المستفيدين -->
+        <div class="card">
+            <h2><i class="fas fa-list"></i> قائمة المستفيدين</h2>
+            <div class="table-container">
+                <table class="data-table" id="beneficiaries-table">
+                    <thead>
+                        <tr>
+                            <th>المخبز</th>
+                            <th>تاريخ التسليم</th>
+                            <th>نوع التوزيع</th>
+                            <th>الجهة المستفيدة</th>
+                            <th>شخص الاتصال</th>
+                            <th>رقم الجوال</th>
+                            <th>ملاحظات</th>
+                            <th>تاريخ الإضافة</th>
+                        </tr>
+                    </thead>
+                    <tbody id="beneficiaries-body">
+                        {% for beneficiary in beneficiaries %}
+                        <tr class="beneficiary-row">
+                            <td>
+                                <span class="makhbaz-badge">
+                                    {{ beneficiary.makhbaz.name|default:"غير محدد" }}
+                                </span>
+                            </td>
+                            <td>{{ beneficiary.distribution_date|date:"Y-m-d" }}</td>
+                            <td>
+                                {% if beneficiary.distribution_type == 'شخصي' %}
+                                    <span class="distribution-badge distribution-personal">شخصي</span>
+                                {% elif beneficiary.distribution_type == 'مخيم' %}
+                                    <span class="distribution-badge distribution-camp">مخيم</span>
+                                {% elif beneficiary.distribution_type == 'مؤسسة' %}
+                                    <span class="distribution-badge distribution-organization">مؤسسة</span>
+                                {% elif beneficiary.distribution_type == 'داخل التكية' %}
+                                    <span class="distribution-badge distribution-inside">داخل التكية</span>
+                                {% else %}
+                                    <span class="distribution-badge">{{ beneficiary.distribution_type }}</span>
+                                {% endif %}
+                            </td>
+                            <td class="beneficiary-name">{{ beneficiary.beneficiary_name }}</td>
+                            <td class="contact-person">{{ beneficiary.contact_person }}</td>
+                            <td>{{ beneficiary.phone_number|default:"-" }}</td>
+                            <td>{{ beneficiary.notes|default:"-" }}</td>
+                            <td>{{ beneficiary.created_at|date:"Y-m-d" }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="8" class="no-data">
+                                <i class="fas fa-users" style="font-size: 2.5rem; color: #bdc3c7; margin-bottom: 10px; display: block;"></i>
+                                لا توجد مستفيدين مسجلين
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('search-input');
+            const beneficiariesBody = document.getElementById('beneficiaries-body');
+            const resultsCount = document.getElementById('results-count');
+            const totalBeneficiaries = {{ total_beneficiaries }};
+            const originalRows = Array.from(document.querySelectorAll('.beneficiary-row'));
+            
+            // تحديث العداد
+            function updateResultsCount(count) {
+                resultsCount.textContent = `عرض ${count} من أصل ${totalBeneficiaries} نتيجة`;
+            }
+
+            // وظيفة البحث
+            function performSearch(searchTerm) {
+                let visibleCount = 0;
+                
+                originalRows.forEach(row => {
+                    const beneficiaryName = row.querySelector('.beneficiary-name').textContent.toLowerCase();
+                    const contactPerson = row.querySelector('.contact-person').textContent.toLowerCase();
+                    const searchLower = searchTerm.toLowerCase();
+                    
+                    const matches = beneficiaryName.includes(searchLower) || 
+                                   contactPerson.includes(searchLower);
+                    
+                    if (matches) {
+                        row.style.display = '';
+                        visibleCount++;
+                        
+                        // إضافة highlight للنص المطابق
+                        if (searchTerm.length > 0) {
+                            highlightText(row.querySelector('.beneficiary-name'), searchTerm);
+                            highlightText(row.querySelector('.contact-person'), searchTerm);
+                        } else {
+                            removeHighlight(row);
+                        }
+                    } else {
+                        row.style.display = 'none';
+                        removeHighlight(row);
+                    }
+                });
+                
+                updateResultsCount(visibleCount);
+                
+                // إذا لم توجد نتائج
+                if (visibleCount === 0 && searchTerm.length > 0) {
+                    beneficiariesBody.innerHTML = `
+                        <tr>
+                            <td colspan="8" class="no-data">
+                                <i class="fas fa-search" style="font-size: 2.5rem; color: #bdc3c7; margin-bottom: 10px; display: block;"></i>
+                                لا توجد نتائج تطابق "${searchTerm}"
+                            </td>
+                        </tr>
+                    `;
+                } else if (visibleCount === 0) {
+                    beneficiariesBody.innerHTML = `
+                        <tr>
+                            <td colspan="8" class="no-data">
+                                <i class="fas fa-users" style="font-size: 2.5rem; color: #bdc3c7; margin-bottom: 10px; display: block;"></i>
+                                لا توجد مستفيدين مسجلين
+                            </td>
+                        </tr>
+                    `;
+                }
+            }
+
+            // إضافة highlight للنص
+            function highlightText(element, searchTerm) {
+                const text = element.textContent;
+                const regex = new RegExp(`(${searchTerm})`, 'gi');
+                const highlightedText = text.replace(regex, '<span class="highlight">$1</span>');
+                element.innerHTML = highlightedText;
+            }
+
+            // إزالة highlight
+            function removeHighlight(row) {
+                const elements = row.querySelectorAll('.beneficiary-name, .contact-person');
+                elements.forEach(element => {
+                    element.innerHTML = element.textContent;
+                });
+            }
+
+            // البحث الفوري عند الكتابة
+            searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.trim();
+                performSearch(searchTerm);
+            });
+
+            // مسح البحث عند الضغط على Esc
+            searchInput.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    this.value = '';
+                    performSearch('');
+                    this.blur();
+                }
+            });
+
+            // تحديث الإحصائيات بناءً على نتائج البحث
+            function updateStats(searchTerm) {
+                if (searchTerm.length === 0) {
+                    // إعادة تعيين الإحصائيات الأصلية
+                    document.getElementById('total-beneficiaries').textContent = {{ total_beneficiaries }};
+                    document.getElementById('personal-distribution').textContent = {{ personal_count }};
+                    document.getElementById('camp-distribution').textContent = {{ camp_count }};
+                    document.getElementById('organization-distribution').textContent = {{ organization_count }};
+                } else {
+                    // حساب الإحصائيات بناءً على نتائج البحث
+                    let personal = 0, camp = 0, organization = 0;
+                    
+                    originalRows.forEach(row => {
+                        if (row.style.display !== 'none') {
+                            const distributionType = row.querySelector('.distribution-badge').textContent;
+                            if (distributionType === 'شخصي') personal++;
+                            else if (distributionType === 'مخيم') camp++;
+                            else if (distributionType === 'مؤسسة') organization++;
+                            else if (distributionType === 'داخل التكية') inside++;
+                        }
+                    });
+                    
+                    document.getElementById('total-beneficiaries').textContent = personal + camp + organization;
+                    document.getElementById('personal-distribution').textContent = personal;
+                    document.getElementById('camp-distribution').textContent = camp;
+                    document.getElementById('organization-distribution').textContent = organization;
+                }
+            }
+
+            // تحديث الإحصائيات عند البحث
+            searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.trim();
+                updateStats(searchTerm);
+            });
+
+            // التركيز على حقل البحث عند تحميل الصفحة
+            searchInput.focus();
+        });
+    </script>
+</body>
+</html>
