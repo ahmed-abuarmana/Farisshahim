@@ -8,6 +8,12 @@ DEBUG = True   # على Render خليها False
 # ALLOWED_HOSTS = ["farisshahim.onrender.com"]
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'farisshahim.onrender.com', 'ahmedabuarmana.pythonanywhere.com']
 
+STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+STATICFILES_DIRS = [
+    BASE_DIR / 'static',
+]
 
 INSTALLED_APPS = [
     'manegementdata',
@@ -21,6 +27,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
