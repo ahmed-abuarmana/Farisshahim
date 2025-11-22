@@ -34,4 +34,8 @@ urlpatterns = [
 
     path('beneficiaries/takiya/', views.all_beneficiaries_takiya, name='all_beneficiaries_takiya'),
     path('beneficiaries/makhbaz/', views.all_beneficiaries_makhbaz, name='all_beneficiaries_makhbaz'),
+
+    path("export_makhabez_excel/", views.export_makhabez_excel, name="export_makhabez_excel"),
+    path("export_takiyat_excel/", views.export_takiyat_excel, name="export_takiyat_excel"),
+
 ]

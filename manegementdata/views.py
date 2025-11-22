@@ -12,6 +12,8 @@ from openpyxl.styles import Font, PatternFill, Border, Side, Alignment
 from openpyxl.utils import get_column_letter
 import logging
 import urllib.parse
+import openpyxl
+from datetime import datetime
 
 
 
@@ -1339,3 +1341,330 @@ def all_beneficiaries_makhbaz(request):
     }
     
     return render(request, 'all_beneficiaries_makhbaz.html', context)
+
+
+
+@login_required(login_url='login')
+def export_makhabez_excel(request):
+    """
+    تصدير بيانات المخابز إلى ملف Excel منسق
+    Export bakeries data to a professionally formatted Excel file
+    """
+    workbook = Workbook()
+    sheet = workbook.active
+    sheet.title = "المخابز"
+    
+    # تعيين اتجاه الورقة من اليمين لليسار (RTL)
+    sheet.sheet_view.rightToLeft = True
+    
+    # تنسيق رأس الجدول
+    header_fill = PatternFill(start_color="4472C4", end_color="4472C4", fill_type="solid")
+    header_font = Font(name="Arial", size=12, bold=True, color="FFFFFF")
+    header_alignment = Alignment(horizontal="center", vertical="center", wrap_text=True)
+    
+    # حدود الخلايا
+    thin_border = Border(
+        left=Side(style='thin'),
+        right=Side(style='thin'),
+        top=Side(style='thin'),
+        bottom=Side(style='thin')
+    )
+    
+    # عناوين الأعمدة
+    headers = ["اسم المخبز", "المحافظة", "العنوان", "اسم المالك", "رقم الهاتف"]
+    sheet.append(headers)
+    
+    # تطبيق التنسيق على صف الرأس
+    for col_num, header in enumerate(headers, 1):
+        cell = sheet.cell(row=1, column=col_num)
+        cell.fill = header_fill
+        cell.font = header_font
+        cell.alignment = header_alignment
+        cell.border = thin_border
+    
+    # تنسيق خلايا البيانات
+    data_font = Font(name="Arial", size=11)
+    data_alignment = Alignment(horizontal="right", vertical="center", wrap_text=True)
+    alternate_fill = PatternFill(start_color="E7E6E6", end_color="E7E6E6", fill_type="solid")
+    
+    # جلب وإدراج البيانات
+    makhabez = Makhbaz.objects.all().order_by('governorate', 'name')
+    
+    for row_num, makhbaz in enumerate(makhabez, 2):
+        row_data = [
+            makhbaz.name or "",
+            makhbaz.governorate or "",
+            makhbaz.address or "",
+            makhbaz.owner_name or "",
+            makhbaz.mobile_number or "",
+        ]
+        sheet.append(row_data)
+        
+        # تطبيق التنسيق على كل خلية في الصف
+        for col_num in range(1, len(headers) + 1):
+            cell = sheet.cell(row=row_num, column=col_num)
+            cell.font = data_font
+            cell.alignment = data_alignment
+            cell.border = thin_border
+            
+            # تلوين الصفوف بالتناوب
+            if row_num % 2 == 0:
+                cell.fill = alternate_fill
+    
+    # ضبط عرض الأعمدة تلقائياً
+    column_widths = {
+        1: 25,  # اسم المخبز
+        2: 15,  # المحافظة
+        3: 30,  # العنوان
+        4: 20,  # اسم المالك
+        5: 15,  # رقم الهاتف
+    }
+    
+    for col_num, width in column_widths.items():
+        column_letter = get_column_letter(col_num)
+        sheet.column_dimensions[column_letter].width = width
+    
+    # تجميد صف الرأس
+    sheet.freeze_panes = "A2"
+    
+    # إضافة معلومات التصدير في أسفل الملف
+    last_row = sheet.max_row + 2
+    info_text = f"تم التصدير بتاريخ: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
+    info_cell = sheet.cell(row=last_row, column=1)
+    info_cell.value = info_text
+    info_cell.font = Font(name="Arial", size=9, italic=True, color="666666")
+    info_cell.alignment = Alignment(horizontal="right")
+    
+    # إعداد الاستجابة لتنزيل الملف
+    timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+    filename = f"makhabiz_{timestamp}.xlsx"
+    
+    response = HttpResponse(
+        content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    )
+    response['Content-Disposition'] = f'attachment; filename="{filename}"'
+    
+    # حفظ الملف في الاستجابة
+    workbook.save(response)
+    
+    return response
+
+
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse
+from openpyxl import Workbook
+from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
+from openpyxl.utils import get_column_letter
+from datetime import datetime
+
+
+@login_required(login_url='login')
+def export_makhabez_excel(request):
+    """
+    تصدير بيانات المخابز إلى ملف Excel منسق
+    Export bakeries data to a professionally formatted Excel file
+    """
+    workbook = Workbook()
+    sheet = workbook.active
+    sheet.title = "المخابز"
+    
+    # تعيين اتجاه الورقة من اليمين لليسار (RTL)
+    sheet.sheet_view.rightToLeft = True
+    
+    # تنسيق رأس الجدول
+    header_fill = PatternFill(start_color="4472C4", end_color="4472C4", fill_type="solid")
+    header_font = Font(name="Arial", size=12, bold=True, color="FFFFFF")
+    header_alignment = Alignment(horizontal="center", vertical="center", wrap_text=True)
+    
+    # حدود الخلايا
+    thin_border = Border(
+        left=Side(style='thin'),
+        right=Side(style='thin'),
+        top=Side(style='thin'),
+        bottom=Side(style='thin')
+    )
+    
+    # عناوين الأعمدة
+    headers = ["اسم المخبز", "المحافظة", "العنوان", "اسم المالك", "رقم الهاتف"]
+    sheet.append(headers)
+    
+    # تطبيق التنسيق على صف الرأس
+    for col_num, header in enumerate(headers, 1):
+        cell = sheet.cell(row=1, column=col_num)
+        cell.fill = header_fill
+        cell.font = header_font
+        cell.alignment = header_alignment
+        cell.border = thin_border
+    
+    # تنسيق خلايا البيانات
+    data_font = Font(name="Arial", size=11)
+    data_alignment = Alignment(horizontal="right", vertical="center", wrap_text=True)
+    alternate_fill = PatternFill(start_color="E7E6E6", end_color="E7E6E6", fill_type="solid")
+    
+    # جلب وإدراج البيانات
+    makhabez = Makhbaz.objects.all().order_by('governorate', 'name')
+    
+    for row_num, makhbaz in enumerate(makhabez, 2):
+        row_data = [
+            makhbaz.name or "",
+            makhbaz.governorate or "",
+            makhbaz.address or "",
+            makhbaz.owner_name or "",
+            makhbaz.mobile_number or "",
+        ]
+        sheet.append(row_data)
+        
+        # تطبيق التنسيق على كل خلية في الصف
+        for col_num in range(1, len(headers) + 1):
+            cell = sheet.cell(row=row_num, column=col_num)
+            cell.font = data_font
+            cell.alignment = data_alignment
+            cell.border = thin_border
+            
+            # تلوين الصفوف بالتناوب
+            if row_num % 2 == 0:
+                cell.fill = alternate_fill
+    
+    # ضبط عرض الأعمدة تلقائياً
+    column_widths = {
+        1: 25,  # اسم المخبز
+        2: 15,  # المحافظة
+        3: 30,  # العنوان
+        4: 20,  # اسم المالك
+        5: 15,  # رقم الهاتف
+    }
+    
+    for col_num, width in column_widths.items():
+        column_letter = get_column_letter(col_num)
+        sheet.column_dimensions[column_letter].width = width
+    
+    # تجميد صف الرأس
+    sheet.freeze_panes = "A2"
+    
+    # إضافة معلومات التصدير في أسفل الملف
+    last_row = sheet.max_row + 2
+    info_text = f"تم التصدير بتاريخ: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
+    info_cell = sheet.cell(row=last_row, column=1)
+    info_cell.value = info_text
+    info_cell.font = Font(name="Arial", size=9, italic=True, color="666666")
+    info_cell.alignment = Alignment(horizontal="right")
+    
+    # إعداد الاستجابة لتنزيل الملف
+    timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+    filename = f"makhabiz_{timestamp}.xlsx"
+    
+    response = HttpResponse(
+        content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    )
+    response['Content-Disposition'] = f'attachment; filename="{filename}"'
+    
+    # حفظ الملف في الاستجابة
+    workbook.save(response)
+    
+    return response
+
+
+@login_required(login_url='login')
+def export_takiyat_excel(request):
+    """
+    تصدير بيانات التكيات إلى ملف Excel منسق
+    Export takiyat data to a professionally formatted Excel file
+    """
+    workbook = Workbook()
+    sheet = workbook.active
+    sheet.title = "التكيات"
+    
+    # تعيين اتجاه الورقة من اليمين لليسار (RTL)
+    sheet.sheet_view.rightToLeft = True
+    
+    # تنسيق رأس الجدول
+    header_fill = PatternFill(start_color="4472C4", end_color="4472C4", fill_type="solid")
+    header_font = Font(name="Arial", size=12, bold=True, color="FFFFFF")
+    header_alignment = Alignment(horizontal="center", vertical="center", wrap_text=True)
+    
+    # حدود الخلايا
+    thin_border = Border(
+        left=Side(style='thin'),
+        right=Side(style='thin'),
+        top=Side(style='thin'),
+        bottom=Side(style='thin')
+    )
+    
+    # عناوين الأعمدة
+    headers = ["اسم التكية", "المحافظة", "العنوان", "اسم المالك", "رقم الهاتف"]
+    sheet.append(headers)
+    
+    # تطبيق التنسيق على صف الرأس
+    for col_num, header in enumerate(headers, 1):
+        cell = sheet.cell(row=1, column=col_num)
+        cell.fill = header_fill
+        cell.font = header_font
+        cell.alignment = header_alignment
+        cell.border = thin_border
+    
+    # تنسيق خلايا البيانات
+    data_font = Font(name="Arial", size=11)
+    data_alignment = Alignment(horizontal="right", vertical="center", wrap_text=True)
+    alternate_fill = PatternFill(start_color="E7E6E6", end_color="E7E6E6", fill_type="solid")
+    
+    # جلب وإدراج البيانات
+    takiyat = Takiya.objects.all().order_by('governorate', 'name')
+    
+    for row_num, takiya in enumerate(takiyat, 2):
+        row_data = [
+            takiya.name or "",
+            takiya.governorate or "",
+            takiya.address or "",
+            takiya.owner_name or "",
+            takiya.mobile_number or "",
+        ]
+        sheet.append(row_data)
+        
+        # تطبيق التنسيق على كل خلية في الصف
+        for col_num in range(1, len(headers) + 1):
+            cell = sheet.cell(row=row_num, column=col_num)
+            cell.font = data_font
+            cell.alignment = data_alignment
+            cell.border = thin_border
+            
+            # تلوين الصفوف بالتناوب
+            if row_num % 2 == 0:
+                cell.fill = alternate_fill
+    
+    # ضبط عرض الأعمدة تلقائياً
+    column_widths = {
+        1: 25,  # اسم التكية
+        2: 15,  # المحافظة
+        3: 30,  # العنوان
+        4: 20,  # اسم المالك
+        5: 15,  # رقم الهاتف
+    }
+    
+    for col_num, width in column_widths.items():
+        column_letter = get_column_letter(col_num)
+        sheet.column_dimensions[column_letter].width = width
+    
+    # تجميد صف الرأس
+    sheet.freeze_panes = "A2"
+    
+    # إضافة معلومات التصدير في أسفل الملف
+    last_row = sheet.max_row + 2
+    info_text = f"تم التصدير بتاريخ: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
+    info_cell = sheet.cell(row=last_row, column=1)
+    info_cell.value = info_text
+    info_cell.font = Font(name="Arial", size=9, italic=True, color="666666")
+    info_cell.alignment = Alignment(horizontal="right")
+    
+    # إعداد الاستجابة لتنزيل الملف
+    timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+    filename = f"takiyat_{timestamp}.xlsx"
+    
+    response = HttpResponse(
+        content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    )
+    response['Content-Disposition'] = f'attachment; filename="{filename}"'
+    
+    # حفظ الملف في الاستجابة
+    workbook.save(response)
+    
+    return response
